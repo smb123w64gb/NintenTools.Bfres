@@ -1,4 +1,4 @@
-# NintenTools
+# NintenTools.Bfres
 
 The goal of this .NET library is to provide versatile and object oriented access to data stored in the BFRES Nintendo graphics archive file format (most prominently used to store 3D game models), closely trying to resemble what the original Nintendo tools might have provided to use and create the files.
 
