@@ -9,8 +9,8 @@ namespace Syroot.NintenTools.Bfres
     /// <summary>
     /// Represents a NintendoWare for Wii U (NW4F) graphics data archive file.
     /// </summary>
-    [DebuggerDisplay(nameof(Model) + " {" + nameof(Name) + "}")]
-    public class ResFile : IResContent
+    [DebuggerDisplay(nameof(ResFile) + " {" + nameof(Name) + "}")]
+    public class ResFile : INamedResData
     {
         // ---- CONSTRUCTORS & DESTRUCTOR ------------------------------------------------------------------------------
 
@@ -21,7 +21,7 @@ namespace Syroot.NintenTools.Bfres
         public ResFile(Stream stream, bool leaveOpen = false)
         {
             ResFileLoader loader = new ResFileLoader(this, stream, leaveOpen);
-            ((IResContent)this).Load(loader);
+            ((IResData)this).Load(loader);
         }
 
         public ResFile(string fileName)
@@ -37,49 +37,49 @@ namespace Syroot.NintenTools.Bfres
 
         public string Name { get; set; }
 
-        public IList<Model> Models { get; private set; }
+        public INamedResDataList<Model> Models { get; private set; }
 
-        public IList<Texture> Textures { get; private set; }
+        public INamedResDataList<Texture> Textures { get; private set; }
 
-        public IList<SkeletalAnim> SkeletalAnims { get; private set; }
+        public INamedResDataList<SkeletalAnim> SkeletalAnims { get; private set; }
 
-        public IList<ShaderParamAnim> ShaderParamAnims { get; private set; }
+        public INamedResDataList<ShaderParamAnim> ShaderParamAnims { get; private set; }
 
-        public IList<ShaderParamAnim> ColorAnims { get; private set; }
+        public INamedResDataList<ShaderParamAnim> ColorAnims { get; private set; }
 
-        public IList<ShaderParamAnim> TexSrtAnims { get; private set; }
+        public INamedResDataList<ShaderParamAnim> TexSrtAnims { get; private set; }
 
-        public IList<TexPatternAnim> TexPatternAnims { get; private set; }
+        public INamedResDataList<TexPatternAnim> TexPatternAnims { get; private set; }
 
-        public IList<VisibilityAnim> BoneVisibilityAnims { get; private set; }
+        public INamedResDataList<VisibilityAnim> BoneVisibilityAnims { get; private set; }
 
-        public IList<VisibilityAnim> MatVisibilityAnims { get; private set; }
+        public INamedResDataList<VisibilityAnim> MatVisibilityAnims { get; private set; }
 
-        public IList<ShapeAnim> ShapeAnims { get; private set; }
+        public INamedResDataList<ShapeAnim> ShapeAnims { get; private set; }
 
-        public IList<SceneAnim> SceneAnims { get; private set; }
+        public INamedResDataList<SceneAnim> SceneAnims { get; private set; }
 
         public IDictionary<string, ExternalFile> ExternalFiles { get; private set; }
 
         // ---- METHODS ------------------------------------------------------------------------------------------------
 
-        void IResContent.Load(ResFileLoader loader)
+        void IResData.Load(ResFileLoader loader)
         {
             ResFileHead head = new ResFileHead(loader);
             Version = head.Version;
             ByteOrder = head.ByteOrder;
             Name = loader.GetName(head.OfsName);
-            Models = loader.LoadDictList<Model>(head.OfsModelDict);
-            Textures = loader.LoadDictList<Texture>(head.OfsTextureDict);
-            SkeletalAnims = loader.LoadDictList<SkeletalAnim>(head.OfsSkeletalAnimDict);
-            ShaderParamAnims = loader.LoadDictList<ShaderParamAnim>(head.OfsShaderParamDict);
-            ColorAnims = loader.LoadDictList<ShaderParamAnim>(head.OfsShaderParamDict);
-            TexSrtAnims = loader.LoadDictList<ShaderParamAnim>(head.OfsShaderParamDict);
-            TexPatternAnims = loader.LoadDictList<TexPatternAnim>(head.OfsTexPatternAnimDict);
-            BoneVisibilityAnims = loader.LoadDictList<VisibilityAnim>(head.OfsBoneVisibilityAnimDict);
-            MatVisibilityAnims = loader.LoadDictList<VisibilityAnim>(head.OfsMatVisibilityAnimDict);
-            ShapeAnims = loader.LoadDictList<ShapeAnim>(head.OfsShapeAnimDict);
-            SceneAnims = loader.LoadDictList<SceneAnim>(head.OfsSceneAnimDict);
+            Models = loader.LoadNamedDictList<Model>(head.OfsModelDict);
+            Textures = loader.LoadNamedDictList<Texture>(head.OfsTextureDict);
+            SkeletalAnims = loader.LoadNamedDictList<SkeletalAnim>(head.OfsSkeletalAnimDict);
+            ShaderParamAnims = loader.LoadNamedDictList<ShaderParamAnim>(head.OfsShaderParamDict);
+            ColorAnims = loader.LoadNamedDictList<ShaderParamAnim>(head.OfsShaderParamDict);
+            TexSrtAnims = loader.LoadNamedDictList<ShaderParamAnim>(head.OfsShaderParamDict);
+            TexPatternAnims = loader.LoadNamedDictList<TexPatternAnim>(head.OfsTexPatternAnimDict);
+            BoneVisibilityAnims = loader.LoadNamedDictList<VisibilityAnim>(head.OfsBoneVisibilityAnimDict);
+            MatVisibilityAnims = loader.LoadNamedDictList<VisibilityAnim>(head.OfsMatVisibilityAnimDict);
+            ShapeAnims = loader.LoadNamedDictList<ShapeAnim>(head.OfsShapeAnimDict);
+            SceneAnims = loader.LoadNamedDictList<SceneAnim>(head.OfsSceneAnimDict);
             ExternalFiles = loader.LoadDict<ExternalFile>(head.OfsExternalFileDict);
         }
     }

@@ -6,11 +6,11 @@ using Syroot.NintenTools.Bfres.GX2;
 namespace Syroot.NintenTools.Bfres
 {
     /// <summary>
-    /// Represents a <see cref="Texture"/> sampler in a <see cref="Material"/> section, storing configuration on how to
+    /// Represents a <see cref="Texture"/> sampler in a <see cref="UserData"/> section, storing configuration on how to
     /// draw and interpolate textures.
     /// </summary>
     [DebuggerDisplay(nameof(Sampler) + " {" + nameof(Name) + "}")]
-    public class Sampler : IResContent
+    public class Sampler : INamedResData
     {
         // ---- PROPERTIES ---------------------------------------------------------------------------------------------
 
@@ -20,7 +20,7 @@ namespace Syroot.NintenTools.Bfres
 
         // ---- METHODS ------------------------------------------------------------------------------------------------
 
-        void IResContent.Load(ResFileLoader loader)
+        void IResData.Load(ResFileLoader loader)
         {
             SamplerHead head = new SamplerHead(loader);
             TexSampler = new TexSampler(head.GX2Sampler);

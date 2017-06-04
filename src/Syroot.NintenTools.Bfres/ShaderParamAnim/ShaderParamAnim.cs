@@ -1,12 +1,23 @@
-﻿using Syroot.NintenTools.Bfres.Core;
+﻿using System;
+using System.Diagnostics;
+using Syroot.NintenTools.Bfres.Core;
 
 namespace Syroot.NintenTools.Bfres
 {
-    public class ShaderParamAnim : IResContent
+    [DebuggerDisplay(nameof(ShaderParamAnim) + " {" + nameof(Name) + "}")]
+    public class ShaderParamAnim : INamedResData
     {
+        // ---- PROPERTIES ---------------------------------------------------------------------------------------------
+
+        public string Name
+        {
+            get { throw new NotImplementedException(); }
+            set { throw new NotImplementedException(); }
+        }
+
         // ---- METHODS ------------------------------------------------------------------------------------------------
 
-        void IResContent.Load(ResFileLoader loader)
+        void IResData.Load(ResFileLoader loader)
         {
         }
     }

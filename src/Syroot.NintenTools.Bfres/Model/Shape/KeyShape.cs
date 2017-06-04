@@ -3,7 +3,7 @@ using Syroot.NintenTools.Bfres.Core;
 
 namespace Syroot.NintenTools.Bfres
 {
-    public class KeyShape : IResContent
+    public class KeyShape : IResData
     {
         // ---- PROPERTIES ---------------------------------------------------------------------------------------------
 
@@ -13,7 +13,7 @@ namespace Syroot.NintenTools.Bfres
 
         // ---- METHODS ------------------------------------------------------------------------------------------------
 
-        void IResContent.Load(ResFileLoader loader)
+        void IResData.Load(ResFileLoader loader)
         {
             TargetAttribIndices = loader.ReadBytes(20);
             TargetAttribIndexOffsets = loader.ReadBytes(4);

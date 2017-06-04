@@ -1,9 +1,11 @@
-﻿using Syroot.NintenTools.Bfres.Core;
+﻿using System.Diagnostics;
+using Syroot.NintenTools.Bfres.Core;
 using Syroot.NintenTools.Bfres.GX2;
 
 namespace Syroot.NintenTools.Bfres
 {
-    public class VertexAttrib : IResContent
+    [DebuggerDisplay(nameof(VertexAttrib) + " {" + nameof(Name) + "}")]
+    public class VertexAttrib : INamedResData
     {
         // ---- PROPERTIES ---------------------------------------------------------------------------------------------
 
@@ -17,7 +19,7 @@ namespace Syroot.NintenTools.Bfres
 
         // ---- METHODS ------------------------------------------------------------------------------------------------
 
-        void IResContent.Load(ResFileLoader loader)
+        void IResData.Load(ResFileLoader loader)
         {
             VertexAttribHead head = new VertexAttribHead(loader);
             Name = loader.GetName(head.OfsName);

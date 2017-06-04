@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using Syroot.Maths;
 using Syroot.NintenTools.Bfres.Core;
 
@@ -8,7 +9,8 @@ namespace Syroot.NintenTools.Bfres
     /// <summary>
     /// Represents an FCAM section in a <see cref="SceneAnim"/> subfile, storing animations controlling fog settings.
     /// </summary>
-    public class FogAnim : IResContent
+    [DebuggerDisplay(nameof(FogAnim) + " {" + nameof(Name) + "}")]
+    public class FogAnim : INamedResData
     {
         // ---- PROPERTIES ---------------------------------------------------------------------------------------------
 
@@ -28,11 +30,11 @@ namespace Syroot.NintenTools.Bfres
 
         public FogAnimResult Result { get; set; }
 
-        public IList<UserData> UserData { get; private set; }
+        public INamedResDataList<UserData> UserData { get; private set; }
 
         // ---- METHODS ------------------------------------------------------------------------------------------------
 
-        void IResContent.Load(ResFileLoader loader)
+        void IResData.Load(ResFileLoader loader)
         {
             FogAnimHead head = new FogAnimHead(loader);
             Flags = head.Flags;
@@ -43,7 +45,7 @@ namespace Syroot.NintenTools.Bfres
             DistanceAttenuationFuncName = loader.GetName(head.OfsDistanceAttenuationFuncName);
             Curves = loader.LoadList<AnimCurve>(head.OfsCurveList, head.NumCurve);
             Result = loader.Load<FogAnimResult>(head.OfsResult);
-            UserData = loader.LoadDictList<UserData>(head.OfsUserDataDict);
+            UserData = loader.LoadNamedDictList<UserData>(head.OfsUserDataDict);
         }
     }
 
@@ -97,7 +99,7 @@ namespace Syroot.NintenTools.Bfres
         Looping = 1 << 2
     }
 
-    public class FogAnimResult : IResContent
+    public class FogAnimResult : IResData
     {
         // ---- PROPERTIES ---------------------------------------------------------------------------------------------
 
@@ -107,7 +109,7 @@ namespace Syroot.NintenTools.Bfres
 
         // ---- METHODS ------------------------------------------------------------------------------------------------
 
-        void IResContent.Load(ResFileLoader loader)
+        void IResData.Load(ResFileLoader loader)
         {
             DistanceAttenuation = loader.ReadVector2F();
             Color = loader.ReadVector3F();

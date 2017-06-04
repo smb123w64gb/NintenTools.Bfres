@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Diagnostics;
 using Syroot.NintenTools.Bfres.Core;
 
 namespace Syroot.NintenTools.Bfres
@@ -6,7 +6,8 @@ namespace Syroot.NintenTools.Bfres
     /// <summary>
     /// Represents a reference to a <see cref="Texture"/> instance by name.
     /// </summary>
-    public class TextureRef : IResContent
+    [DebuggerDisplay(nameof(TextureRef) + " {" + nameof(Name) + "}")]
+    public class TextureRef : INamedResData
     {
         // ---- PROPERTIES ---------------------------------------------------------------------------------------------
 
@@ -14,7 +15,7 @@ namespace Syroot.NintenTools.Bfres
 
         // ---- METHODS ------------------------------------------------------------------------------------------------
 
-        void IResContent.Load(ResFileLoader loader)
+        void IResData.Load(ResFileLoader loader)
         {
             TextureRefHead head = new TextureRefHead(loader);
             Name = loader.GetName(head.OfsName);

@@ -10,7 +10,7 @@ namespace Syroot.NintenTools.Bfres
     /// how technically a surface is drawn.
     /// </summary>
     [DebuggerDisplay(nameof(Material) + " {" + nameof(Name) + "}")]
-    public class Material : IResContent
+    public class Material : INamedResData
     {
         // ---- PROPERTIES ---------------------------------------------------------------------------------------------
 
@@ -18,40 +18,40 @@ namespace Syroot.NintenTools.Bfres
 
         public MaterialFlags Flags { get; set; }
 
-        public IList<RenderInfo> RenderInfos { get; private set; }
+        public INamedResDataList<RenderInfo> RenderInfos { get; private set; }
 
         public RenderState RenderState { get; private set; }
 
         public ShaderAssign ShaderAssign { get; private set; }
 
-        public IList<TextureRef> TextureRefs { get; private set; }
+        public INamedResDataList<TextureRef> TextureRefs { get; private set; }
 
-        public IList<Sampler> Samplers { get; private set; }
+        public INamedResDataList<Sampler> Samplers { get; private set; }
 
-        public IList<ShaderParam> ShaderParams { get; private set; }
+        public INamedResDataList<ShaderParam> ShaderParams { get; private set; }
 
         public byte[] ParamData { get; private set; }
 
-        public IList<UserData> UserData { get; private set; }
+        public INamedResDataList<UserData> UserData { get; private set; }
 
         public byte[] VolatileFlags { get; private set; }
 
         // ---- METHODS ------------------------------------------------------------------------------------------------
 
-        void IResContent.Load(ResFileLoader loader)
+        void IResData.Load(ResFileLoader loader)
         {
             MaterialHead head = new MaterialHead(loader);
             Name = loader.GetName(head.OfsName);
             Flags = head.Flags;
-            RenderInfos = loader.LoadDictList<RenderInfo>(head.OfsRenderInfoDict);
+            RenderInfos = loader.LoadNamedDictList<RenderInfo>(head.OfsRenderInfoDict);
             RenderState = loader.Load<RenderState>(head.OfsRenderState);
             ShaderAssign = loader.Load<ShaderAssign>(head.OfsShaderAssign);
-            TextureRefs = loader.LoadList<TextureRef>(head.OfsTextureRefList, head.NumTextureRef);
-            Samplers = loader.LoadDictList<Sampler>(head.OfsSamplerDict);
-            ShaderParams = loader.LoadDictList<ShaderParam>(head.OfsShaderParamDict);
+            TextureRefs = loader.LoadNamedList<TextureRef>(head.OfsTextureRefList, head.NumTextureRef);
+            Samplers = loader.LoadNamedDictList<Sampler>(head.OfsSamplerDict);
+            ShaderParams = loader.LoadNamedDictList<ShaderParam>(head.OfsShaderParamDict);
             loader.Position = head.OfsParamSource;
             ParamData = loader.ReadBytes(head.SizParamSource);
-            UserData = loader.LoadDictList<UserData>(head.OfsUserDataDict);
+            UserData = loader.LoadNamedDictList<UserData>(head.OfsUserDataDict);
             if (head.OfsVolatileFlag != 0)
             {
                 loader.Position = head.OfsVolatileFlag;
@@ -63,7 +63,7 @@ namespace Syroot.NintenTools.Bfres
     }
 
     /// <summary>
-    /// Represents the header of a <see cref="Material"/> instance.
+    /// Represents the header of a <see cref="UserData"/> instance.
     /// </summary>
     internal class MaterialHead
     {

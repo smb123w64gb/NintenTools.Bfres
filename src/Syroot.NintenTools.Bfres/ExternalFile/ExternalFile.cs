@@ -6,7 +6,7 @@ namespace Syroot.NintenTools.Bfres
     /// <summary>
     /// Represents a file attachment to a <see cref="ResFile"/> which can be of arbitrary data.
     /// </summary>
-    public class ExternalFile : IResContent
+    public class ExternalFile : IResData
     {
         // ---- PROPERTIES ---------------------------------------------------------------------------------------------
 
@@ -14,7 +14,7 @@ namespace Syroot.NintenTools.Bfres
 
         // ---- METHODS ------------------------------------------------------------------------------------------------
 
-        void IResContent.Load(ResFileLoader loader)
+        void IResData.Load(ResFileLoader loader)
         {
             ExternalFileHead head = new ExternalFileHead(loader);
             loader.Seek(head.OfsData);

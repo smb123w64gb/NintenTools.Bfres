@@ -7,7 +7,7 @@ namespace Syroot.NintenTools.Bfres
     /// Represents a node in a <see cref="SubMesh"/> bounding tree to determine when to show which sub mesh of a
     /// <see cref="Mesh"/>.
     /// </summary>
-    public class BoundingNode : IResContent
+    public class BoundingNode : IResData
     {
         // ---- PROPERTIES ---------------------------------------------------------------------------------------------
 
@@ -23,7 +23,7 @@ namespace Syroot.NintenTools.Bfres
 
         // ---- METHODS ------------------------------------------------------------------------------------------------
 
-        void IResContent.Load(ResFileLoader loader)
+        void IResData.Load(ResFileLoader loader)
         {
             LeftChildIndex = loader.ReadUInt16();
             RightChildIndex = loader.ReadUInt16();

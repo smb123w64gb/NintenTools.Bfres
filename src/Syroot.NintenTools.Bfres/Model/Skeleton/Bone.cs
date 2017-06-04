@@ -11,7 +11,7 @@ namespace Syroot.NintenTools.Bfres
     /// effects.
     /// </summary>
     [DebuggerDisplay(nameof(Bone) + " {" + nameof(Name) + "}")]
-    public class Bone : IResContent
+    public class Bone : INamedResData
     {
         // ---- CONSTANTS ----------------------------------------------------------------------------------------------
 
@@ -74,11 +74,11 @@ namespace Syroot.NintenTools.Bfres
 
         public Vector3F Position { get; set; }
 
-        public IList<UserData> UserData { get; private set; }
+        public INamedResDataList<UserData> UserData { get; private set; }
 
         // ---- METHODS ------------------------------------------------------------------------------------------------
 
-        void IResContent.Load(ResFileLoader loader)
+        void IResData.Load(ResFileLoader loader)
         {
             BoneHead head = new BoneHead(loader);
             Name = loader.GetName(head.OfsName);
@@ -90,7 +90,7 @@ namespace Syroot.NintenTools.Bfres
             Scale = head.Scale;
             Rotation = head.Rotation;
             Position = head.Position;
-            UserData = loader.LoadDictList<UserData>(head.OfsUserDataDict);
+            UserData = loader.LoadNamedDictList<UserData>(head.OfsUserDataDict);
         }
     }
     

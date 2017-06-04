@@ -9,7 +9,7 @@ namespace Syroot.NintenTools.Bfres
     /// Represents an FSHP section in a <see cref="Model"/> subfile.
     /// </summary>
     [DebuggerDisplay(nameof(Shape) + " {" + nameof(Name) + "}")]
-    public class Shape : IResContent
+    public class Shape : INamedResData
     {
         // ---- PROPERTIES ---------------------------------------------------------------------------------------------
 
@@ -29,7 +29,7 @@ namespace Syroot.NintenTools.Bfres
 
         public IList<ushort> SkinBoneIndices { get; private set; }
 
-        public IList<KeyShape> KeyShapes { get; private set; }
+        public IDictionary<string, KeyShape> KeyShapes { get; private set; }
 
         public IList<Bounding> SubMeshBoundings { get; private set; }
 
@@ -39,7 +39,7 @@ namespace Syroot.NintenTools.Bfres
 
         // ---- METHODS ------------------------------------------------------------------------------------------------
 
-        void IResContent.Load(ResFileLoader loader)
+        void IResData.Load(ResFileLoader loader)
         {
             ShapeHead head = new ShapeHead(loader);
             Name = loader.GetName(head.OfsName);
@@ -51,7 +51,7 @@ namespace Syroot.NintenTools.Bfres
             Meshes = loader.LoadList<Mesh>(head.OfsMeshList, head.NumMesh);
             loader.Position = head.OfsSkinBoneIndexList;
             SkinBoneIndices = loader.ReadUInt16s(head.NumSkinBoneIndex);
-            KeyShapes = loader.LoadDictList<KeyShape>(head.OfsKeyShapeDict);
+            KeyShapes = loader.LoadDict<KeyShape>(head.OfsKeyShapeDict);
             loader.Position = head.OfsSubMeshBoundingList;
             SubMeshBoundings = loader.ReadBoundings(Meshes[0].SubMeshes.Count); // TODO: Validate count.
             // Normally nonexistent.

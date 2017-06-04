@@ -6,10 +6,10 @@ namespace Syroot.NintenTools.Bfres
 {
     /// <summary>
     /// Represents a render info in a FMAT section storing uniform parameters required to render the
-    /// <see cref="Material"/>.
+    /// <see cref="UserData"/>.
     /// </summary>
     [DebuggerDisplay(nameof(RenderInfo) + " {" + nameof(Name) + "}")]
-    public class RenderInfo : IResContent
+    public class RenderInfo : INamedResData
     {
         // ---- FIELDS -------------------------------------------------------------------------------------------------
 
@@ -55,7 +55,7 @@ namespace Syroot.NintenTools.Bfres
 
         // ---- METHODS ------------------------------------------------------------------------------------------------
 
-        void IResContent.Load(ResFileLoader loader)
+        void IResData.Load(ResFileLoader loader)
         {
             RenderInfoHead head = new RenderInfoHead(loader);
             Type = head.Type;

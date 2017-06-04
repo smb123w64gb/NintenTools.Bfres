@@ -9,7 +9,7 @@ namespace Syroot.NintenTools.Bfres
     /// Represents an FMDL subfile in a <see cref="ResFile"/>, storing model vertex data, skeletons and used materials.
     /// </summary>
     [DebuggerDisplay(nameof(Model) + " {" + nameof(Name) + "}")]
-    public class Model : IResContent
+    public class Model : INamedResData
     {
         // ---- PROPERTIES ---------------------------------------------------------------------------------------------
 
@@ -21,24 +21,24 @@ namespace Syroot.NintenTools.Bfres
 
         public IList<VertexBuffer> VertexBuffers { get; private set; }
 
-        public IList<Shape> Shapes { get; private set; }
+        public INamedResDataList<Shape> Shapes { get; private set; }
 
-        public IList<Material> Materials { get; private set; }
+        public INamedResDataList<Material> Materials { get; private set; }
 
-        public IList<UserData> UserData { get; private set; }
+        public INamedResDataList<UserData> UserData { get; private set; }
 
         // ---- METHODS ------------------------------------------------------------------------------------------------
 
-        void IResContent.Load(ResFileLoader loader)
+        void IResData.Load(ResFileLoader loader)
         {
             ModelHead head = new ModelHead(loader);
             Name = loader.GetName(head.OfsName);
             Path = loader.GetName(head.OfsPath);
             Skeleton = loader.Load<Skeleton>(head.OfsSkeleton);
             VertexBuffers = loader.LoadList<VertexBuffer>(head.OfsVertexBufferList, head.NumVertexBuffer);
-            Shapes = loader.LoadDictList<Shape>(head.OfsShapeDict);
-            Materials = loader.LoadDictList<Material>(head.OfsMaterialDict);
-            UserData = loader.LoadDictList<UserData>(head.OfsUserDataDict);
+            Shapes = loader.LoadNamedDictList<Shape>(head.OfsShapeDict);
+            Materials = loader.LoadNamedDictList<Material>(head.OfsMaterialDict);
+            UserData = loader.LoadNamedDictList<UserData>(head.OfsUserDataDict);
         }
     }
 

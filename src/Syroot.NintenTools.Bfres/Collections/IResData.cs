@@ -2,12 +2,13 @@
 
 namespace Syroot.NintenTools.Bfres
 {
-    public class AnimCurve : IResData
+    /// <summary>
+    /// Represents the common interface for <see cref="ResFile"/> structures.
+    /// </summary>
+    public interface IResData
     {
         // ---- METHODS ------------------------------------------------------------------------------------------------
 
-        void IResData.Load(ResFileLoader loader)
-        {
-        }
+        void Load(ResFileLoader loader);
     }
 }

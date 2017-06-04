@@ -3,7 +3,7 @@ using Syroot.NintenTools.Bfres.Core;
 
 namespace Syroot.NintenTools.Bfres
 {
-    public class ShaderAssign : IResContent
+    public class ShaderAssign : IResData
     {
         // ---- PROPERTIES ---------------------------------------------------------------------------------------------
 
@@ -21,7 +21,7 @@ namespace Syroot.NintenTools.Bfres
 
         // ---- METHODS ------------------------------------------------------------------------------------------------
 
-        void IResContent.Load(ResFileLoader loader)
+        void IResData.Load(ResFileLoader loader)
         {
             ShaderAssignHead head = new ShaderAssignHead(loader);
             ShaderArchiveName = loader.GetName(head.OfsShaderArchiveName);

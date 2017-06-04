@@ -10,7 +10,7 @@ namespace Syroot.NintenTools.Bfres
     /// Represents an FCAM section in a <see cref="SceneAnim"/> subfile, storing animations controlling camera settings.
     /// </summary>
     [DebuggerDisplay(nameof(CameraAnim) + " {" + nameof(Name) + "}")]
-    public class CameraAnim : IResContent
+    public class CameraAnim : INamedResData
     {
         // ---- PROPERTIES ---------------------------------------------------------------------------------------------
 
@@ -26,11 +26,11 @@ namespace Syroot.NintenTools.Bfres
 
         public CameraAnimResult Result { get; set; }
 
-        public IList<UserData> UserData { get; private set; }
+        public INamedResDataList<UserData> UserData { get; private set; }
 
         // ---- METHODS ------------------------------------------------------------------------------------------------
 
-        void IResContent.Load(ResFileLoader loader)
+        void IResData.Load(ResFileLoader loader)
         {
             CameraAnimHead head = new CameraAnimHead(loader);
             Flags = head.Flags;
@@ -39,7 +39,7 @@ namespace Syroot.NintenTools.Bfres
             Name = loader.GetName(head.OfsName);
             Curves = loader.LoadList<AnimCurve>(head.OfsCurveList, head.NumCurve);
             Result = loader.Load<CameraAnimResult>(head.OfsResult);
-            UserData = loader.LoadDictList<UserData>(head.OfsUserDataDict);
+            UserData = loader.LoadNamedDictList<UserData>(head.OfsUserDataDict);
         }
     }
 
@@ -93,7 +93,7 @@ namespace Syroot.NintenTools.Bfres
         Perspective = 1 << 10
     }
 
-    public class CameraAnimResult : IResContent
+    public class CameraAnimResult : IResData
     {
         // ---- PROPERTIES ---------------------------------------------------------------------------------------------
 
@@ -113,7 +113,7 @@ namespace Syroot.NintenTools.Bfres
 
         // ---- METHODS ------------------------------------------------------------------------------------------------
 
-        void IResContent.Load(ResFileLoader loader)
+        void IResData.Load(ResFileLoader loader)
         {
             ClipNear = loader.ReadSingle();
             ClipFar = loader.ReadSingle();

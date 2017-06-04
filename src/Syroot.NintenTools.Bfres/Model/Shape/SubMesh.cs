@@ -9,7 +9,7 @@ namespace Syroot.NintenTools.Bfres
     /// referenced in the mesh, mostly used for hiding parts of a model when not visible.
     /// </summary>
     [DebuggerDisplay(nameof(SubMesh) + " [{" + nameof(Offset) + "},{" + nameof(Count) + "})")]
-    public class SubMesh : IResContent
+    public class SubMesh : IResData
     {
         // ---- PROPERTIES ---------------------------------------------------------------------------------------------
 
@@ -19,7 +19,7 @@ namespace Syroot.NintenTools.Bfres
 
         // ---- METHODS ------------------------------------------------------------------------------------------------
 
-        void IResContent.Load(ResFileLoader loader)
+        void IResData.Load(ResFileLoader loader)
         {
             Offset = loader.ReadUInt32();
             Count = loader.ReadUInt32();

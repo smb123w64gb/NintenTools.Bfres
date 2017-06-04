@@ -9,7 +9,7 @@ namespace Syroot.NintenTools.Bfres
     /// <summary>
     /// Represents an FSKL section in a <see cref="Model"/> subfile, storing armature data.
     /// </summary>
-    public class Skeleton : IResContent
+    public class Skeleton : IResData
     {
         // ---- CONSTANTS ----------------------------------------------------------------------------------------------
 
@@ -34,7 +34,7 @@ namespace Syroot.NintenTools.Bfres
             set { _flags &= ~_flagsRotateMask | (uint)value; }
         }
         
-        public IList<Bone> Bones { get; private set; }
+        public INamedResDataList<Bone> Bones { get; private set; }
 
         public IList<ushort> MatrixToBoneTable { get; private set; }
 
@@ -42,11 +42,11 @@ namespace Syroot.NintenTools.Bfres
 
         // ---- METHODS ------------------------------------------------------------------------------------------------
 
-        void IResContent.Load(ResFileLoader loader)
+        void IResData.Load(ResFileLoader loader)
         {
             SkeletonHead head = new SkeletonHead(loader);
             _flags = head.Flags;
-            Bones = loader.LoadDictList<Bone>(head.OfsBoneDict);
+            Bones = loader.LoadNamedDictList<Bone>(head.OfsBoneDict);
             if (head.OfsMatrixToBoneTable != 0)
             {
                 loader.Position = head.OfsMatrixToBoneTable;

@@ -10,7 +10,7 @@ namespace Syroot.NintenTools.Bfres
     /// fog settings.
     /// </summary>
     [DebuggerDisplay(nameof(SceneAnim) + " {" + nameof(Name) + "}")]
-    public class SceneAnim : IResContent
+    public class SceneAnim : INamedResData
     {
         // ---- PROPERTIES ---------------------------------------------------------------------------------------------
 
@@ -18,25 +18,25 @@ namespace Syroot.NintenTools.Bfres
 
         public string Path { get; set; }
 
-        public IList<CameraAnim> CameraAnims { get; private set; }
+        public INamedResDataList<CameraAnim> CameraAnims { get; private set; }
 
-        public IList<LightAnim> LightAnims { get; private set; }
+        public INamedResDataList<LightAnim> LightAnims { get; private set; }
         
-        public IList<FogAnim> FogAnims { get; private set; }
+        public INamedResDataList<FogAnim> FogAnims { get; private set; }
 
-        public IList<UserData> UserData { get; private set; }
+        public INamedResDataList<UserData> UserData { get; private set; }
 
         // ---- METHODS ------------------------------------------------------------------------------------------------
 
-        void IResContent.Load(ResFileLoader loader)
+        void IResData.Load(ResFileLoader loader)
         {
             SceneAnimHead head = new SceneAnimHead(loader);
             Name = loader.GetName(head.OfsName);
             Path = loader.GetName(head.OfsPath);
-            CameraAnims = loader.LoadDictList<CameraAnim>(head.OfsCameraAnimDict);
-            LightAnims = loader.LoadDictList<LightAnim>(head.OfsLightAnimDict);
-            FogAnims = loader.LoadDictList<FogAnim>(head.OfsFogAnimDict);
-            UserData = loader.LoadDictList<UserData>(head.OfsUserDataDict);
+            CameraAnims = loader.LoadNamedDictList<CameraAnim>(head.OfsCameraAnimDict);
+            LightAnims = loader.LoadNamedDictList<LightAnim>(head.OfsLightAnimDict);
+            FogAnims = loader.LoadNamedDictList<FogAnim>(head.OfsFogAnimDict);
+            UserData = loader.LoadNamedDictList<UserData>(head.OfsUserDataDict);
         }
     }
 

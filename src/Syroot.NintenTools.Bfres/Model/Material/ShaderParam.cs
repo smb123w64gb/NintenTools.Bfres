@@ -5,10 +5,10 @@ using Syroot.NintenTools.Bfres.Core;
 namespace Syroot.NintenTools.Bfres
 {
     /// <summary>
-    /// Represents a parameter value in a <see cref="Material"/> section, passing data to shader variables.
+    /// Represents a parameter value in a <see cref="UserData"/> section, passing data to shader variables.
     /// </summary>
     [DebuggerDisplay(nameof(ShaderParam) + " {" + nameof(Name) + "}")]
-    public class ShaderParam : IResContent
+    public class ShaderParam : INamedResData
     {
         // ---- PROPERTIES ---------------------------------------------------------------------------------------------
 
@@ -24,7 +24,7 @@ namespace Syroot.NintenTools.Bfres
 
         // ---- METHODS ------------------------------------------------------------------------------------------------
 
-        void IResContent.Load(ResFileLoader loader)
+        void IResData.Load(ResFileLoader loader)
         {
             ShaderParamHead head = new ShaderParamHead(loader);
             Type = head.Type;

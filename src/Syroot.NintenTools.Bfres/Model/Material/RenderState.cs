@@ -5,7 +5,7 @@ using Syroot.NintenTools.Bfres.GX2;
 
 namespace Syroot.NintenTools.Bfres
 {
-    public class RenderState : IResContent
+    public class RenderState : IResData
     {
         // ---- CONSTANTS ----------------------------------------------------------------------------------------------
 
@@ -44,7 +44,7 @@ namespace Syroot.NintenTools.Bfres
 
         // ---- METHODS ------------------------------------------------------------------------------------------------
 
-        void IResContent.Load(ResFileLoader loader)
+        void IResData.Load(ResFileLoader loader)
         {
             RenderStateHead head = new RenderStateHead(loader);
             _flags = head.Flags;

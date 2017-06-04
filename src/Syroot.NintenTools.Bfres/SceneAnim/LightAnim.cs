@@ -10,7 +10,7 @@ namespace Syroot.NintenTools.Bfres
     /// Represents an FLIT section in a <see cref="SceneAnim"/> subfile, storing animations controlling light settings.
     /// </summary>
     [DebuggerDisplay(nameof(LightAnim) + " {" + nameof(Name) + "}")]
-    public class LightAnim : IResContent
+    public class LightAnim : INamedResData
     {
         // ---- PROPERTIES ---------------------------------------------------------------------------------------------
 
@@ -38,11 +38,11 @@ namespace Syroot.NintenTools.Bfres
 
         public LightAnimResult Result { get; set; }
 
-        public IList<UserData> UserData { get; private set; }
+        public INamedResDataList<UserData> UserData { get; private set; }
 
         // ---- METHODS ------------------------------------------------------------------------------------------------
 
-        void IResContent.Load(ResFileLoader loader)
+        void IResData.Load(ResFileLoader loader)
         {
             LightAnimHead head = new LightAnimHead(loader);
             Flags = head.Flags;
@@ -59,9 +59,9 @@ namespace Syroot.NintenTools.Bfres
 
             loader.Position = head.OfsResult;
             Result = new LightAnimResult(Flags);
-            ((IResContent)Result).Load(loader);
+            ((IResData)Result).Load(loader);
 
-            UserData = loader.LoadDictList<UserData>(head.OfsUserDataDict);
+            UserData = loader.LoadNamedDictList<UserData>(head.OfsUserDataDict);
         }
     }
 
@@ -131,7 +131,7 @@ namespace Syroot.NintenTools.Bfres
         ResultColor1 = 1 << 15
     }
 
-    public class LightAnimResult : IResContent
+    public class LightAnimResult : IResData
     {
         // ---- FIELDS -------------------------------------------------------------------------------------------------
 
@@ -162,7 +162,7 @@ namespace Syroot.NintenTools.Bfres
 
         // ---- METHODS ------------------------------------------------------------------------------------------------
 
-        void IResContent.Load(ResFileLoader loader)
+        void IResData.Load(ResFileLoader loader)
         {
             if (_flags.HasFlag(LightAnimFlags.ResultEnable)) Enable = loader.ReadInt32();
             if (_flags.HasFlag(LightAnimFlags.ResultPosition)) Position = loader.ReadVector3F();

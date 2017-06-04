@@ -10,7 +10,7 @@ namespace Syroot.NintenTools.Bfres
     /// index <see cref="Buffer"/> to use for referencing vertices of the shape, mostly used for different levels of
     /// detail (LoD) models.
     /// </summary>
-    public class Mesh : IResContent
+    public class Mesh : IResData
     {
         // ---- PROPERTIES ---------------------------------------------------------------------------------------------
 
@@ -26,7 +26,7 @@ namespace Syroot.NintenTools.Bfres
 
         // ---- METHODS ------------------------------------------------------------------------------------------------
 
-        void IResContent.Load(ResFileLoader loader)
+        void IResData.Load(ResFileLoader loader)
         {
             MeshHead head = new MeshHead(loader);
             PrimitiveType = head.PrimitiveType;
