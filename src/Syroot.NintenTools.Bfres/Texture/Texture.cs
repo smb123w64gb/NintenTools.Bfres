@@ -2,12 +2,11 @@
 
 namespace Syroot.NintenTools.Bfres
 {
-    public class Texture : ResContent
+    public class Texture : IResContent
     {
-        // ---- CONSTRUCTORS & DESTRUCTOR ------------------------------------------------------------------------------
+        // ---- METHODS (PUBLIC) ---------------------------------------------------------------------------------------
 
-        public Texture(ResFileLoader loader)
-            : base(loader)
+        public void Load(ResFileLoader loader)
         {
         }
     }

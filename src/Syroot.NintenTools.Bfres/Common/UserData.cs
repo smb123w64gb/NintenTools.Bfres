@@ -1,16 +1,16 @@
-﻿using Syroot.NintenTools.Bfres.Core;
+﻿using System;
+using Syroot.NintenTools.Bfres.Core;
 
 namespace Syroot.NintenTools.Bfres
 {
     /// <summary>
     /// Represents custom user variables which can be attached to many sections and subfiles of a <see cref="ResFile"/>.
     /// </summary>
-    public class UserData : ResContent
+    public class UserData : IResContent
     {
-        // ---- CONSTRUCTORS & DESTRUCTOR ------------------------------------------------------------------------------
+        // ---- METHODS (PUBLIC) ---------------------------------------------------------------------------------------
 
-        public UserData(ResFileLoader loader)
-            : base(loader)
+        public void Load(ResFileLoader loader)
         {
         }
     }

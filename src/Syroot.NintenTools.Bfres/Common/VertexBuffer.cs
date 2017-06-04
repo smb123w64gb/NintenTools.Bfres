@@ -3,26 +3,25 @@ using Syroot.NintenTools.Bfres.Core;
 
 namespace Syroot.NintenTools.Bfres
 {
-    public class VertexBuffer : ResContent
+    public class VertexBuffer : IResContent
     {
-        // ---- CONSTRUCTORS & DESTRUCTOR ------------------------------------------------------------------------------
+        // ---- PROPERTIES ---------------------------------------------------------------------------------------------
 
-        public VertexBuffer(ResFileLoader loader)
-            : base(loader)
+        public byte VertexSkinCount { get; set; }
+
+        public IList<VertexAttrib> Attributes { get; private set; }
+
+        public IList<Buffer> Buffers { get; private set; }
+
+        // ---- METHODS (PUBLIC) ---------------------------------------------------------------------------------------
+
+        public void Load(ResFileLoader loader)
         {
             VertexBufferHead head = new VertexBufferHead(loader);
             VertexSkinCount = head.NumVertexSkin;
             Attributes = loader.LoadDictList<VertexAttrib>(head.OfsVertexAttribDict);
             Buffers = loader.LoadList<Buffer>(head.OfsDataBufferList, head.NumDataBuffer);
         }
-
-        // ---- PROPERTIES ---------------------------------------------------------------------------------------------
-
-        public byte VertexSkinCount { get; set; }
-
-        public IList<VertexAttrib> Attributes { get; }
-
-        public IList<Buffer> Buffers { get; }
     }
 
     /// <summary>

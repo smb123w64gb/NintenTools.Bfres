@@ -1,24 +1,24 @@
-﻿using Syroot.NintenTools.Bfres.Core;
+﻿using System;
+using Syroot.NintenTools.Bfres.Core;
 
 namespace Syroot.NintenTools.Bfres
 {
     /// <summary>
     /// Represents a reference to a <see cref="Texture"/> instance by name.
     /// </summary>
-    public class TextureRef : ResContent
+    public class TextureRef : IResContent
     {
-        // ---- CONSTRUCTORS & DESTRUCTOR ------------------------------------------------------------------------------
+        // ---- PROPERTIES ---------------------------------------------------------------------------------------------
 
-        public TextureRef(ResFileLoader loader)
-            : base(loader)
+        public string Name { get; set; }
+
+        // ---- METHODS (PUBLIC) ---------------------------------------------------------------------------------------
+
+        public void Load(ResFileLoader loader)
         {
             TextureRefHead head = new TextureRefHead(loader);
             Name = loader.GetName(head.OfsName);
         }
-
-        // ---- PROPERTIES ---------------------------------------------------------------------------------------------
-
-        public string Name { get; set; }
     }
 
     /// <summary>

@@ -1,10 +1,11 @@
-﻿using Syroot.Maths;
+﻿using System;
+using Syroot.Maths;
 using Syroot.NintenTools.Bfres.Core;
 using Syroot.NintenTools.Bfres.GX2;
 
 namespace Syroot.NintenTools.Bfres
 {
-    public class RenderState : ResContent
+    public class RenderState : IResContent
     {
         // ---- CONSTANTS ----------------------------------------------------------------------------------------------
 
@@ -14,22 +15,7 @@ namespace Syroot.NintenTools.Bfres
         // ---- FIELDS -------------------------------------------------------------------------------------------------
 
         private uint _flags;
-
-        // ---- CONSTRUCTORS & DESTRUCTOR ------------------------------------------------------------------------------
-
-        public RenderState(ResFileLoader loader)
-            : base(loader)
-        {
-            RenderStateHead head = new RenderStateHead(loader);
-            _flags = head.Flags;
-            PolygonControl = new PolygonControl(head.PolygonControl);
-            DepthControl = new DepthControl(head.DepthControl);
-            AlphaControl = new AlphaControl(head.AlphaControl, head.AlphaControlRefValue);
-            ColorControl = new ColorControl(head.ColorControl);
-            BlendControl = new BlendControl(head.BlendControl, head.BlendControlTarget);
-            BlendColor = head.BlendColor;
-        }
-
+        
         // ---- PROPERTIES ---------------------------------------------------------------------------------------------
         
         public RenderStateFlagsMode FlagsMode
@@ -55,6 +41,20 @@ namespace Syroot.NintenTools.Bfres
         public BlendControl BlendControl { get; set; }
 
         public Vector4F BlendColor { get; set; }
+
+        // ---- METHODS (PUBLIC) ---------------------------------------------------------------------------------------
+
+        public void Load(ResFileLoader loader)
+        {
+            RenderStateHead head = new RenderStateHead(loader);
+            _flags = head.Flags;
+            PolygonControl = new PolygonControl(head.PolygonControl);
+            DepthControl = new DepthControl(head.DepthControl);
+            AlphaControl = new AlphaControl(head.AlphaControl, head.AlphaControlRefValue);
+            ColorControl = new ColorControl(head.ColorControl);
+            BlendControl = new BlendControl(head.BlendControl, head.BlendControlTarget);
+            BlendColor = head.BlendColor;
+        }
     }
 
     /// <summary>

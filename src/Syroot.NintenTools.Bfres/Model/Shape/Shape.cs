@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using Syroot.NintenTools.Bfres.Core;
 
@@ -8,12 +9,37 @@ namespace Syroot.NintenTools.Bfres
     /// Represents an FSHP section in a <see cref="Model"/> subfile.
     /// </summary>
     [DebuggerDisplay(nameof(Shape) + " {" + nameof(Name) + "}")]
-    public class Shape : ResContent
+    public class Shape : IResContent
     {
-        // ---- CONSTRUCTORS & DESTRUCTOR ------------------------------------------------------------------------------
+        // ---- PROPERTIES ---------------------------------------------------------------------------------------------
 
-        public Shape(ResFileLoader loader)
-            : base(loader)
+        public string Name { get; set; }
+
+        public ShapeFlags Flags { get; set; }
+
+        public ushort MaterialIndex { get; set; }
+
+        public ushort BoneIndex { get; set; }
+
+        public ushort VertexBufferIndex { get; set; }
+
+        public float Radius { get; set; }
+
+        public IList<Mesh> Meshes { get; private set; }
+
+        public IList<ushort> SkinBoneIndices { get; private set; }
+
+        public IList<KeyShape> KeyShapes { get; private set; }
+
+        public IList<Bounding> SubMeshBoundings { get; private set; }
+
+        public IList<BoundingNode> SubMeshBoundingNodes { get; private set; }
+
+        public IList<ushort> SubMeshBoundingIndices { get; private set; }
+
+        // ---- METHODS (PUBLIC) ---------------------------------------------------------------------------------------
+
+        public void Load(ResFileLoader loader)
         {
             ShapeHead head = new ShapeHead(loader);
             Name = loader.GetName(head.OfsName);
@@ -37,32 +63,6 @@ namespace Syroot.NintenTools.Bfres
                 SubMeshBoundingIndices = loader.ReadUInt16s(head.NumSubMeshBoundingNodes);
             }
         }
-
-        // ---- PROPERTIES ---------------------------------------------------------------------------------------------
-
-        public string Name { get; set; }
-
-        public ShapeFlags Flags { get; set; }
-
-        public ushort MaterialIndex { get; set; }
-
-        public ushort BoneIndex { get; set; }
-
-        public ushort VertexBufferIndex { get; set; }
-
-        public float Radius { get; set; }
-
-        public IList<Mesh> Meshes { get; }
-
-        public IList<ushort> SkinBoneIndices { get; }
-
-        public IList<KeyShape> KeyShapes { get; }
-
-        public IList<Bounding> SubMeshBoundings { get; }
-
-        public IList<BoundingNode> SubMeshBoundingNodes { get; }
-
-        public IList<ushort> SubMeshBoundingIndices { get; }
     }
 
     /// <summary>

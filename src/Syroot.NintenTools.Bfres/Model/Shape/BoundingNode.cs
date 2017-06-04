@@ -1,4 +1,5 @@
-﻿using Syroot.NintenTools.Bfres.Core;
+﻿using System;
+using Syroot.NintenTools.Bfres.Core;
 
 namespace Syroot.NintenTools.Bfres
 {
@@ -6,20 +7,8 @@ namespace Syroot.NintenTools.Bfres
     /// Represents a node in a <see cref="SubMesh"/> bounding tree to determine when to show which sub mesh of a
     /// <see cref="Mesh"/>.
     /// </summary>
-    public class BoundingNode : ResContent
+    public class BoundingNode : IResContent
     {
-        // ---- CONSTRUCTORS & DESTRUCTOR ------------------------------------------------------------------------------
-
-        public BoundingNode(ResFileLoader loader)
-            : base(loader)
-        {
-            LeftChildIndex = loader.ReadUInt16();
-            RightChildIndex = loader.ReadUInt16();
-            Unknown = loader.ReadUInt16();
-            SubMeshIndex = loader.ReadUInt16();
-            SubMeshCount = loader.ReadUInt16();
-        }
-
         // ---- PROPERTIES ---------------------------------------------------------------------------------------------
 
         public ushort LeftChildIndex { get; set; }
@@ -31,5 +20,16 @@ namespace Syroot.NintenTools.Bfres
         public ushort SubMeshIndex { get; set; }
 
         public ushort SubMeshCount { get; set; }
+
+        // ---- METHODS (PUBLIC) ---------------------------------------------------------------------------------------
+
+        public void Load(ResFileLoader loader)
+        {
+            LeftChildIndex = loader.ReadUInt16();
+            RightChildIndex = loader.ReadUInt16();
+            Unknown = loader.ReadUInt16();
+            SubMeshIndex = loader.ReadUInt16();
+            SubMeshCount = loader.ReadUInt16();
+        }
     }
 }

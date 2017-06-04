@@ -2,12 +2,11 @@
 
 namespace Syroot.NintenTools.Bfres
 {
-    public class AnimCurve : ResContent
+    public class AnimCurve : IResContent
     {
-        // ---- CONSTRUCTORS & DESTRUCTOR ------------------------------------------------------------------------------
+        // ---- METHODS (PUBLIC) ---------------------------------------------------------------------------------------
 
-        public AnimCurve(ResFileLoader loader)
-            : base(loader)
+        public void Load(ResFileLoader loader)
         {
         }
     }

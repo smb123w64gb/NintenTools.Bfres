@@ -2,12 +2,11 @@
 
 namespace Syroot.NintenTools.Bfres
 {
-    public class SkeletalAnim : ResContent
+    public class SkeletalAnim : IResContent
     {
-        // ---- CONSTRUCTORS & DESTRUCTOR ------------------------------------------------------------------------------
+        // ---- METHODS (PUBLIC) ---------------------------------------------------------------------------------------
 
-        public SkeletalAnim(ResFileLoader loader)
-            : base(loader)
+        public void Load(ResFileLoader loader)
         {
         }
     }

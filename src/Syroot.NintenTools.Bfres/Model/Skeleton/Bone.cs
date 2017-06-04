@@ -11,7 +11,7 @@ namespace Syroot.NintenTools.Bfres
     /// effects.
     /// </summary>
     [DebuggerDisplay(nameof(Bone) + " {" + nameof(Name) + "}")]
-    public class Bone : ResContent
+    public class Bone : IResContent
     {
         // ---- CONSTANTS ----------------------------------------------------------------------------------------------
 
@@ -25,25 +25,7 @@ namespace Syroot.NintenTools.Bfres
         // ---- FIELDS -------------------------------------------------------------------------------------------------
 
         private uint _flags;
-
-        // ---- CONSTRUCTORS & DESTRUCTOR ------------------------------------------------------------------------------
-
-        public Bone(ResFileLoader loader)
-            : base(loader)
-        {
-            BoneHead head = new BoneHead(loader);
-            Name = loader.GetName(head.OfsName);
-            ParentIndex = head.IdxParent;
-            SmoothMatrixIndex = head.IdxSmoothMatrix;
-            RigidMatrixIndex = head.IdxRigidMatrix;
-            BillboardIndex = head.IdxRigidMatrix;
-            _flags = head.Flags;
-            Scale = head.Scale;
-            Rotation = head.Rotation;
-            Position = head.Position;
-            UserData = loader.LoadDictList<UserData>(head.OfsUserDataDict);
-        }
-
+        
         // ---- PROPERTIES ---------------------------------------------------------------------------------------------
 
         public string Name { get; set; }
@@ -92,7 +74,24 @@ namespace Syroot.NintenTools.Bfres
 
         public Vector3F Position { get; set; }
 
-        public IList<UserData> UserData { get; }
+        public IList<UserData> UserData { get; private set; }
+
+        // ---- METHODS (PUBLIC) ---------------------------------------------------------------------------------------
+
+        public void Load(ResFileLoader loader)
+        {
+            BoneHead head = new BoneHead(loader);
+            Name = loader.GetName(head.OfsName);
+            ParentIndex = head.IdxParent;
+            SmoothMatrixIndex = head.IdxSmoothMatrix;
+            RigidMatrixIndex = head.IdxRigidMatrix;
+            BillboardIndex = head.IdxRigidMatrix;
+            _flags = head.Flags;
+            Scale = head.Scale;
+            Rotation = head.Rotation;
+            Position = head.Position;
+            UserData = loader.LoadDictList<UserData>(head.OfsUserDataDict);
+        }
     }
     
     /// <summary>

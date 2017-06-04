@@ -18,7 +18,7 @@ namespace Syroot.NintenTools.Bfres.Test
 
         private static void Main(string[] args)
         {
-            ResFile resFile = ResFile.FromFile(@"D:\Pictures\Koopa.bfres");
+            ResFile resFile = new ResFile(@"D:\Pictures\Koopa.bfres");
             LoadResFiles("*.bfres");
             
             Console.WriteLine("Done.");
@@ -27,6 +27,7 @@ namespace Syroot.NintenTools.Bfres.Test
 
         private static void LoadResFiles(string searchPattern, Action<ResFile> fileAction = null)
         {
+            ResFile resFile;
             foreach (string searchPath in _searchPaths)
             {
                 foreach (string fileName in Directory.GetFiles(searchPath, searchPattern, SearchOption.AllDirectories))
@@ -34,7 +35,7 @@ namespace Syroot.NintenTools.Bfres.Test
                     Console.Write($"Loading {fileName}...");
                     
                     _stopwatch.Restart();
-                    ResFile resFile = ResFile.FromFile(fileName);
+                    resFile = new ResFile(fileName);
                     _stopwatch.Stop();
                     Console.WriteLine($" {_stopwatch.ElapsedMilliseconds}ms");
 

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using Syroot.NintenTools.Bfres.Core;
 
@@ -9,12 +10,25 @@ namespace Syroot.NintenTools.Bfres
     /// fog settings.
     /// </summary>
     [DebuggerDisplay(nameof(SceneAnim) + " {" + nameof(Name) + "}")]
-    public class SceneAnim : ResContent
+    public class SceneAnim : IResContent
     {
-        // ---- CONSTRUCTORS & DESTRUCTOR ------------------------------------------------------------------------------
+        // ---- PROPERTIES ---------------------------------------------------------------------------------------------
 
-        public SceneAnim(ResFileLoader loader)
-            : base(loader)
+        public string Name { get; set; }
+
+        public string Path { get; set; }
+
+        public IList<CameraAnim> CameraAnims { get; private set; }
+
+        public IList<LightAnim> LightAnims { get; private set; }
+        
+        public IList<FogAnim> FogAnims { get; private set; }
+
+        public IList<UserData> UserData { get; private set; }
+
+        // ---- METHODS (PUBLIC) ---------------------------------------------------------------------------------------
+
+        public void Load(ResFileLoader loader)
         {
             SceneAnimHead head = new SceneAnimHead(loader);
             Name = loader.GetName(head.OfsName);
@@ -24,20 +38,6 @@ namespace Syroot.NintenTools.Bfres
             FogAnims = loader.LoadDictList<FogAnim>(head.OfsFogAnimDict);
             UserData = loader.LoadDictList<UserData>(head.OfsUserDataDict);
         }
-
-        // ---- PROPERTIES ---------------------------------------------------------------------------------------------
-
-        public string Name { get; set; }
-
-        public string Path { get; set; }
-
-        public IList<CameraAnim> CameraAnims { get; }
-
-        public IList<LightAnim> LightAnims { get; }
-        
-        public IList<FogAnim> FogAnims { get; }
-
-        public IList<UserData> UserData { get; }
     }
 
     /// <summary>

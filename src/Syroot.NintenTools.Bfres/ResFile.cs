@@ -10,12 +10,28 @@ namespace Syroot.NintenTools.Bfres
     /// Represents a NintendoWare for Wii U (NW4F) graphics data archive file.
     /// </summary>
     [DebuggerDisplay(nameof(Model) + " {" + nameof(Name) + "}")]
-    public class ResFile : ResContent
+    public class ResFile : IResContent
     {
         // ---- CONSTRUCTORS & DESTRUCTOR ------------------------------------------------------------------------------
+
+        public ResFile()
+        {
+        }
+
+        public ResFile(Stream stream, bool leaveOpen = false)
+        {
+            ResFileLoader loader = new ResFileLoader(this, stream, leaveOpen);
+            Load(loader);
+        }
+
+        public ResFile(string fileName)
+            : this(new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.Read))
+        {
+        }
+
+        // ---- METHODS (PUBLIC) ---------------------------------------------------------------------------------------
         
-        public ResFile(ResFileLoader loader)
-            : base(loader)
+        public void Load(ResFileLoader loader)
         {
             ResFileHead head = new ResFileHead(loader);
             Version = head.Version;
@@ -34,52 +50,38 @@ namespace Syroot.NintenTools.Bfres
             SceneAnims = loader.LoadDictList<SceneAnim>(head.OfsSceneAnimDict);
             ExternalFiles = loader.LoadDict<ExternalFile>(head.OfsExternalFileDict);
         }
-
-        // ---- METHODS (PUBLIC) ---------------------------------------------------------------------------------------
-
-        public static ResFile FromFile(string fileName)
-        {
-            ResFileLoader loader = new ResFileLoader(fileName);
-            return loader.ResFile;
-        }
-
-        public static ResFile FromStream(Stream stream, bool leaveOpen = false)
-        {
-            ResFileLoader loader = new ResFileLoader(stream, leaveOpen);
-            return loader.ResFile;
-        }
-
+        
         // ---- PROPERTIES ---------------------------------------------------------------------------------------------
 
-        public uint Version { get; }
+        public uint Version { get; private set; } 
 
-        public ByteOrder ByteOrder { get; }
+        public ByteOrder ByteOrder { get; private set; }
 
         public string Name { get; set; }
 
-        public IList<Model> Models { get; }
+        public IList<Model> Models { get; private set; }
 
-        public IList<Texture> Textures { get; }
+        public IList<Texture> Textures { get; private set; }
 
-        public IList<SkeletalAnim> SkeletalAnims { get; }
+        public IList<SkeletalAnim> SkeletalAnims { get; private set; }
 
-        public IList<ShaderParamAnim> ShaderParamAnims { get; }
+        public IList<ShaderParamAnim> ShaderParamAnims { get; private set; }
 
-        public IList<ShaderParamAnim> ColorAnims { get; }
+        public IList<ShaderParamAnim> ColorAnims { get; private set; }
 
-        public IList<ShaderParamAnim> TexSrtAnims { get; }
+        public IList<ShaderParamAnim> TexSrtAnims { get; private set; }
 
-        public IList<TexPatternAnim> TexPatternAnims { get; }
+        public IList<TexPatternAnim> TexPatternAnims { get; private set; }
 
-        public IList<VisibilityAnim> BoneVisibilityAnims { get; }
+        public IList<VisibilityAnim> BoneVisibilityAnims { get; private set; }
 
-        public IList<VisibilityAnim> MatVisibilityAnims { get; }
+        public IList<VisibilityAnim> MatVisibilityAnims { get; private set; }
 
-        public IList<ShapeAnim> ShapeAnims { get; }
+        public IList<ShapeAnim> ShapeAnims { get; private set; }
 
-        public IList<SceneAnim> SceneAnims { get; }
+        public IList<SceneAnim> SceneAnims { get; private set; }
 
-        public IDictionary<string, ExternalFile> ExternalFiles { get; }
+        public IDictionary<string, ExternalFile> ExternalFiles { get; private set; }
     }
 
     /// <summary>

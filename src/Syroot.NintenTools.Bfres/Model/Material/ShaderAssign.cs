@@ -3,12 +3,25 @@ using Syroot.NintenTools.Bfres.Core;
 
 namespace Syroot.NintenTools.Bfres
 {
-    public class ShaderAssign : ResContent
+    public class ShaderAssign : IResContent
     {
-        // ---- CONSTRUCTORS & DESTRUCTOR ------------------------------------------------------------------------------
+        // ---- PROPERTIES ---------------------------------------------------------------------------------------------
 
-        public ShaderAssign(ResFileLoader loader)
-            : base(loader)
+        public string ShaderArchiveName { get; set; }
+
+        public string ShadingModelName { get; set; }
+
+        public uint Revision { get; set; }
+
+        public IList<string> AttribAssigns { get; private set; }
+
+        public IList<string> SamplerAssigns { get; private set; }
+
+        public IList<string> ShaderOptions { get; private set; }
+
+        // ---- METHODS (PUBLIC) ---------------------------------------------------------------------------------------
+
+        public void Load(ResFileLoader loader)
         {
             ShaderAssignHead head = new ShaderAssignHead(loader);
             ShaderArchiveName = loader.GetName(head.OfsShaderArchiveName);
@@ -18,20 +31,6 @@ namespace Syroot.NintenTools.Bfres
             SamplerAssigns = loader.LoadDictNames(head.OfsSamplerAssignDict);
             ShaderOptions = loader.LoadDictNames(head.OfsShaderOptionDict);
         }
-
-        // ---- PROPERTIES ---------------------------------------------------------------------------------------------
-
-        public string ShaderArchiveName { get; set; }
-
-        public string ShadingModelName { get; set; }
-
-        public uint Revision { get; set; }
-
-        public IList<string> AttribAssigns { get; }
-
-        public IList<string> SamplerAssigns { get; }
-
-        public IList<string> ShaderOptions { get; }
     }
 
     /// <summary>

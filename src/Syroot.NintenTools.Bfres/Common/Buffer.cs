@@ -5,24 +5,23 @@ namespace Syroot.NintenTools.Bfres
     /// <summary>
     /// Represents a buffer of data uploaded to the GX2 GPU which can hold arbitrary data.
     /// </summary>
-    public class Buffer : ResContent
+    public class Buffer : IResContent
     {
-        // ---- CONSTRUCTORS & DESTRUCTOR ------------------------------------------------------------------------------
+        // ---- PROPERTIES ---------------------------------------------------------------------------------------------
 
-        public Buffer(ResFileLoader loader)
-            : base(loader)
+        public ushort Stride { get; set; }
+        
+        public byte[] Data { get; set; }
+
+        // ---- METHODS (PUBLIC) ---------------------------------------------------------------------------------------
+
+        public void Load(ResFileLoader loader)
         {
             BufferHead head = new BufferHead(loader);
             Stride = head.Stride;
             loader.Position = head.OfsData;
             Data = loader.ReadBytes((int)head.Size * head.NumBuffering);
         }
-
-        // ---- PROPERTIES ---------------------------------------------------------------------------------------------
-
-        public ushort Stride { get; set; }
-        
-        public byte[] Data { get; set; }
     }
 
     /// <summary>

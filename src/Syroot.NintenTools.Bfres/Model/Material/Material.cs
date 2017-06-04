@@ -10,12 +10,35 @@ namespace Syroot.NintenTools.Bfres
     /// how technically a surface is drawn.
     /// </summary>
     [DebuggerDisplay(nameof(Material) + " {" + nameof(Name) + "}")]
-    public class Material : ResContent
+    public class Material : IResContent
     {
-        // ---- CONSTRUCTORS & DESTRUCTOR ------------------------------------------------------------------------------
+        // ---- PROPERTIES ---------------------------------------------------------------------------------------------
 
-        public Material(ResFileLoader loader)
-            : base(loader)
+        public string Name { get; set; }
+
+        public MaterialFlags Flags { get; set; }
+
+        public IList<RenderInfo> RenderInfos { get; private set; }
+
+        public RenderState RenderState { get; private set; }
+
+        public ShaderAssign ShaderAssign { get; private set; }
+
+        public IList<TextureRef> TextureRefs { get; private set; }
+
+        public IList<Sampler> Samplers { get; private set; }
+
+        public IList<ShaderParam> ShaderParams { get; private set; }
+
+        public byte[] ParamData { get; private set; }
+
+        public IList<UserData> UserData { get; private set; }
+
+        public byte[] VolatileFlags { get; private set; }
+
+        // ---- METHODS (PUBLIC) ---------------------------------------------------------------------------------------
+
+        public void Load(ResFileLoader loader)
         {
             MaterialHead head = new MaterialHead(loader);
             Name = loader.GetName(head.OfsName);
@@ -36,35 +59,9 @@ namespace Syroot.NintenTools.Bfres
             }
         }
 
-        // ---- PROPERTIES ---------------------------------------------------------------------------------------------
-
-        public string Name { get; set; }
-
-        public MaterialFlags Flags { get; set; }
-
-        public IList<RenderInfo> RenderInfos { get; }
-
-        public RenderState RenderState { get; }
-
-        public ShaderAssign ShaderAssign { get; }
-
-        public IList<TextureRef> TextureRefs { get; }
-
-        public IList<Sampler> Samplers { get; }
-
-        public IList<ShaderParam> ShaderParams { get; }
-
-        public byte[] ParamData { get; }
-
-        public IList<UserData> UserData { get; }
-
-        public byte[] VolatileFlags { get; }
-
-        // ---- METHODS (PUBLIC) ---------------------------------------------------------------------------------------
-
         // TODO: Methods to access ShaderParam variable values.
     }
-    
+
     /// <summary>
     /// Represents the header of a <see cref="Material"/> instance.
     /// </summary>

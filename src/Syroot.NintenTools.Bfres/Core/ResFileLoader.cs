@@ -18,23 +18,22 @@ namespace Syroot.NintenTools.Bfres.Core
 
         // ---- CONSTRUCTORS & DESTRUCTOR ------------------------------------------------------------------------------
 
-        internal ResFileLoader(Stream stream, bool leaveOpen)
+        internal ResFileLoader(ResFile resFile, Stream stream, bool leaveOpen = false)
             : base(stream, Encoding.ASCII, leaveOpen)
         {
             ByteOrder = ByteOrder.BigEndian;
-
-            ResFile = new ResFile(this);
+            ResFile = resFile;
         }
 
-        internal ResFileLoader(string fileName)
-            : this(new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.Read), false)
+        internal ResFileLoader(ResFile resFile, string fileName)
+            : this(resFile, new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.Read))
         {
         }
 
         // ---- PROPERTIES ---------------------------------------------------------------------------------------------
 
         internal ResFile ResFile { get; }
-        
+
         // ---- METHODS ------------------------------------------------------------------------------------------------
 
         /// <summary>
@@ -70,35 +69,31 @@ namespace Syroot.NintenTools.Bfres.Core
         }
 
         /// <summary>
-        /// Reads an <see cref="ResContent"/> instance from the given <paramref name="offset"/>. If the offset is 0,
+        /// Reads an <see cref="IResContent"/> instance from the given <paramref name="offset"/>. If the offset is 0,
         /// <c>null</c> is returned.
         /// </summary>
-        /// <typeparam name="T">The type of <see cref="ResContent"/> to load.</typeparam>
+        /// <typeparam name="T">The type of <see cref="IResContent"/> to load.</typeparam>
         /// <param name="offset">The offset to read the content from.</param>
-        /// <param name="args">Additional parameters to pass to the constructor.</param>
         /// <returns>The new instance or <c>null</c>.</returns>
-        internal T Load<T>(uint offset, params object[] args)
-            where T : ResContent
+        internal T Load<T>(uint offset)
+            where T : IResContent, new()
         {
             if (offset == 0) return default(T);
 
             // Seek to the instance data and load it.
             Position = offset;
-            object[] parameters = new object[args.Length + 1];
-            parameters[0] = this;
-            args.CopyTo(parameters, 1);
-            return (T)Activator.CreateInstance(typeof(T), parameters);
+            return Instantiate<T>();
         }
 
         /// <summary>
         /// Reads an <see cref="IDictionary{String, T}"/> from the BFRES dictionary at given <paramref name="offset"/>.
         /// If the offset is 0, an empty dictionary is returned.
         /// </summary>
-        /// <typeparam name="T">The type of the elements. Must implement <see cref="ResContent"/>.</typeparam>
+        /// <typeparam name="T">The type of the elements. Must implement <see cref="IResContent"/>.</typeparam>
         /// <param name="offset">The offset at which to read the dictionary.</param>
         /// <returns>The read dictionary.</returns>
         internal IDictionary<string, T> LoadDict<T>(uint offset)
-            where T : ResContent
+            where T : IResContent, new()
         {
             SortedDictionary<string, T> dict = new SortedDictionary<string, T>();
             if (offset == 0) return dict;
@@ -132,11 +127,11 @@ namespace Syroot.NintenTools.Bfres.Core
         /// is 0, an empty list is returned. Keys are not read as they are practically retrieved from instances upon
         /// saving.
         /// </summary>
-        /// <typeparam name="T">The type of the elements. Must implement <see cref="ResContent"/>.</typeparam>
+        /// <typeparam name="T">The type of the elements. Must implement <see cref="IResContent"/>.</typeparam>
         /// <param name="offset">The offset at which to read the dictionary.</param>
         /// <returns>The read list.</returns>
         internal IList<T> LoadDictList<T>(uint offset)
-            where T : ResContent
+            where T : IResContent, new()
         {
             List<T> list = new List<T>();
             if (offset == 0) return list;
@@ -200,12 +195,12 @@ namespace Syroot.NintenTools.Bfres.Core
         /// Reads an <see cref="IList{T}"/> from the given <paramref name="offset"/> and element
         /// <paramref name="count"/>. If the offset is 0, an empty list is returned.
         /// </summary>
-        /// <typeparam name="T">The type of the elements. Must implement <see cref="ResContent"/>.</typeparam>
+        /// <typeparam name="T">The type of the elements. Must implement <see cref="IResContent"/>.</typeparam>
         /// <param name="offset">The offset at which to read the list.</param>
         /// <param name="count">The number of elements to read.</param>
         /// <returns>The read list.</returns>
         internal IList<T> LoadList<T>(uint offset, int count)
-            where T : ResContent
+            where T : IResContent, new()
         {
             List<T> list = new List<T>(count);
             if (offset == 0 || count == 0) return list;
@@ -216,7 +211,7 @@ namespace Syroot.NintenTools.Bfres.Core
             {
                 using (TemporarySeek())
                 {
-                    list.Add((T)Activator.CreateInstance(typeof(T), this));
+                    list.Add(Instantiate<T>());
                 }
             }
 
@@ -447,6 +442,16 @@ namespace Syroot.NintenTools.Bfres.Core
                 values[i] = ReadVector4F();
             }
             return values;
+        }
+
+        // ---- METHODS (PRIVATE) --------------------------------------------------------------------------------------
+
+        private T Instantiate<T>()
+            where T : IResContent, new()
+        {
+            T instance = new T();
+            instance.Load(this);
+            return instance;
         }
     }
 }

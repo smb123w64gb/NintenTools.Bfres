@@ -1,25 +1,25 @@
-﻿using Syroot.NintenTools.Bfres.Core;
+﻿using System;
+using Syroot.NintenTools.Bfres.Core;
 
 namespace Syroot.NintenTools.Bfres
 {
     /// <summary>
     /// Represents a file attachment to a <see cref="ResFile"/> which can be of arbitrary data.
     /// </summary>
-    public class ExternalFile : ResContent
+    public class ExternalFile : IResContent
     {
-        // ---- CONSTRUCTORS & DESTRUCTOR ------------------------------------------------------------------------------
+        // ---- PROPERTIES ---------------------------------------------------------------------------------------------
 
-        public ExternalFile(ResFileLoader loader)
-            : base(loader)
+        public byte[] Data { get; set; }
+
+        // ---- METHODS (PUBLIC) ---------------------------------------------------------------------------------------
+
+        public void Load(ResFileLoader loader)
         {
             ExternalFileHead head = new ExternalFileHead(loader);
             loader.Seek(head.OfsData);
             Data = loader.ReadBytes((int)head.SizData);
         }
-
-        // ---- PROPERTIES ---------------------------------------------------------------------------------------------
-
-        public byte[] Data { get; set; }
     }
 
     /// <summary>

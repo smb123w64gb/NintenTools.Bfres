@@ -10,12 +10,27 @@ namespace Syroot.NintenTools.Bfres
     /// Represents an FCAM section in a <see cref="SceneAnim"/> subfile, storing animations controlling camera settings.
     /// </summary>
     [DebuggerDisplay(nameof(CameraAnim) + " {" + nameof(Name) + "}")]
-    public class CameraAnim : ResContent
+    public class CameraAnim : IResContent
     {
-        // ---- CONSTRUCTORS & DESTRUCTOR ------------------------------------------------------------------------------
+        // ---- PROPERTIES ---------------------------------------------------------------------------------------------
 
-        public CameraAnim(ResFileLoader loader)
-            : base(loader)
+        public CameraAnimFlags Flags { get; set; }
+
+        public int FrameCount { get; set; }
+
+        public uint BakedSize { get; private set; }
+
+        public string Name { get; set; }
+
+        public IList<AnimCurve> Curves { get; private set; }
+
+        public CameraAnimResult Result { get; set; }
+
+        public IList<UserData> UserData { get; private set; }
+
+        // ---- METHODS (PUBLIC) ---------------------------------------------------------------------------------------
+
+        public void Load(ResFileLoader loader)
         {
             CameraAnimHead head = new CameraAnimHead(loader);
             Flags = head.Flags;
@@ -26,22 +41,6 @@ namespace Syroot.NintenTools.Bfres
             Result = loader.Load<CameraAnimResult>(head.OfsResult);
             UserData = loader.LoadDictList<UserData>(head.OfsUserDataDict);
         }
-
-        // ---- PROPERTIES ---------------------------------------------------------------------------------------------
-
-        public CameraAnimFlags Flags { get; set; }
-
-        public int FrameCount { get; set; }
-
-        public uint BakedSize { get; }
-
-        public string Name { get; set; }
-
-        public IList<AnimCurve> Curves { get; }
-
-        public CameraAnimResult Result { get; set; }
-
-        public IList<UserData> UserData { get; }
     }
 
     /// <summary>
@@ -94,22 +93,8 @@ namespace Syroot.NintenTools.Bfres
         Perspective = 1 << 10
     }
 
-    public class CameraAnimResult : ResContent
+    public class CameraAnimResult : IResContent
     {
-        // ---- CONSTRUCTORS & DESTRUCTOR ------------------------------------------------------------------------------
-
-        public CameraAnimResult(ResFileLoader loader)
-            : base(loader)
-        {
-            ClipNear = loader.ReadSingle();
-            ClipFar = loader.ReadSingle();
-            AspectRatio = loader.ReadSingle();
-            FieldOfView = loader.ReadSingle();
-            Position = loader.ReadVector3F();
-            Rotation = loader.ReadVector3F();
-            Twist = loader.ReadSingle();
-        }
-
         // ---- PROPERTIES ---------------------------------------------------------------------------------------------
 
         public float ClipNear { get; set; }
@@ -125,5 +110,18 @@ namespace Syroot.NintenTools.Bfres
         public Vector3F Rotation { get; set; }
 
         public float Twist { get; set; }
+
+        // ---- METHODS (PUBLIC) ---------------------------------------------------------------------------------------
+
+        public void Load(ResFileLoader loader)
+        {
+            ClipNear = loader.ReadSingle();
+            ClipFar = loader.ReadSingle();
+            AspectRatio = loader.ReadSingle();
+            FieldOfView = loader.ReadSingle();
+            Position = loader.ReadVector3F();
+            Rotation = loader.ReadVector3F();
+            Twist = loader.ReadSingle();
+        }
     }
 }

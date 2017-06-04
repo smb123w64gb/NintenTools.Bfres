@@ -2,12 +2,11 @@
 
 namespace Syroot.NintenTools.Bfres
 {
-    public class ShaderParamAnim : ResContent
+    public class ShaderParamAnim : IResContent
     {
-        // ---- CONSTRUCTORS & DESTRUCTOR ------------------------------------------------------------------------------
+        // ---- METHODS (PUBLIC) ---------------------------------------------------------------------------------------
 
-        public ShaderParamAnim(ResFileLoader loader)
-            : base(loader)
+        public void Load(ResFileLoader loader)
         {
         }
     }

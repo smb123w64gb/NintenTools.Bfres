@@ -2,12 +2,11 @@
 
 namespace Syroot.NintenTools.Bfres
 {
-    public class TexPatternAnim : ResContent
+    public class TexPatternAnim : IResContent
     {
-        // ---- CONSTRUCTORS & DESTRUCTOR ------------------------------------------------------------------------------
+        // ---- METHODS (PUBLIC) ---------------------------------------------------------------------------------------
 
-        public TexPatternAnim(ResFileLoader loader)
-            : base(loader)
+        public void Load(ResFileLoader loader)
         {
         }
     }

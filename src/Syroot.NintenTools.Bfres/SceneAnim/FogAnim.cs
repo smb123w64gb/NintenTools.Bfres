@@ -8,12 +8,31 @@ namespace Syroot.NintenTools.Bfres
     /// <summary>
     /// Represents an FCAM section in a <see cref="SceneAnim"/> subfile, storing animations controlling fog settings.
     /// </summary>
-    public class FogAnim : ResContent
+    public class FogAnim : IResContent
     {
-        // ---- CONSTRUCTORS & DESTRUCTOR ------------------------------------------------------------------------------
+        // ---- PROPERTIES ---------------------------------------------------------------------------------------------
 
-        public FogAnim(ResFileLoader loader)
-            : base(loader)
+        public FogAnimFlags Flags { get; set; }
+
+        public int FrameCount { get; set; }
+
+        public sbyte DistanceAttenuationFuncIndex { get; set; }
+
+        public uint BakedSize { get; private set; }
+
+        public string Name { get; set; }
+
+        public string DistanceAttenuationFuncName { get; set; }
+
+        public IList<AnimCurve> Curves { get; private set; }
+
+        public FogAnimResult Result { get; set; }
+
+        public IList<UserData> UserData { get; private set; }
+
+        // ---- METHODS (PUBLIC) ---------------------------------------------------------------------------------------
+
+        public void Load(ResFileLoader loader)
         {
             FogAnimHead head = new FogAnimHead(loader);
             Flags = head.Flags;
@@ -26,26 +45,6 @@ namespace Syroot.NintenTools.Bfres
             Result = loader.Load<FogAnimResult>(head.OfsResult);
             UserData = loader.LoadDictList<UserData>(head.OfsUserDataDict);
         }
-
-        // ---- PROPERTIES ---------------------------------------------------------------------------------------------
-
-        public FogAnimFlags Flags { get; set; }
-
-        public int FrameCount { get; set; }
-
-        public sbyte DistanceAttenuationFuncIndex { get; set; }
-
-        public uint BakedSize { get; }
-
-        public string Name { get; set; }
-
-        public string DistanceAttenuationFuncName { get; set; }
-
-        public IList<AnimCurve> Curves { get; }
-
-        public FogAnimResult Result { get; set; }
-
-        public IList<UserData> UserData { get; }
     }
 
     /// <summary>
@@ -98,21 +97,20 @@ namespace Syroot.NintenTools.Bfres
         Looping = 1 << 2
     }
 
-    public class FogAnimResult : ResContent
+    public class FogAnimResult : IResContent
     {
-        // ---- CONSTRUCTORS & DESTRUCTOR ------------------------------------------------------------------------------
-
-        public FogAnimResult(ResFileLoader loader)
-            : base(loader)
-        {
-            DistanceAttenuation = loader.ReadVector2F();
-            Color = loader.ReadVector3F();
-        }
-
         // ---- PROPERTIES ---------------------------------------------------------------------------------------------
 
         public Vector2F DistanceAttenuation { get; set; }
         
         public Vector3F Color { get; set; }
+
+        // ---- METHODS (PUBLIC) ---------------------------------------------------------------------------------------
+
+        public void Load(ResFileLoader loader)
+        {
+            DistanceAttenuation = loader.ReadVector2F();
+            Color = loader.ReadVector3F();
+        }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Syroot.NintenTools.Bfres.Core;
 using Syroot.NintenTools.Bfres.GX2;
 
@@ -9,12 +10,23 @@ namespace Syroot.NintenTools.Bfres
     /// index <see cref="Buffer"/> to use for referencing vertices of the shape, mostly used for different levels of
     /// detail (LoD) models.
     /// </summary>
-    public class Mesh : ResContent
+    public class Mesh : IResContent
     {
-        // ---- CONSTRUCTORS & DESTRUCTOR ------------------------------------------------------------------------------
+        // ---- PROPERTIES ---------------------------------------------------------------------------------------------
 
-        public Mesh(ResFileLoader loader)
-            : base(loader)
+        public GX2PrimitiveType PrimitiveType { get; set; }
+
+        public GX2IndexFormat Format { get; set; }
+
+        public IList<SubMesh> SubMeshes { get; private set; }
+
+        public Buffer IndexBuffer { get; set;  }
+
+        public uint Offset { get; set; }
+
+        // ---- METHODS (PUBLIC) ---------------------------------------------------------------------------------------
+
+        public void Load(ResFileLoader loader)
         {
             MeshHead head = new MeshHead(loader);
             PrimitiveType = head.PrimitiveType;
@@ -23,18 +35,6 @@ namespace Syroot.NintenTools.Bfres
             IndexBuffer = loader.Load<Buffer>(head.OfsIndexBuffer);
             Offset = head.Offset;
         }
-
-        // ---- PROPERTIES ---------------------------------------------------------------------------------------------
-
-        public GX2PrimitiveType PrimitiveType { get; set; }
-
-        public GX2IndexFormat Format { get; set; }
-
-        public IList<SubMesh> SubMeshes { get; }
-
-        public Buffer IndexBuffer { get; set;  }
-
-        public uint Offset { get; set; }
     }
 
     /// <summary>

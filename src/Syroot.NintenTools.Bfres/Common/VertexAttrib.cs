@@ -1,22 +1,11 @@
-﻿using Syroot.NintenTools.Bfres.Core;
+﻿using System;
+using Syroot.NintenTools.Bfres.Core;
 using Syroot.NintenTools.Bfres.GX2;
 
 namespace Syroot.NintenTools.Bfres
 {
-    public class VertexAttrib : ResContent
+    public class VertexAttrib : IResContent
     {
-        // ---- CONSTRUCTORS & DESTRUCTOR ------------------------------------------------------------------------------
-
-        public VertexAttrib(ResFileLoader loader)
-            : base(loader)
-        {
-            VertexAttribHead head = new VertexAttribHead(loader);
-            Name = loader.GetName(head.OfsName);
-            BufferIndex = head.IdxBuffer;
-            Offset = head.Offset;
-            Format = head.Format;
-        }
-
         // ---- PROPERTIES ---------------------------------------------------------------------------------------------
 
         public string Name { get; set; }
@@ -26,6 +15,17 @@ namespace Syroot.NintenTools.Bfres
         public ushort Offset { get; set; }
 
         public GX2AttribFormat Format { get; set; }
+
+        // ---- METHODS (PUBLIC) ---------------------------------------------------------------------------------------
+
+        public void Load(ResFileLoader loader)
+        {
+            VertexAttribHead head = new VertexAttribHead(loader);
+            Name = loader.GetName(head.OfsName);
+            BufferIndex = head.IdxBuffer;
+            Offset = head.Offset;
+            Format = head.Format;
+        }
     }
 
     /// <summary>

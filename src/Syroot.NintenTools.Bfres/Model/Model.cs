@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using Syroot.NintenTools.Bfres.Core;
 
@@ -8,12 +9,27 @@ namespace Syroot.NintenTools.Bfres
     /// Represents an FMDL subfile in a <see cref="ResFile"/>, storing model vertex data, skeletons and used materials.
     /// </summary>
     [DebuggerDisplay(nameof(Model) + " {" + nameof(Name) + "}")]
-    public class Model : ResContent
+    public class Model : IResContent
     {
-        // ---- CONSTRUCTORS & DESTRUCTOR ------------------------------------------------------------------------------
+        // ---- PROPERTIES ---------------------------------------------------------------------------------------------
 
-        public Model(ResFileLoader loader)
-            : base(loader)
+        public string Name { get; set; }
+
+        public string Path { get; set; }
+
+        public Skeleton Skeleton { get; set; }
+
+        public IList<VertexBuffer> VertexBuffers { get; private set; }
+
+        public IList<Shape> Shapes { get; private set; }
+
+        public IList<Material> Materials { get; private set; }
+
+        public IList<UserData> UserData { get; private set; }
+
+        // ---- METHODS (PUBLIC) ---------------------------------------------------------------------------------------
+
+        public void Load(ResFileLoader loader)
         {
             ModelHead head = new ModelHead(loader);
             Name = loader.GetName(head.OfsName);
@@ -24,22 +40,6 @@ namespace Syroot.NintenTools.Bfres
             Materials = loader.LoadDictList<Material>(head.OfsMaterialDict);
             UserData = loader.LoadDictList<UserData>(head.OfsUserDataDict);
         }
-
-        // ---- PROPERTIES ---------------------------------------------------------------------------------------------
-
-        public string Name { get; set; }
-
-        public string Path { get; set; }
-
-        public Skeleton Skeleton { get; set; }
-
-        public IList<VertexBuffer> VertexBuffers { get; }
-
-        public IList<Shape> Shapes { get; }
-
-        public IList<Material> Materials { get; }
-
-        public IList<UserData> UserData { get; }
     }
 
     /// <summary>

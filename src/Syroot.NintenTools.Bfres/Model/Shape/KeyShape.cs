@@ -1,22 +1,22 @@
-﻿using Syroot.NintenTools.Bfres.Core;
+﻿using System;
+using Syroot.NintenTools.Bfres.Core;
 
 namespace Syroot.NintenTools.Bfres
 {
-    public class KeyShape : ResContent
+    public class KeyShape : IResContent
     {
-        // ---- CONSTRUCTORS & DESTRUCTOR ------------------------------------------------------------------------------
-        
-        public KeyShape(ResFileLoader loader)
-            : base(loader)
-        {
-            TargetAttribIndices = loader.ReadBytes(20);
-            TargetAttribIndexOffsets = loader.ReadBytes(4);
-        }
-
         // ---- PROPERTIES ---------------------------------------------------------------------------------------------
 
         public byte[] TargetAttribIndices { get; set; }
 
         public byte[] TargetAttribIndexOffsets { get; set; }
+
+        // ---- METHODS (PUBLIC) ---------------------------------------------------------------------------------------
+
+        public void Load(ResFileLoader loader)
+        {
+            TargetAttribIndices = loader.ReadBytes(20);
+            TargetAttribIndexOffsets = loader.ReadBytes(4);
+        }
     }
 }

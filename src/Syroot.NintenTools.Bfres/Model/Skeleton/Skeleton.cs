@@ -9,7 +9,7 @@ namespace Syroot.NintenTools.Bfres
     /// <summary>
     /// Represents an FSKL section in a <see cref="Model"/> subfile, storing armature data.
     /// </summary>
-    public class Skeleton : ResContent
+    public class Skeleton : IResContent
     {
         // ---- CONSTANTS ----------------------------------------------------------------------------------------------
 
@@ -19,11 +19,30 @@ namespace Syroot.NintenTools.Bfres
         // ---- FIELDS -------------------------------------------------------------------------------------------------
 
         private uint _flags;
+        
+        // ---- PROPERTIES ---------------------------------------------------------------------------------------------
 
-        // ---- CONSTRUCTORS & DESTRUCTOR ------------------------------------------------------------------------------
+        public SkeletonFlagsScale FlagsScale
+        {
+            get { return (SkeletonFlagsScale)(_flags & _flagsScaleMask); }
+            set { _flags &= ~_flagsScaleMask | (uint)value; }
+        }
 
-        public Skeleton(ResFileLoader loader)
-            : base(loader)
+        public SkeletonFlagsRotation FlagsRotation
+        {
+            get { return (SkeletonFlagsRotation)(_flags & _flagsRotateMask); }
+            set { _flags &= ~_flagsRotateMask | (uint)value; }
+        }
+        
+        public IList<Bone> Bones { get; private set; }
+
+        public IList<ushort> MatrixToBoneTable { get; private set; }
+
+        public IList<Matrix3x4> InverseModelMatrices { get; private set; }
+
+        // ---- METHODS (PUBLIC) ---------------------------------------------------------------------------------------
+
+        public void Load(ResFileLoader loader)
         {
             SkeletonHead head = new SkeletonHead(loader);
             _flags = head.Flags;
@@ -39,26 +58,6 @@ namespace Syroot.NintenTools.Bfres
                 InverseModelMatrices = loader.ReadMatrix3x4s((int)head.NumSmoothMatrix);
             }
         }
-
-        // ---- PROPERTIES ---------------------------------------------------------------------------------------------
-
-        public SkeletonFlagsScale FlagsScale
-        {
-            get { return (SkeletonFlagsScale)(_flags & _flagsScaleMask); }
-            set { _flags &= ~_flagsScaleMask | (uint)value; }
-        }
-
-        public SkeletonFlagsRotation FlagsRotation
-        {
-            get { return (SkeletonFlagsRotation)(_flags & _flagsRotateMask); }
-            set { _flags &= ~_flagsRotateMask | (uint)value; }
-        }
-        
-        public IList<Bone> Bones { get; }
-
-        public IList<ushort> MatrixToBoneTable { get; }
-
-        public IList<Matrix3x4> InverseModelMatrices { get; }
     }
 
     /// <summary>

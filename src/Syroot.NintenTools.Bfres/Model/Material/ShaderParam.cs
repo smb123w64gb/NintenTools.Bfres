@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using Syroot.NintenTools.Bfres.Core;
 
 namespace Syroot.NintenTools.Bfres
@@ -7,21 +8,8 @@ namespace Syroot.NintenTools.Bfres
     /// Represents a parameter value in a <see cref="Material"/> section, passing data to shader variables.
     /// </summary>
     [DebuggerDisplay(nameof(ShaderParam) + " {" + nameof(Name) + "}")]
-    public class ShaderParam : ResContent
+    public class ShaderParam : IResContent
     {
-        // ---- CONSTRUCTORS & DESTRUCTOR ------------------------------------------------------------------------------
-
-        public ShaderParam(ResFileLoader loader)
-            : base(loader)
-        {
-            ShaderParamHead head = new ShaderParamHead(loader);
-            Type = head.Type;
-            DataOffset = head.OfsData;
-            DependedIndex = head.IdxDepended;
-            DependIndex = head.IdxDepend;
-            Name = loader.GetName(head.OfsName);
-        }
-
         // ---- PROPERTIES ---------------------------------------------------------------------------------------------
 
         public ShaderParamType Type { get; set; }
@@ -33,6 +21,18 @@ namespace Syroot.NintenTools.Bfres
         public ushort DependIndex { get; set; }
 
         public string Name { get; set; }
+
+        // ---- METHODS (PUBLIC) ---------------------------------------------------------------------------------------
+
+        public void Load(ResFileLoader loader)
+        {
+            ShaderParamHead head = new ShaderParamHead(loader);
+            Type = head.Type;
+            DataOffset = head.OfsData;
+            DependedIndex = head.IdxDepended;
+            DependIndex = head.IdxDepend;
+            Name = loader.GetName(head.OfsName);
+        }
     }
 
     /// <summary>
@@ -56,14 +56,26 @@ namespace Syroot.NintenTools.Bfres
         internal ShaderParamHead(ResFileLoader loader)
         {
             // TODO: This layout does not work out for 3.2.0.1 files (s. MK8 Gear.bfres).
-            Type = loader.ReadEnum<ShaderParamType>(true);
-            SizData = loader.ReadByte();
-            OfsData = loader.ReadUInt16();
-            Offset = loader.ReadInt32();
-            CallbackPointer = loader.ReadUInt32();
-            IdxDepended = loader.ReadUInt16();
-            IdxDepend = loader.ReadUInt16();
-            OfsName = loader.ReadOffset();
+            if (loader.ResFile.Version >= 0x03030000)
+            {
+                Type = loader.ReadEnum<ShaderParamType>(true);
+                SizData = loader.ReadByte();
+                OfsData = loader.ReadUInt16();
+                Offset = loader.ReadInt32();
+                CallbackPointer = loader.ReadUInt32();
+                IdxDepended = loader.ReadUInt16();
+                IdxDepend = loader.ReadUInt16();
+                OfsName = loader.ReadOffset();
+            }
+            else
+            {
+                // Guess
+                Type = loader.ReadEnum<ShaderParamType>(true);
+                loader.Seek(1);
+                OfsData = loader.ReadUInt16();
+                Offset = loader.ReadInt32();
+                OfsName = loader.ReadOffset();
+            }
         }
     }
 
@@ -76,6 +88,6 @@ namespace Syroot.NintenTools.Bfres
         Float2x2 = 17, Float2x3, Float2x4,
         Float3x2 = 21, Float3x3, Float3x4,
         Float4x2 = 25, Float4x3, Float4x4,
-        Srt2D, Srt3D, TexSrt
+        Srt2D, Srt3D, TexSrt, Matrix3x2 /*guess*/
     }
 }
