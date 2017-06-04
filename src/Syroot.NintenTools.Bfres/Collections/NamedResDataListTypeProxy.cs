@@ -1,5 +1,4 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Linq;
 
 namespace Syroot.NintenTools.Bfres
@@ -13,9 +12,9 @@ namespace Syroot.NintenTools.Bfres
 
         // ---- CONSTRUCTORS & DESTRUCTOR ------------------------------------------------------------------------------
 
-        public NamedResDataListTypeProxy(NamedResDataList<T> list)
+        internal NamedResDataListTypeProxy(NamedResDataList<T> list)
         {
-            _list = list ?? throw new ArgumentNullException("collection");
+            _list = list;
         }
 
         // ---- PROPERTIES ---------------------------------------------------------------------------------------------
