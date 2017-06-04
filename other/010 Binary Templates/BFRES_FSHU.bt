@@ -1,0 +1,96 @@
+// ==== Structures =====================================================================================================
+
+typedef struct // ShaderParamAnim
+{
+	char signature[4]; // FSHU
+	NameOffset nameOffset;
+	NameOffset pathOffset;
+	uint flags <format=binary>;
+	int frameCount;
+	ushort matAnimCount;
+	ushort userDataCount;
+	int paramAnimCount;
+	int curveCount;
+	uint bakedSize;
+	Offset modelOffset; // Points to FMDL
+	Offset bindIndexArrayOffset;
+	Offset matAnimArrayOffset;
+	Offset userDataDictOffset;
+	// Read bind indices.
+	FSeek(bindIndexArrayOffset.target);
+	ushort bindIndices[matAnimCount] <optimize=true>;
+	FAlign(4);
+	// Read material animations.
+	FSeek(matAnimArrayOffset.target);
+	ShaderParamMatAnim matAnims[matAnimCount] <optimize=false>;
+	// Read user data.
+	if (userDataDictOffset.value)
+	{
+		FSeek(userDataDictOffset.target);
+		Dict userDataDict(DT_USER_DATA);
+	}
+} ShaderParamAnim <bgcolor=0xFFD6CD>;
+
+typedef struct // ShaderParamMatAnim
+{
+	ushort animParamCount;
+	ushort curveCount;
+	ushort constantCount;
+	ushort padding <fgcolor=0x808080, hidden=true>;
+	int beginCurve;
+	int beginParamAnim;
+	NameOffset nameOffset;
+	Offset paramAnimInfoArrayOffset;
+	Offset curveArrayOffset;
+	Offset constantArrayOffset;
+	local uint pos <hidden=true> = FTell();
+	// Read animation param infos.
+	FSeek(paramAnimInfoArrayOffset.target);
+	ParamAnimInfo paramAnimInfos[animParamCount] <optimize=false>;
+	// Read animation curves.
+	if (curveCount)
+	{
+		FSeek(curveArrayOffset.target);
+		AnimCurve animCurves[curveCount] <optimize=false>;
+	}
+	// Read constants.
+	if (constantCount) // Offset can be valid but count 0.
+	{
+		FSeek(constantArrayOffset.target);
+		AnimConstant constants[constantCount] <optimize=true>;
+	}
+	FSeek(pos); // Seek back to header end.
+} ShaderParamMatAnim <bgcolor=0xEBC7BF, read=ShaderParamMatAnimRead>;
+
+typedef struct // ParamAnimInfo
+{
+	ushort beginCurve;
+	ushort floatCurveCount;
+	ushort intCurveCount;
+	ushort beginConstant;
+	ushort constantCount;
+	ushort subBindIndex;
+	NameOffset nameOffset;
+} ParamAnimInfo <bgcolor=0xD9B7B0, read=ParamAnimInfoRead>;
+
+typedef struct // AnimConstant
+{
+	uint targetOffset;
+	union
+	{
+		float value;
+		int value;
+	} value;
+} AnimConstant <bgcolor=0xC8A9A3>;
+
+// ==== Template Methods ===============================================================================================
+
+string ParamAnimInfoRead(ParamAnimInfo &paramAnimInfo)
+{
+	return paramAnimInfo.nameOffset.name;
+}
+
+string ShaderParamMatAnimRead(ShaderParamMatAnim &shaderParamMatAnim)
+{
+	return shaderParamMatAnim.nameOffset.name;
+}

@@ -1,0 +1,80 @@
+// ==== Structures =====================================================================================================
+
+typedef struct // SkeletalAnim
+{
+	char signature[4]; // FSKA
+	NameOffset nameOffset;
+	NameOffset pathOffset;
+	uint flags <format=binary>;
+	if (file.version >= 0x03040000)
+	{
+		uint frameCount;
+		ushort boneAnimCount;
+		ushort userDataCount;
+	}
+	else
+	{
+		ushort frameCount;
+		ushort boneAnimCount;
+		ushort userDataCount;
+		ushort padding <fgcolor=0x808080, hidden=true>;
+	}
+	uint curveCount;
+	uint bakedSize;
+	Offset boneAnimArrayOffset;
+	Offset skeletonOffset; // Points to FSKL
+	Offset bindIndexArrayOffset;
+	Offset userDataDictOffset;
+	// Read bone animations.
+	FSeek(boneAnimArrayOffset.target);
+	BoneAnim boneAnims[boneAnimCount] <optimize=false>;
+	// Read bind indices.
+	FSeek(bindIndexArrayOffset.target);
+	ushort bindIndices[boneAnimCount] <bgcolor=0xD9AEAE, optimize=true>;
+	FAlign(4);
+	// Read user data.
+	if (userDataDictOffset.value)
+	{
+		FSeek(userDataDictOffset.target);
+		Dict userDataDict(DT_USER_DATA);
+	}
+} SkeletalAnim <bgcolor=0xFFCDCD, read=SkeletalAnimRead>;
+
+typedef struct // BoneAnim
+{
+	uint flags <format=binary>;
+	NameOffset nameOffset;
+	ubyte beginRotate;
+	ubyte beginTranslate;
+	ubyte animCurveCount;
+	ubyte beginBaseTranslate;
+	byte beginCurve; // Int32 normally.
+	byte padding[3] <fgcolor=0x808080, hidden=true>;
+	Offset animCurveArrayOffset;
+	Offset baseValueArrayOffset;
+	local uint pos <hidden=true> = FTell();
+	// Read animation curves.
+	if (animCurveCount)
+	{
+		FSeek(animCurveArrayOffset.target);
+		AnimCurve animCurves[animCurveCount] <optimize=false>;
+	}
+	// Read base transformation values.
+	FSeek(baseValueArrayOffset.target);
+	if (flags & 0x08) Vector3F baseScale;
+	if (flags & 0x10) Vector4F baseRotation;
+	if (flags & 0x20) Vector3F baseTranslation;
+	FSeek(pos); // Seek back to header end.	
+} BoneAnim <bgcolor=0xEBBDBD, read=BoneAnimRead>;
+
+// ==== Template Methods ===============================================================================================
+
+string SkeletalAnimRead(SkeletalAnim &skeletalAnim)
+{
+	return skeletalAnim.nameOffset.name;
+}
+
+string BoneAnimRead(BoneAnim &boneAnim)
+{
+	return boneAnim.nameOffset.name;
+}

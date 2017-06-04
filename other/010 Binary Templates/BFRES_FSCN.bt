@@ -1,0 +1,194 @@
+// ==== Structures =====================================================================================================
+
+typedef struct // SceneAnim
+{
+	char signature[4]; // FSCN
+	NameOffset nameOffset;
+	NameOffset pathOffset;
+	ushort userDataCount;
+	ushort cameraAnimCount;
+	ushort lightAnimCount;
+	ushort fogAnimCount;
+	Offset cameraAnimDictOffset;
+	Offset lightAnimDictOffset;
+	Offset fogAnimDictOffset;
+	Offset userDataDictOffset;
+	// Read camera animations.
+	if (cameraAnimCount)
+	{
+		FSeek(cameraAnimDictOffset.target);
+		Dict cameraAnimDict(DT_CAMERA_ANIM);
+	}
+	// Read light animations.
+	if (lightAnimCount)
+	{
+		FSeek(lightAnimDictOffset.target);
+		Dict lightAnimDict(DT_LIGHT_ANIM);
+	}
+	// Read fog animations.
+	if (fogAnimCount)
+	{
+		FSeek(fogAnimDictOffset.target);
+		Dict fogAnimDict(DT_FOG_ANIM);
+	}
+	// Read user data.
+	if (userDataDictOffset.value)
+	{
+		FSeek(userDataDictOffset.target);
+		Dict userDataDict(DT_USER_DATA);
+	}
+} SceneAnim <bgcolor=0xCDFFEF, read=SceneAnimRead>;
+
+// ---- FCAM ----
+
+typedef struct // CameraAnim
+{
+	char signature[4]; // FCAM
+	ushort flags <format=binary>;
+	ushort padding <fgcolor=0x808080, hidden=true>;
+	int frameCount;
+	ubyte curveCount;
+	ubyte padding <fgcolor=0x808080, hidden=true>;
+	ushort userDataCount;
+	uint bakedSize;
+	NameOffset nameOffset;
+	Offset curveArrayOffset;
+	Offset baseValueArrayOffset;
+	Offset userDataDictOffset;
+	// Read animation curves.
+	if (curveCount)
+	{
+		FSeek(curveArrayOffset.target);
+		AnimCurve animCurves[curveCount] <optimize=false>;
+	}
+	// Read base values.
+	FSeek(baseValueArrayOffset);
+	CameraAnimResult baseValue;
+	// Read user data.
+	if (userDataDictOffset.value)
+	{
+		FSeek(userDataDictOffset.target);
+		Dict userDataDict(DT_USER_DATA);
+	}
+} CameraAnim <bgcolor=0xBDEBDC, read=CameraAnimRead>;
+
+typedef struct // CameraAnimResult
+{
+	float nearZ;
+	float farZ;
+	float aspect;
+	float height;
+	float fovY;
+	Vector3F position;
+	Vector3F rotation;
+	float twist;
+} CameraAnimResult <bgcolor=0xAED9CB>;
+
+// ---- FLIT ----
+
+typedef struct // LightAnim
+{
+	char signature[4]; // FLIT
+	ushort flags <format=binary>;
+	ushort userDataCount;
+	int frameCount;
+	ubyte curveCount;
+	byte lightTypeIndex;
+	byte distanceAttenuationFuncIndex;
+	byte angleAttenuationFuncIndex;
+	uint bakedSize;
+	NameOffset nameOffset;
+	NameOffset lightTypeNameOffset;
+	NameOffset distanceAttenuationFuncNameOffset;
+	NameOffset angleAttenuationFuncNameOffset;
+	Offset curveArrayOffset;
+	Offset baseValueArrayOffset;
+	Offset userDataDictOffset;
+	// Read animation curves.
+	if (curveCount)
+	{
+		FSeek(curveArrayOffset.target);
+		AnimCurve animCurves[curveCount] <optimize=false>;
+	}
+	// Read base values. TODO: Read only those specified in the flags.
+	FSeek(baseValueArrayOffset);
+	LightAnimResult baseValue;
+	// Read user data.
+	if (userDataDictOffset.value)
+	{
+		FSeek(userDataDictOffset.target);
+		Dict userDataDict(DT_USER_DATA);
+	}
+} LightAnim <bgcolor=0xA1C8BB, read=LightAnimRead>;
+
+typedef struct // LightAnimResult
+{
+	int enable;
+	Vector3F position;
+	Vector3F rotation;
+	Vector2F distanceAttenuation;
+	Vector2F angleAttenuation;
+	Vector3F colors[2];
+} LightAnimResult <bgcolor=0x95B8AD>;
+
+// ---- FFOG ----
+
+typedef struct // FogAnim
+{
+	char signature[4]; // FFOG
+	ushort flags <format=binary>;
+	ushort padding <fgcolor=0x808080, hidden=true>;
+	int frameCount;
+	ubyte curveCount;
+	byte distanceAttenuationFuncIndex;
+	ushort userDataCount;
+	uint bakedSize;
+	NameOffset nameOffset;
+	NameOffset distanceAttenuationFuncNameOffset;
+	Offset curveArrayOffset;
+	Offset baseValueArrayOffset;
+	Offset userDataDictOffset;
+	// Read animation curves.
+	if (curveCount)
+	{
+		FSeek(curveArrayOffset.target);
+		AnimCurve animCurves[curveCount] <optimize=false>;
+	}
+	// Read base values.
+	FSeek(baseValueArrayOffset);
+	FogAnim baseValue;
+	// Read user data.
+	if (userDataDictOffset.value)
+	{
+		FSeek(userDataDictOffset.target);
+		Dict userDataDict(DT_USER_DATA);
+	}
+} FogAnim <bgcolor=0x8AAAA0, read=FogAnimRead>;
+
+typedef struct // FogAnimResult
+{
+	Vector2F distanceAttenuation;
+	Vector3F color;
+} FogAnimResult <bgcolor=0x7F9D94>;
+
+// ==== Template Methods ===============================================================================================
+
+string CameraAnimRead(CameraAnim &cameraAnim)
+{
+	return cameraAnim.nameOffset.name;
+}
+
+string FogAnimRead(FogAnim &fogAnim)
+{
+	return fogAnim.nameOffset.name;
+}
+
+string LightAnimRead(LightAnim &lightAnim)
+{
+	return lightAnim.nameOffset.name;
+}
+
+string SceneAnimRead(SceneAnim &sceneAnim)
+{
+	return sceneAnim.nameOffset.name;
+}

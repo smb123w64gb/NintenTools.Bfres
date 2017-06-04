@@ -1,0 +1,50 @@
+// ==== Structures =====================================================================================================
+
+typedef struct // VisibilityAnim
+{
+	char signature[4]; // FVIS
+	NameOffset nameOffset;
+	NameOffset pathOffset;
+	ushort flags <format=binary>;
+	ushort userDataCount;
+	int frameCount;
+	ushort animCount;
+	ushort curveCount;
+	uint bakedSize;
+	Offset modelOffset; // Points to FMDL
+	Offset bindIndexArrayOffset;
+	Offset nameArrayOffset;
+	Offset curveArrayOffset;
+	Offset baseValueArrayOffset;
+	Offset userDataDictOffset;
+	// Read bind indices.
+	FSeek(bindIndexArrayOffset.target);
+	ushort bindIndices[animCount] <optimize=true>;
+	FAlign(4);
+	// Read names.
+	FSeek(nameArrayOffset.target);
+	NameOffset names[animCount] <optimize=true>;
+	// Read animation curves.
+	if (curveCount)
+	{
+		FSeek(curveArrayOffset.target);
+		AnimCurve animCurves[curveCount] <optimize=false>;
+	}
+	// Read base values (bits controlling visibility).
+	FSeek(baseValueArrayOffset.target);
+	byte baseValues[Ceil(animCount / sizeof(byte))] <format=binary, optimize=true>;
+	FAlign(4);
+	// Read user data.
+	if (userDataDictOffset.value)
+	{
+		FSeek(userDataDictOffset.target);
+		Dict userDataDict(DT_USER_DATA);
+	}
+} VisibilityAnim <bgcolor=0xEFFFCD, read=VisibilityAnimRead>;
+
+// ==== Template Methods ===============================================================================================
+
+string VisibilityAnimRead(VisibilityAnim &visibilityAnim)
+{
+	return visibilityAnim.nameOffset.name;
+}

@@ -1,0 +1,42 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<Description>.NET library for loading the Nintendo BFRES graphics archive format.</Description>
+		<Copyright>(c) Syroot, licensed under MIT</Copyright>
+		<AssemblyName>Syroot.NintenTools.Bfres</AssemblyName>
+		<AssemblyTitle>NintenTools.Bfres</AssemblyTitle>
+		<Authors>Syroot</Authors>
+		<VersionPrefix>0.1.0</VersionPrefix>
+
+		<PackageId>Syroot.NintenTools.Bfres</PackageId>
+		<PackageTags>bfres;cafe;nintendo;nw4f;wiiu</PackageTags>
+		<PackageReleaseNotes>Initial release.</PackageReleaseNotes>
+		<PackageIconUrl>https://raw.githubusercontent.com/Syroot/NintenTools.Bfres/master/res/Logo.png</PackageIconUrl>
+		<PackageProjectUrl>https://github.com/Syroot/NintenTools.Bfres</PackageProjectUrl>
+		<PackageLicenseUrl>https://raw.githubusercontent.com/Syroot/NintenTools.Bfres/master/LICENSE</PackageLicenseUrl>
+		<RepositoryType>git</RepositoryType>
+		<RepositoryUrl>https://github.com/Syroot/NintenTools.Bfres</RepositoryUrl>
+		
+		<TargetFrameworks>net45;netstandard1.5</TargetFrameworks>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Syroot.IO.BinaryData" Version="2.0.0-rc5" />
+		<PackageReference Include="Syroot.Maths" Version="2.0.0" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'net451'">
+		<Reference Include="System" />
+		<Reference Include="Microsoft.CSharp" />
+	</ItemGroup>
+
+	<PropertyGroup Condition="'$(Configuration)' == 'Debug'">
+		<DebugType>portable</DebugType>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)' == 'Release'">
+		<DebugType>none</DebugType>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+	</PropertyGroup>
+
+</Project>

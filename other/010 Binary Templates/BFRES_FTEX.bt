@@ -1,0 +1,63 @@
+// ==== Structures =====================================================================================================
+
+typedef struct // Texture
+{
+	char signature[4]; // FTEX
+	uint gx2SurfacDim;
+	uint width;
+	uint height;
+	uint depth;
+	uint mipCount;
+	uint gx2SurfaceFormat;
+	uint gx2AAMode;
+	uint gx2SurfaceUse; // or GX2RResourceFlags
+	uint imageSize;
+	uint imagePointer; // Set at runtime
+	uint mipSize;
+	uint mipPointer; // Set at runtime
+	uint gx2TileMode;
+	uint swizzle <format=binary>;
+	uint alignment <format=hex>; // 512 * bpp
+	uint pitch;
+	uint mipOffsets[13];
+	uint viewMipFirst;
+	uint viewMipCount;
+	uint viewSliceFirst;
+	uint viewSliceCount;
+	uint gx2CompSel;
+	uint gx2TextureRegs[5];
+	uint handle; // Set at runtime
+	byte arrayLength; // TODO: Should be uint.
+	FAlign(4);
+	NameOffset nameOffset;
+	NameOffset pathOffset;
+	Offset imageDataOffset;
+	Offset mipDataOffset;
+	Offset userDataDictOffset;
+	ushort userDataCount;
+	ushort padding <fgcolor=0x808080, hidden=true>;
+	local uint pos <hidden=true> = FTell();
+	// Read texture data.
+	FSeek(imageDataOffset.target);
+	byte imageData[imageSize] <bgcolor=0xEBDCBD>;
+	// Read mip data.
+	if (mipDataOffset.value)
+	{
+		FSeek(mipDataOffset.target);
+		byte mipData[mipSize] <bgcolor=0xD9CBAE>;
+	}
+	// Read user data.
+	if (userDataDictOffset.value)
+	{
+		FSeek(userDataDictOffset.target);
+		Dict userDataDict(DT_USER_DATA);
+	}
+	FSeek(pos); // Seek back to header end.
+} Texture <bgcolor=0xEFCDFF, read=TextureRead>;
+
+// ==== Template Methods ===============================================================================================
+
+string TextureRead(Texture &texture)
+{
+	return texture.nameOffset.name;
+}
