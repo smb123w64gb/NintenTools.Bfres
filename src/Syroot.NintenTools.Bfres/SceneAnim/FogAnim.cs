@@ -30,9 +30,9 @@ namespace Syroot.NintenTools.Bfres
 
         public IList<UserData> UserData { get; private set; }
 
-        // ---- METHODS (PUBLIC) ---------------------------------------------------------------------------------------
+        // ---- METHODS ------------------------------------------------------------------------------------------------
 
-        public void Load(ResFileLoader loader)
+        void IResContent.Load(ResFileLoader loader)
         {
             FogAnimHead head = new FogAnimHead(loader);
             Flags = head.Flags;
@@ -105,9 +105,9 @@ namespace Syroot.NintenTools.Bfres
         
         public Vector3F Color { get; set; }
 
-        // ---- METHODS (PUBLIC) ---------------------------------------------------------------------------------------
+        // ---- METHODS ------------------------------------------------------------------------------------------------
 
-        public void Load(ResFileLoader loader)
+        void IResContent.Load(ResFileLoader loader)
         {
             DistanceAttenuation = loader.ReadVector2F();
             Color = loader.ReadVector3F();

@@ -40,9 +40,9 @@ namespace Syroot.NintenTools.Bfres
 
         public IList<UserData> UserData { get; private set; }
 
-        // ---- METHODS (PUBLIC) ---------------------------------------------------------------------------------------
+        // ---- METHODS ------------------------------------------------------------------------------------------------
 
-        public void Load(ResFileLoader loader)
+        void IResContent.Load(ResFileLoader loader)
         {
             LightAnimHead head = new LightAnimHead(loader);
             Flags = head.Flags;
@@ -59,7 +59,7 @@ namespace Syroot.NintenTools.Bfres
 
             loader.Position = head.OfsResult;
             Result = new LightAnimResult(Flags);
-            Result.Load(loader);
+            ((IResContent)Result).Load(loader);
 
             UserData = loader.LoadDictList<UserData>(head.OfsUserDataDict);
         }
@@ -160,9 +160,9 @@ namespace Syroot.NintenTools.Bfres
 
         public Vector3F Color1 { get; set; }
 
-        // ---- METHODS (PUBLIC) ---------------------------------------------------------------------------------------
+        // ---- METHODS ------------------------------------------------------------------------------------------------
 
-        public void Load(ResFileLoader loader)
+        void IResContent.Load(ResFileLoader loader)
         {
             if (_flags.HasFlag(LightAnimFlags.ResultEnable)) Enable = loader.ReadInt32();
             if (_flags.HasFlag(LightAnimFlags.ResultPosition)) Position = loader.ReadVector3F();

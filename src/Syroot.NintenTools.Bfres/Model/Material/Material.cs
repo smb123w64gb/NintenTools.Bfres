@@ -36,9 +36,9 @@ namespace Syroot.NintenTools.Bfres
 
         public byte[] VolatileFlags { get; private set; }
 
-        // ---- METHODS (PUBLIC) ---------------------------------------------------------------------------------------
+        // ---- METHODS ------------------------------------------------------------------------------------------------
 
-        public void Load(ResFileLoader loader)
+        void IResContent.Load(ResFileLoader loader)
         {
             MaterialHead head = new MaterialHead(loader);
             Name = loader.GetName(head.OfsName);

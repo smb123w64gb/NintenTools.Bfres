@@ -24,9 +24,9 @@ namespace Syroot.NintenTools.Bfres
 
         public uint Offset { get; set; }
 
-        // ---- METHODS (PUBLIC) ---------------------------------------------------------------------------------------
+        // ---- METHODS ------------------------------------------------------------------------------------------------
 
-        public void Load(ResFileLoader loader)
+        void IResContent.Load(ResFileLoader loader)
         {
             MeshHead head = new MeshHead(loader);
             PrimitiveType = head.PrimitiveType;

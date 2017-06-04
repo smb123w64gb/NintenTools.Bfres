@@ -76,9 +76,9 @@ namespace Syroot.NintenTools.Bfres
 
         public IList<UserData> UserData { get; private set; }
 
-        // ---- METHODS (PUBLIC) ---------------------------------------------------------------------------------------
+        // ---- METHODS ------------------------------------------------------------------------------------------------
 
-        public void Load(ResFileLoader loader)
+        void IResContent.Load(ResFileLoader loader)
         {
             BoneHead head = new BoneHead(loader);
             Name = loader.GetName(head.OfsName);

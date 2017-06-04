@@ -2,11 +2,14 @@
 
 namespace Syroot.NintenTools.Bfres
 {
+    /// <summary>
+    /// Represents an FMDL subfile in a <see cref="ResFile"/>, storing multi-dimensional texture data.
+    /// </summary>
     public class Texture : IResContent
     {
-        // ---- METHODS (PUBLIC) ---------------------------------------------------------------------------------------
+        // ---- METHODS ------------------------------------------------------------------------------------------------
 
-        public void Load(ResFileLoader loader)
+        void IResContent.Load(ResFileLoader loader)
         {
         }
     }

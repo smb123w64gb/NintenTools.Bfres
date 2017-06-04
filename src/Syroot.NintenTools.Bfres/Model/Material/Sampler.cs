@@ -18,9 +18,9 @@ namespace Syroot.NintenTools.Bfres
 
         public string Name { get; set; }
 
-        // ---- METHODS (PUBLIC) ---------------------------------------------------------------------------------------
+        // ---- METHODS ------------------------------------------------------------------------------------------------
 
-        public void Load(ResFileLoader loader)
+        void IResContent.Load(ResFileLoader loader)
         {
             SamplerHead head = new SamplerHead(loader);
             TexSampler = new TexSampler(head.GX2Sampler);

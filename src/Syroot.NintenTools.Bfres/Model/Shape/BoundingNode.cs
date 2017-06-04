@@ -21,9 +21,9 @@ namespace Syroot.NintenTools.Bfres
 
         public ushort SubMeshCount { get; set; }
 
-        // ---- METHODS (PUBLIC) ---------------------------------------------------------------------------------------
+        // ---- METHODS ------------------------------------------------------------------------------------------------
 
-        public void Load(ResFileLoader loader)
+        void IResContent.Load(ResFileLoader loader)
         {
             LeftChildIndex = loader.ReadUInt16();
             RightChildIndex = loader.ReadUInt16();

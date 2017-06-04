@@ -8,9 +8,9 @@ namespace Syroot.NintenTools.Bfres
     /// </summary>
     public class UserData : IResContent
     {
-        // ---- METHODS (PUBLIC) ---------------------------------------------------------------------------------------
+        // ---- METHODS ------------------------------------------------------------------------------------------------
 
-        public void Load(ResFileLoader loader)
+        void IResContent.Load(ResFileLoader loader)
         {
         }
     }

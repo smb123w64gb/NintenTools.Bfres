@@ -20,16 +20,8 @@ namespace Syroot.NintenTools.Bfres
         public RenderInfoType Type { get; private set; }
 
         public string Name { get; set; }
-        
-        // ---- METHODS (PUBLIC) ---------------------------------------------------------------------------------------
 
-        public void Load(ResFileLoader loader)
-        {
-            RenderInfoHead head = new RenderInfoHead(loader);
-            Type = head.Type;
-            Name = loader.GetName(head.OfsName);
-            _value = head.Value;
-        }
+        // ---- METHODS (PUBLIC) ---------------------------------------------------------------------------------------
 
         public int[] GetValueInt32Array()
         {
@@ -59,6 +51,16 @@ namespace Syroot.NintenTools.Bfres
         public void SetValue(string[] value)
         {
             _value = value;
+        }
+
+        // ---- METHODS ------------------------------------------------------------------------------------------------
+
+        void IResContent.Load(ResFileLoader loader)
+        {
+            RenderInfoHead head = new RenderInfoHead(loader);
+            Type = head.Type;
+            Name = loader.GetName(head.OfsName);
+            _value = head.Value;
         }
     }
 

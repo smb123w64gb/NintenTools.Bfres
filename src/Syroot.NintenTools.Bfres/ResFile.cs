@@ -21,7 +21,7 @@ namespace Syroot.NintenTools.Bfres
         public ResFile(Stream stream, bool leaveOpen = false)
         {
             ResFileLoader loader = new ResFileLoader(this, stream, leaveOpen);
-            Load(loader);
+            ((IResContent)this).Load(loader);
         }
 
         public ResFile(string fileName)
@@ -29,28 +29,6 @@ namespace Syroot.NintenTools.Bfres
         {
         }
 
-        // ---- METHODS (PUBLIC) ---------------------------------------------------------------------------------------
-        
-        public void Load(ResFileLoader loader)
-        {
-            ResFileHead head = new ResFileHead(loader);
-            Version = head.Version;
-            ByteOrder = head.ByteOrder;
-            Name = loader.GetName(head.OfsName);
-            Models = loader.LoadDictList<Model>(head.OfsModelDict);
-            Textures = loader.LoadDictList<Texture>(head.OfsTextureDict);
-            SkeletalAnims = loader.LoadDictList<SkeletalAnim>(head.OfsSkeletalAnimDict);
-            ShaderParamAnims = loader.LoadDictList<ShaderParamAnim>(head.OfsShaderParamDict);
-            ColorAnims = loader.LoadDictList<ShaderParamAnim>(head.OfsShaderParamDict);
-            TexSrtAnims = loader.LoadDictList<ShaderParamAnim>(head.OfsShaderParamDict);
-            TexPatternAnims = loader.LoadDictList<TexPatternAnim>(head.OfsTexPatternAnimDict);
-            BoneVisibilityAnims = loader.LoadDictList<VisibilityAnim>(head.OfsBoneVisibilityAnimDict);
-            MatVisibilityAnims = loader.LoadDictList<VisibilityAnim>(head.OfsMatVisibilityAnimDict);
-            ShapeAnims = loader.LoadDictList<ShapeAnim>(head.OfsShapeAnimDict);
-            SceneAnims = loader.LoadDictList<SceneAnim>(head.OfsSceneAnimDict);
-            ExternalFiles = loader.LoadDict<ExternalFile>(head.OfsExternalFileDict);
-        }
-        
         // ---- PROPERTIES ---------------------------------------------------------------------------------------------
 
         public uint Version { get; private set; } 
@@ -82,6 +60,28 @@ namespace Syroot.NintenTools.Bfres
         public IList<SceneAnim> SceneAnims { get; private set; }
 
         public IDictionary<string, ExternalFile> ExternalFiles { get; private set; }
+
+        // ---- METHODS ------------------------------------------------------------------------------------------------
+
+        void IResContent.Load(ResFileLoader loader)
+        {
+            ResFileHead head = new ResFileHead(loader);
+            Version = head.Version;
+            ByteOrder = head.ByteOrder;
+            Name = loader.GetName(head.OfsName);
+            Models = loader.LoadDictList<Model>(head.OfsModelDict);
+            Textures = loader.LoadDictList<Texture>(head.OfsTextureDict);
+            SkeletalAnims = loader.LoadDictList<SkeletalAnim>(head.OfsSkeletalAnimDict);
+            ShaderParamAnims = loader.LoadDictList<ShaderParamAnim>(head.OfsShaderParamDict);
+            ColorAnims = loader.LoadDictList<ShaderParamAnim>(head.OfsShaderParamDict);
+            TexSrtAnims = loader.LoadDictList<ShaderParamAnim>(head.OfsShaderParamDict);
+            TexPatternAnims = loader.LoadDictList<TexPatternAnim>(head.OfsTexPatternAnimDict);
+            BoneVisibilityAnims = loader.LoadDictList<VisibilityAnim>(head.OfsBoneVisibilityAnimDict);
+            MatVisibilityAnims = loader.LoadDictList<VisibilityAnim>(head.OfsMatVisibilityAnimDict);
+            ShapeAnims = loader.LoadDictList<ShapeAnim>(head.OfsShapeAnimDict);
+            SceneAnims = loader.LoadDictList<SceneAnim>(head.OfsSceneAnimDict);
+            ExternalFiles = loader.LoadDict<ExternalFile>(head.OfsExternalFileDict);
+        }
     }
 
     /// <summary>

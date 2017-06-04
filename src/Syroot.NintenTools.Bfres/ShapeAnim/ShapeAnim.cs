@@ -4,9 +4,9 @@ namespace Syroot.NintenTools.Bfres
 {
     public class ShapeAnim : IResContent
     {
-        // ---- METHODS (PUBLIC) ---------------------------------------------------------------------------------------
+        // ---- METHODS ------------------------------------------------------------------------------------------------
 
-        public void Load(ResFileLoader loader)
+        void IResContent.Load(ResFileLoader loader)
         {
         }
     }

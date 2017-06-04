@@ -1,5 +1,4 @@
-﻿using System;
-using Syroot.NintenTools.Bfres.Core;
+﻿using Syroot.NintenTools.Bfres.Core;
 using Syroot.NintenTools.Bfres.GX2;
 
 namespace Syroot.NintenTools.Bfres
@@ -16,9 +15,9 @@ namespace Syroot.NintenTools.Bfres
 
         public GX2AttribFormat Format { get; set; }
 
-        // ---- METHODS (PUBLIC) ---------------------------------------------------------------------------------------
+        // ---- METHODS ------------------------------------------------------------------------------------------------
 
-        public void Load(ResFileLoader loader)
+        void IResContent.Load(ResFileLoader loader)
         {
             VertexAttribHead head = new VertexAttribHead(loader);
             Name = loader.GetName(head.OfsName);

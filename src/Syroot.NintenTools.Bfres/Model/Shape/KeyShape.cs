@@ -11,9 +11,9 @@ namespace Syroot.NintenTools.Bfres
 
         public byte[] TargetAttribIndexOffsets { get; set; }
 
-        // ---- METHODS (PUBLIC) ---------------------------------------------------------------------------------------
+        // ---- METHODS ------------------------------------------------------------------------------------------------
 
-        public void Load(ResFileLoader loader)
+        void IResContent.Load(ResFileLoader loader)
         {
             TargetAttribIndices = loader.ReadBytes(20);
             TargetAttribIndexOffsets = loader.ReadBytes(4);

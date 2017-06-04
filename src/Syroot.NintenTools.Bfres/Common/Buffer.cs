@@ -13,9 +13,9 @@ namespace Syroot.NintenTools.Bfres
         
         public byte[] Data { get; set; }
 
-        // ---- METHODS (PUBLIC) ---------------------------------------------------------------------------------------
+        // ---- METHODS ------------------------------------------------------------------------------------------------
 
-        public void Load(ResFileLoader loader)
+        void IResContent.Load(ResFileLoader loader)
         {
             BufferHead head = new BufferHead(loader);
             Stride = head.Stride;

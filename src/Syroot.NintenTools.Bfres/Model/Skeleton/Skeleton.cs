@@ -40,9 +40,9 @@ namespace Syroot.NintenTools.Bfres
 
         public IList<Matrix3x4> InverseModelMatrices { get; private set; }
 
-        // ---- METHODS (PUBLIC) ---------------------------------------------------------------------------------------
+        // ---- METHODS ------------------------------------------------------------------------------------------------
 
-        public void Load(ResFileLoader loader)
+        void IResContent.Load(ResFileLoader loader)
         {
             SkeletonHead head = new SkeletonHead(loader);
             _flags = head.Flags;

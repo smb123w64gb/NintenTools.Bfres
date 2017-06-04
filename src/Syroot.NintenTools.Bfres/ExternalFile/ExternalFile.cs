@@ -12,9 +12,9 @@ namespace Syroot.NintenTools.Bfres
 
         public byte[] Data { get; set; }
 
-        // ---- METHODS (PUBLIC) ---------------------------------------------------------------------------------------
+        // ---- METHODS ------------------------------------------------------------------------------------------------
 
-        public void Load(ResFileLoader loader)
+        void IResContent.Load(ResFileLoader loader)
         {
             ExternalFileHead head = new ExternalFileHead(loader);
             loader.Seek(head.OfsData);

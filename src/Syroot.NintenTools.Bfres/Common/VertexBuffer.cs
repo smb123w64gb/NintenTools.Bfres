@@ -13,9 +13,9 @@ namespace Syroot.NintenTools.Bfres
 
         public IList<Buffer> Buffers { get; private set; }
 
-        // ---- METHODS (PUBLIC) ---------------------------------------------------------------------------------------
+        // ---- METHODS ------------------------------------------------------------------------------------------------
 
-        public void Load(ResFileLoader loader)
+        void IResContent.Load(ResFileLoader loader)
         {
             VertexBufferHead head = new VertexBufferHead(loader);
             VertexSkinCount = head.NumVertexSkin;

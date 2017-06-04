@@ -82,7 +82,7 @@ namespace Syroot.NintenTools.Bfres.Core
 
             // Seek to the instance data and load it.
             Position = offset;
-            return Instantiate<T>();
+            return LoadInstance<T>();
         }
 
         /// <summary>
@@ -211,7 +211,7 @@ namespace Syroot.NintenTools.Bfres.Core
             {
                 using (TemporarySeek())
                 {
-                    list.Add(Instantiate<T>());
+                    list.Add(LoadInstance<T>());
                 }
             }
 
@@ -446,7 +446,7 @@ namespace Syroot.NintenTools.Bfres.Core
 
         // ---- METHODS (PRIVATE) --------------------------------------------------------------------------------------
 
-        private T Instantiate<T>()
+        private T LoadInstance<T>()
             where T : IResContent, new()
         {
             T instance = new T();

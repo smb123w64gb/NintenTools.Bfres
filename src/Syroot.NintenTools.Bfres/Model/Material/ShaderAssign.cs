@@ -19,9 +19,9 @@ namespace Syroot.NintenTools.Bfres
 
         public IList<string> ShaderOptions { get; private set; }
 
-        // ---- METHODS (PUBLIC) ---------------------------------------------------------------------------------------
+        // ---- METHODS ------------------------------------------------------------------------------------------------
 
-        public void Load(ResFileLoader loader)
+        void IResContent.Load(ResFileLoader loader)
         {
             ShaderAssignHead head = new ShaderAssignHead(loader);
             ShaderArchiveName = loader.GetName(head.OfsShaderArchiveName);

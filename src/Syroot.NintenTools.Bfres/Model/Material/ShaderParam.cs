@@ -22,9 +22,9 @@ namespace Syroot.NintenTools.Bfres
 
         public string Name { get; set; }
 
-        // ---- METHODS (PUBLIC) ---------------------------------------------------------------------------------------
+        // ---- METHODS ------------------------------------------------------------------------------------------------
 
-        public void Load(ResFileLoader loader)
+        void IResContent.Load(ResFileLoader loader)
         {
             ShaderParamHead head = new ShaderParamHead(loader);
             Type = head.Type;

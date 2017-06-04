@@ -26,9 +26,9 @@ namespace Syroot.NintenTools.Bfres
 
         public IList<UserData> UserData { get; private set; }
 
-        // ---- METHODS (PUBLIC) ---------------------------------------------------------------------------------------
+        // ---- METHODS ------------------------------------------------------------------------------------------------
 
-        public void Load(ResFileLoader loader)
+        void IResContent.Load(ResFileLoader loader)
         {
             SceneAnimHead head = new SceneAnimHead(loader);
             Name = loader.GetName(head.OfsName);

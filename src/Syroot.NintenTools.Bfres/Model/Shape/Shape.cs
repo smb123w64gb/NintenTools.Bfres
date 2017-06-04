@@ -37,9 +37,9 @@ namespace Syroot.NintenTools.Bfres
 
         public IList<ushort> SubMeshBoundingIndices { get; private set; }
 
-        // ---- METHODS (PUBLIC) ---------------------------------------------------------------------------------------
+        // ---- METHODS ------------------------------------------------------------------------------------------------
 
-        public void Load(ResFileLoader loader)
+        void IResContent.Load(ResFileLoader loader)
         {
             ShapeHead head = new ShapeHead(loader);
             Name = loader.GetName(head.OfsName);

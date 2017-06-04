@@ -17,9 +17,9 @@ namespace Syroot.NintenTools.Bfres
 
         public uint Count { get; set; }
 
-        // ---- METHODS (PUBLIC) ---------------------------------------------------------------------------------------
+        // ---- METHODS ------------------------------------------------------------------------------------------------
 
-        public void Load(ResFileLoader loader)
+        void IResContent.Load(ResFileLoader loader)
         {
             Offset = loader.ReadUInt32();
             Count = loader.ReadUInt32();

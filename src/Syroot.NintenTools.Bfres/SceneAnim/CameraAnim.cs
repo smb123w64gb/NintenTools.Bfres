@@ -28,9 +28,9 @@ namespace Syroot.NintenTools.Bfres
 
         public IList<UserData> UserData { get; private set; }
 
-        // ---- METHODS (PUBLIC) ---------------------------------------------------------------------------------------
+        // ---- METHODS ------------------------------------------------------------------------------------------------
 
-        public void Load(ResFileLoader loader)
+        void IResContent.Load(ResFileLoader loader)
         {
             CameraAnimHead head = new CameraAnimHead(loader);
             Flags = head.Flags;
@@ -111,9 +111,9 @@ namespace Syroot.NintenTools.Bfres
 
         public float Twist { get; set; }
 
-        // ---- METHODS (PUBLIC) ---------------------------------------------------------------------------------------
+        // ---- METHODS ------------------------------------------------------------------------------------------------
 
-        public void Load(ResFileLoader loader)
+        void IResContent.Load(ResFileLoader loader)
         {
             ClipNear = loader.ReadSingle();
             ClipFar = loader.ReadSingle();

@@ -12,9 +12,9 @@ namespace Syroot.NintenTools.Bfres
 
         public string Name { get; set; }
 
-        // ---- METHODS (PUBLIC) ---------------------------------------------------------------------------------------
+        // ---- METHODS ------------------------------------------------------------------------------------------------
 
-        public void Load(ResFileLoader loader)
+        void IResContent.Load(ResFileLoader loader)
         {
             TextureRefHead head = new TextureRefHead(loader);
             Name = loader.GetName(head.OfsName);

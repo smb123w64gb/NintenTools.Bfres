@@ -42,9 +42,9 @@ namespace Syroot.NintenTools.Bfres
 
         public Vector4F BlendColor { get; set; }
 
-        // ---- METHODS (PUBLIC) ---------------------------------------------------------------------------------------
+        // ---- METHODS ------------------------------------------------------------------------------------------------
 
-        public void Load(ResFileLoader loader)
+        void IResContent.Load(ResFileLoader loader)
         {
             RenderStateHead head = new RenderStateHead(loader);
             _flags = head.Flags;
