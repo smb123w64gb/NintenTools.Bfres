@@ -89,7 +89,7 @@ typedef struct // Skeleton
 		ushort rigidMatrixToBoneTable[smoothMatrixCount + rigidMatrixCount] <optimize=true>;
 	}
 	// Read the inversion matrix array.
-	if (smoothMatrixCount)
+	if (invModelMatrixArrayOffset.value)
 	{
 		FSeek(invModelMatrixArrayOffset.target);
 		Matrix4x3 invModelMatrices[smoothMatrixCount] <optimize=true>;
@@ -397,14 +397,25 @@ typedef struct // Sampler
 
 typedef struct(Material &material) // ShaderParam
 {
-	byte type;
-	byte size;
-	ushort sourceDataOffset;
-	int dataOffset; // Set at runtime.
-	uint callback; // Set at runtime.
-	ushort dependedIndex;
-	ushort dependIndex;
-	NameOffset idOffset;
+	if (file.version >= 0x03030000)
+	{
+		byte type;
+		byte size;
+		ushort sourceDataOffset;
+		int dataOffset; // Set at runtime.
+		uint callback; // Set at runtime.
+		ushort dependedIndex;
+		ushort dependIndex;
+		NameOffset idOffset;
+	}
+	else
+	{
+		byte type;
+		byte padding; // Only 0 seen.
+		ushort sourceDataOffset;
+		int dataOffset;
+		NameOffset idOffset;
+	}
 	local uint pos <hidden=true> = FTell();
 	// Read the value.
 	FSeek(material.sourceParamDataOffset.target + sourceDataOffset);
@@ -435,9 +446,10 @@ typedef struct(Material &material) // ShaderParam
 		case 25: Matrix4x2 value; break;
 		case 26: Matrix4x3 value; break;
 		case 27: Matrix4x4 value; break;
-		case 28: float value[5]; break; // Claims to be 2D SRT matrix
-		case 29: Matrix3x3 value; break;
-		case 30: Matrix2x3 value; break;
+		case 28: float value[5]; break; // 2D SRT (claims to be, weird 5-value matrix)
+		case 29: Matrix3x3 value; break; // 3D SRT
+		case 30: Matrix2x3 value; break; // Texture SRT
+		case 31: Matrix3x2 value; break; // Guessed, stored as "texmtx0" in 3.0.0.1 files
 	}
 	FSeek(pos); // Seek back to header end.
 } ShaderParam <bgcolor=0xA08AAA, read=ShaderParamRead>;
