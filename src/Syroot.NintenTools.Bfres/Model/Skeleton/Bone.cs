@@ -24,11 +24,28 @@ namespace Syroot.NintenTools.Bfres
 
         // ---- FIELDS -------------------------------------------------------------------------------------------------
 
+        private string _name;
         private uint _flags;
-        
+
+        // ---- EVENTS -------------------------------------------------------------------------------------------------
+
+        public event EventHandler NameChanged;
+
         // ---- PROPERTIES ---------------------------------------------------------------------------------------------
 
-        public string Name { get; set; }
+        public string Name
+        {
+            get { return _name; }
+            set
+            {
+                if (value == null) throw new ArgumentNullException(nameof(value));
+                if (_name != value)
+                {
+                    _name = value;
+                    NameChanged?.Invoke(this, EventArgs.Empty);
+                }
+            }
+        }
 
         public ushort ParentIndex { get; set; }
 

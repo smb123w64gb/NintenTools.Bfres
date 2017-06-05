@@ -1,6 +1,6 @@
-﻿using System.Diagnostics;
+﻿using System;
 
-namespace Syroot.NintenTools.Bfres
+namespace Syroot.NintenTools.Bfres.Core
 {
     /// <summary>
     /// Represents the common interface for <see cref="ResFile"/> structures storing a <see cref="Name"/> with which
@@ -8,6 +8,10 @@ namespace Syroot.NintenTools.Bfres
     /// </summary>
     public interface INamedResData : IResData
     {
+        // ---- EVENTS -------------------------------------------------------------------------------------------------
+
+        event EventHandler NameChanged;
+
         // ---- PROPERTIES ---------------------------------------------------------------------------------------------
 
         string Name { get; set; }

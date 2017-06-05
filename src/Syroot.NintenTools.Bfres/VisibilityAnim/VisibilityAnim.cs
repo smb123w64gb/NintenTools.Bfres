@@ -7,14 +7,30 @@ namespace Syroot.NintenTools.Bfres
     [DebuggerDisplay(nameof(VisibilityAnim) + " {" + nameof(Name) + "}")]
     public class VisibilityAnim : INamedResData
     {
+        // ---- FIELDS -------------------------------------------------------------------------------------------------
+
+        private string _name;
+
+        // ---- EVENTS -------------------------------------------------------------------------------------------------
+
+        public event EventHandler NameChanged;
+
         // ---- PROPERTIES ---------------------------------------------------------------------------------------------
 
         public string Name
         {
-            get { throw new NotImplementedException(); }
-            set { throw new NotImplementedException(); }
+            get { return _name; }
+            set
+            {
+                if (value == null) throw new ArgumentNullException(nameof(value));
+                if (_name != value)
+                {
+                    _name = value;
+                    NameChanged?.Invoke(this, EventArgs.Empty);
+                }
+            }
         }
-
+        
         // ---- METHODS ------------------------------------------------------------------------------------------------
 
         void IResData.Load(ResFileLoader loader)

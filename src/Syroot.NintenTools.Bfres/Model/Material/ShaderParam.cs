@@ -10,6 +10,14 @@ namespace Syroot.NintenTools.Bfres
     [DebuggerDisplay(nameof(ShaderParam) + " {" + nameof(Name) + "}")]
     public class ShaderParam : INamedResData
     {
+        // ---- FIELDS -------------------------------------------------------------------------------------------------
+
+        private string _name;
+
+        // ---- EVENTS -------------------------------------------------------------------------------------------------
+
+        public event EventHandler NameChanged;
+
         // ---- PROPERTIES ---------------------------------------------------------------------------------------------
 
         public ShaderParamType Type { get; set; }
@@ -20,7 +28,19 @@ namespace Syroot.NintenTools.Bfres
 
         public ushort DependIndex { get; set; }
 
-        public string Name { get; set; }
+        public string Name
+        {
+            get { return _name; }
+            set
+            {
+                if (value == null) throw new ArgumentNullException(nameof(value));
+                if (_name != value)
+                {
+                    _name = value;
+                    NameChanged?.Invoke(this, EventArgs.Empty);
+                }
+            }
+        }
 
         // ---- METHODS ------------------------------------------------------------------------------------------------
 

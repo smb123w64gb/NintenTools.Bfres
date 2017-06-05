@@ -8,7 +8,7 @@ using Syroot.Maths;
 namespace Syroot.NintenTools.Bfres.Core
 {
     /// <summary>
-    /// Loads the hierachy and data of a <see cref="ResFile"/>.
+    /// Loads the hierachy and data of a <see cref="Bfres.ResFile"/>.
     /// </summary>
     public class ResFileLoader : BinaryDataReader
     {

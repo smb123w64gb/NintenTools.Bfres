@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Linq;
 
-namespace Syroot.NintenTools.Bfres
+namespace Syroot.NintenTools.Bfres.Core
 {
     internal class NamedResDataListTypeProxy<T>
         where T : INamedResData

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using Syroot.BinaryData;
@@ -7,11 +8,15 @@ using Syroot.NintenTools.Bfres.Core;
 namespace Syroot.NintenTools.Bfres
 {
     /// <summary>
-    /// Represents a NintendoWare for Wii U (NW4F) graphics data archive file.
+    /// Represents a NintendoWare for Cafe (NW4F) graphics data archive file.
     /// </summary>
     [DebuggerDisplay(nameof(ResFile) + " {" + nameof(Name) + "}")]
     public class ResFile : INamedResData
     {
+        // ---- FIELDS -------------------------------------------------------------------------------------------------
+
+        private string _name;
+
         // ---- CONSTRUCTORS & DESTRUCTOR ------------------------------------------------------------------------------
 
         public ResFile()
@@ -29,13 +34,29 @@ namespace Syroot.NintenTools.Bfres
         {
         }
 
+        // ---- EVENTS -------------------------------------------------------------------------------------------------
+
+        public event EventHandler NameChanged;
+
         // ---- PROPERTIES ---------------------------------------------------------------------------------------------
 
         public uint Version { get; private set; } 
 
         public ByteOrder ByteOrder { get; private set; }
 
-        public string Name { get; set; }
+        public string Name
+        {
+            get { return _name; }
+            set
+            {
+                if (value == null) throw new ArgumentNullException(nameof(value));
+                if (_name != value)
+                {
+                    _name = value;
+                    NameChanged?.Invoke(this, EventArgs.Empty);
+                }
+            }
+        }
 
         public INamedResDataList<Model> Models { get; private set; }
 

@@ -1,11 +1,11 @@
-﻿using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System;
+using System.Collections.Generic;
 
-namespace Syroot.NintenTools.Bfres
+namespace Syroot.NintenTools.Bfres.Core
 {
     /// <summary>
-    /// Represents the interface of a list referencing <see cref="INamedResData"/> instances, and allows looking them up
-    /// via index or name.
+    /// Represents the interface of a list referencing <see cref="INamedResData"/> instances and allows indexed or named
+    /// lookups.
     /// </summary>
     /// <typeparam name="T">The type of the elements.</typeparam>
     public interface INamedResDataList<T> : IList<T>
@@ -30,5 +30,7 @@ namespace Syroot.NintenTools.Bfres
         int IndexOf(string name);
         
         bool Remove(string item);
+
+        bool TryGetValue(string name, out T value);
     }
 }

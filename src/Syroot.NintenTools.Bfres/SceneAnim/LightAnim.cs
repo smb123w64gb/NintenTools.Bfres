@@ -12,6 +12,14 @@ namespace Syroot.NintenTools.Bfres
     [DebuggerDisplay(nameof(LightAnim) + " {" + nameof(Name) + "}")]
     public class LightAnim : INamedResData
     {
+        // ---- FIELDS -------------------------------------------------------------------------------------------------
+
+        private string _name;
+
+        // ---- EVENTS -------------------------------------------------------------------------------------------------
+
+        public event EventHandler NameChanged;
+
         // ---- PROPERTIES ---------------------------------------------------------------------------------------------
 
         public LightAnimFlags Flags { get; set; }
@@ -26,7 +34,19 @@ namespace Syroot.NintenTools.Bfres
 
         public uint BakedSize { get; private set; }
 
-        public string Name { get; set; }
+        public string Name
+        {
+            get { return _name; }
+            set
+            {
+                if (value == null) throw new ArgumentNullException(nameof(value));
+                if (_name != value)
+                {
+                    _name = value;
+                    NameChanged?.Invoke(this, EventArgs.Empty);
+                }
+            }
+        }
 
         public string LightTypeName { get; set; }
 

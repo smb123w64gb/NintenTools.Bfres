@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using Syroot.NintenTools.Bfres.Core;
 
 namespace Syroot.NintenTools.Bfres
@@ -9,9 +10,29 @@ namespace Syroot.NintenTools.Bfres
     [DebuggerDisplay(nameof(TextureRef) + " {" + nameof(Name) + "}")]
     public class TextureRef : INamedResData
     {
+        // ---- FIELDS -------------------------------------------------------------------------------------------------
+
+        private string _name;
+
+        // ---- EVENTS -------------------------------------------------------------------------------------------------
+
+        public event EventHandler NameChanged;
+
         // ---- PROPERTIES ---------------------------------------------------------------------------------------------
 
-        public string Name { get; set; }
+        public string Name
+        {
+            get { return _name; }
+            set
+            {
+                if (value == null) throw new ArgumentNullException(nameof(value));
+                if (_name != value)
+                {
+                    _name = value;
+                    NameChanged?.Invoke(this, EventArgs.Empty);
+                }
+            }
+        }
 
         // ---- METHODS ------------------------------------------------------------------------------------------------
 

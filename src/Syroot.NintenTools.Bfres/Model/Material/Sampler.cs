@@ -12,11 +12,31 @@ namespace Syroot.NintenTools.Bfres
     [DebuggerDisplay(nameof(Sampler) + " {" + nameof(Name) + "}")]
     public class Sampler : INamedResData
     {
+        // ---- FIELDS -------------------------------------------------------------------------------------------------
+
+        private string _name;
+
+        // ---- EVENTS -------------------------------------------------------------------------------------------------
+
+        public event EventHandler NameChanged;
+
         // ---- PROPERTIES ---------------------------------------------------------------------------------------------
 
         public TexSampler TexSampler { get; set; }
 
-        public string Name { get; set; }
+        public string Name
+        {
+            get { return _name; }
+            set
+            {
+                if (value == null) throw new ArgumentNullException(nameof(value));
+                if (_name != value)
+                {
+                    _name = value;
+                    NameChanged?.Invoke(this, EventArgs.Empty);
+                }
+            }
+        }
 
         // ---- METHODS ------------------------------------------------------------------------------------------------
 

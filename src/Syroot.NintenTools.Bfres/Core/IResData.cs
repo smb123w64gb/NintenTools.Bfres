@@ -1,6 +1,4 @@
-﻿using Syroot.NintenTools.Bfres.Core;
-
-namespace Syroot.NintenTools.Bfres
+﻿namespace Syroot.NintenTools.Bfres.Core
 {
     /// <summary>
     /// Represents the common interface for <see cref="ResFile"/> structures.
