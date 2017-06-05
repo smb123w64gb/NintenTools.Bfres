@@ -41,11 +41,12 @@ namespace Syroot.NintenTools.Bfres.Core
         /// </summary>
         /// <param name="offset">The total offset to read the <see cref="String"/> from.</param>
         /// <returns>The read <see cref="String"/>.</returns>
-        internal string GetName(uint offset)
+        internal string GetName(uint offset, Encoding encoding = null)
         {
+            encoding = encoding ?? Encoding;
             using (TemporarySeek(offset, SeekOrigin.Begin))
             {
-                return ReadString(BinaryStringFormat.ZeroTerminated);
+                return ReadString(BinaryStringFormat.ZeroTerminated, encoding);
             }
         }
         
@@ -54,15 +55,16 @@ namespace Syroot.NintenTools.Bfres.Core
         /// </summary>
         /// <param name="offsets">The total offsets to read the <see cref="String"/> instances from.</param>
         /// <returns>The read <see cref="String"/> instances.</returns>
-        internal IList<string> GetNames(uint[] offsets)
+        internal IList<string> GetNames(uint[] offsets, Encoding encoding = null)
         {
+            encoding = encoding ?? Encoding;
             string[] values = new string[offsets.Length];
             using (TemporarySeek())
             {
                 for (int i = 0; i < offsets.Length; i++)
                 {
                     Position = offsets[i];
-                    values[i] = ReadString(BinaryStringFormat.ZeroTerminated);
+                    values[i] = ReadString(BinaryStringFormat.ZeroTerminated, encoding);
                 }
             }
             return values;
@@ -298,6 +300,21 @@ namespace Syroot.NintenTools.Bfres.Core
         {
             uint offset = ReadUInt32();
             return offset == 0 ? 0 : (uint)Position - sizeof(uint) + offset;
+        }
+
+        /// <summary>
+        /// Reads BFRES offsets which are relative to themselves, and returns the absolute addresses.
+        /// </summary>
+        /// <param name="count">The number of offsets to read.</param>
+        /// <returns>The absolute addresses of the offsets.</returns>
+        internal uint[] ReadOffsets(int count)
+        {
+            uint[] values = new uint[count];
+            for (int i = 0; i < count; i++)
+            {
+                values[i] = ReadOffset();
+            }
+            return values;
         }
 
         /// <summary>

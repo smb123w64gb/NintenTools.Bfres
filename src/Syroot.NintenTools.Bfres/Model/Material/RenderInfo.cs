@@ -19,8 +19,7 @@ namespace Syroot.NintenTools.Bfres
         // ---- EVENTS -------------------------------------------------------------------------------------------------
 
         public event EventHandler NameChanged;
-
-
+        
         // ---- PROPERTIES ---------------------------------------------------------------------------------------------
 
         public RenderInfoType Type { get; private set; }
@@ -58,16 +57,19 @@ namespace Syroot.NintenTools.Bfres
 
         public void SetValue(int[] value)
         {
+            Type = RenderInfoType.Int32;
             _value = value;
         }
 
         public void SetValue(float[] value)
         {
+            Type = RenderInfoType.Single;
             _value = value;
         }
 
         public void SetValue(string[] value)
         {
+            Type = RenderInfoType.String;
             _value = value;
         }
 
