@@ -40,7 +40,7 @@ namespace Syroot.NintenTools.Bfres
 
         // ---- PROPERTIES ---------------------------------------------------------------------------------------------
 
-        public uint Version { get; private set; } 
+        public uint Version { get; private set; }
 
         public ByteOrder ByteOrder { get; private set; }
 
@@ -110,11 +110,11 @@ namespace Syroot.NintenTools.Bfres
     /// </summary>
     internal class ResFileHead
     {
-        // ---- CONSTANTS ------------------------------------------------------------------------------------------
+        // ---- CONSTANTS ----------------------------------------------------------------------------------------------
 
         private const string _signature = "FRES";
 
-        // ---- FIELDS ---------------------------------------------------------------------------------------------
+        // ---- FIELDS -------------------------------------------------------------------------------------------------
 
         internal uint Signature;
         internal uint Version;
@@ -151,7 +151,7 @@ namespace Syroot.NintenTools.Bfres
         internal ushort NumExternalFile;
         internal uint UserPointer;
 
-        // ---- CONSTRUCTORS & DESTRUCTOR --------------------------------------------------------------------------
+        // ---- CONSTRUCTORS & DESTRUCTOR ------------------------------------------------------------------------------
 
         internal ResFileHead(ResFileLoader loader)
         {

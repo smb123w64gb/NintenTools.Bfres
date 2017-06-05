@@ -20,7 +20,6 @@ namespace Syroot.NintenTools.Bfres.Test
         private static void Main(string[] args)
         {
             ResFile resFile = new ResFile(@"D:\Pictures\BFRES\Koopa.bfres");
-            resFile.Models["Koopa"].Name = "Pupil";
 
             LoadResFiles();
 
