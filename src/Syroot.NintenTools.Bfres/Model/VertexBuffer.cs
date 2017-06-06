@@ -1,8 +1,12 @@
 ﻿using System.Collections.Generic;
 using Syroot.NintenTools.Bfres.Core;
+using Syroot.NintenTools.Bfres.GX2;
 
 namespace Syroot.NintenTools.Bfres
 {
+    /// <summary>
+    /// Represents a data buffer holding vertices for a <see cref="Model"/> subfile.
+    /// </summary>
     public class VertexBuffer : IResData
     {
         // ---- PROPERTIES ---------------------------------------------------------------------------------------------
@@ -13,6 +17,8 @@ namespace Syroot.NintenTools.Bfres
 
         public IList<Buffer> Buffers { get; private set; }
 
+        // TODO: Add methods to aid in retrieving strongly typed vertex data via attributes.
+
         // ---- METHODS ------------------------------------------------------------------------------------------------
 
         void IResData.Load(ResFileLoader loader)
@@ -20,7 +26,7 @@ namespace Syroot.NintenTools.Bfres
             VertexBufferHead head = new VertexBufferHead(loader);
             VertexSkinCount = head.NumVertexSkin;
             Attributes = loader.LoadNamedDictList<VertexAttrib>(head.OfsVertexAttribDict);
-            Buffers = loader.LoadList<Buffer>(head.OfsDataBufferList, head.NumDataBuffer);
+            Buffers = loader.LoadList<Buffer>(head.OfsBufferList, head.NumBuffer);
         }
     }
 
@@ -37,13 +43,13 @@ namespace Syroot.NintenTools.Bfres
 
         internal uint Signature;
         internal byte NumVertexAttrib;
-        internal byte NumDataBuffer;
+        internal byte NumBuffer;
         internal ushort Idx;
         internal uint NumVertex;
         internal byte NumVertexSkin;
         internal uint OfsVertexAttribList;
         internal uint OfsVertexAttribDict;
-        internal uint OfsDataBufferList;
+        internal uint OfsBufferList;
         internal uint UserPointer;
 
         // ---- CONSTRUCTORS & DESTRUCTOR ------------------------------------------------------------------------------
@@ -52,14 +58,14 @@ namespace Syroot.NintenTools.Bfres
         {
             Signature = loader.ReadSignature(_signature);
             NumVertexAttrib = loader.ReadByte();
-            NumDataBuffer = loader.ReadByte();
+            NumBuffer = loader.ReadByte();
             Idx = loader.ReadUInt16();
             NumVertex = loader.ReadUInt32();
             NumVertexSkin = loader.ReadByte();
             loader.Seek(3);
             OfsVertexAttribList = loader.ReadOffset();
             OfsVertexAttribDict = loader.ReadOffset();
-            OfsDataBufferList = loader.ReadOffset();
+            OfsBufferList = loader.ReadOffset();
             UserPointer = loader.ReadUInt32();
         }
     }

@@ -40,17 +40,17 @@ namespace Syroot.NintenTools.Bfres
 
         // ---- METHODS (PUBLIC) ---------------------------------------------------------------------------------------
 
-        public int[] GetValueInt32Array()
+        public int[] GetValueInt32s()
         {
             return (int[])_value;
         }
 
-        public float[] GetValueSingleArray()
+        public float[] GetValueSingles()
         {
             return (float[])_value;
         }
 
-        public string[] GetValueStringArray()
+        public string[] GetValueStrings()
         {
             return (string[])_value;
         }

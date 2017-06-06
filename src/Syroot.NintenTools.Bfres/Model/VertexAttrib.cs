@@ -5,6 +5,10 @@ using Syroot.NintenTools.Bfres.GX2;
 
 namespace Syroot.NintenTools.Bfres
 {
+    /// <summary>
+    /// Represents an attribute of a <see cref="VertexBuffer"/> describing the data format, type and layout of a
+    /// specific data subset in the buffer.
+    /// </summary>
     [DebuggerDisplay(nameof(VertexAttrib) + " {" + nameof(Name) + "}")]
     public class VertexAttrib : INamedResData
     {
@@ -55,10 +59,6 @@ namespace Syroot.NintenTools.Bfres
     /// </summary>
     internal class VertexAttribHead
     {
-        // ---- CONSTANTS ----------------------------------------------------------------------------------------------
-
-        private const string _signature = "FVTX";
-
         // ---- FIELDS -------------------------------------------------------------------------------------------------
 
         internal uint OfsName;

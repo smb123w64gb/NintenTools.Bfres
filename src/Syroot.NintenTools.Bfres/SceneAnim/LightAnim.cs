@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 using Syroot.Maths;
 using Syroot.NintenTools.Bfres.Core;
 
@@ -56,7 +57,7 @@ namespace Syroot.NintenTools.Bfres
 
         public IList<AnimCurve> Curves { get; private set; }
 
-        public LightAnimResult Result { get; set; }
+        public LightAnimData BaseData { get; set; }
 
         public INamedResDataList<UserData> UserData { get; private set; }
 
@@ -78,8 +79,8 @@ namespace Syroot.NintenTools.Bfres
             Curves = loader.LoadList<AnimCurve>(head.OfsCurveList, head.NumCurve);
 
             loader.Position = head.OfsResult;
-            Result = new LightAnimResult(Flags);
-            ((IResData)Result).Load(loader);
+            BaseData = new LightAnimData(Flags);
+            ((IResData)BaseData).Load(loader);
 
             UserData = loader.LoadNamedDictList<UserData>(head.OfsUserDataDict);
         }
@@ -151,7 +152,8 @@ namespace Syroot.NintenTools.Bfres
         ResultColor1 = 1 << 15
     }
 
-    public class LightAnimResult : IResData
+    [StructLayout(LayoutKind.Sequential)]
+    public struct LightAnimData : IResData
     {
         // ---- FIELDS -------------------------------------------------------------------------------------------------
 
@@ -159,9 +161,16 @@ namespace Syroot.NintenTools.Bfres
 
         // ---- CONSTRUCTORS & DESTRUCTOR ------------------------------------------------------------------------------
 
-        internal LightAnimResult(LightAnimFlags flags)
+        internal LightAnimData(LightAnimFlags flags)
         {
             _flags = flags;
+            Enable = 0;
+            Position = Vector3F.Zero;
+            Rotation = Vector3F.Zero;
+            DistanceAttenuation = Vector2F.Zero;
+            AngleAttenuation = Vector2F.Zero;
+            Color0 = Vector3F.Zero;
+            Color1 = Vector3F.Zero;
         }
 
         // ---- PROPERTIES ---------------------------------------------------------------------------------------------
@@ -192,5 +201,26 @@ namespace Syroot.NintenTools.Bfres
             if (_flags.HasFlag(LightAnimFlags.ResultColor0)) Color0 = loader.ReadVector3F();
             if (_flags.HasFlag(LightAnimFlags.ResultColor1)) Color1 = loader.ReadVector3F();
         }
+    }
+
+    public enum LightAnimDataOffset : uint
+    {
+        Enable = 0x00,
+        PositionX = 0x04,
+        PositionY = 0x08,
+        PositionZ = 0x0C,
+        RotationX = 0x10,
+        RotationY = 0x14,
+        RotationZ = 0x18,
+        DistanceAttenuationX = 0x1C,
+        DistanceAttenuationY = 0x20,
+        AngleAttenuationX = 0x24,
+        AngleAttenuationY = 0x28,
+        Color0R = 0x2C,
+        Color0G = 0x30,
+        Color0B = 0x34,
+        Color1R = 0x38,
+        Color1G = 0x3C,
+        Color1B = 0x40
     }
 }

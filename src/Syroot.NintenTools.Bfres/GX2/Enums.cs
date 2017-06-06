@@ -14,16 +14,14 @@ namespace Syroot.NintenTools.Bfres.GX2
     }
 
     /// <summary>
-    /// Represents the format of a vertex attribute entry.
-    /// Possible type conversions:
-    /// - UNorm: attrib unsigned integer is converted to/from [0.0, 1.0] in shader
-    /// - UInt: attrib unsigned integer is copied to/from shader as unsigned int
-    /// - SNorm: attrib signed integer is converted to/from [-1.0, 1.0] in shader
-    /// - SInt: attrib signed integer is copied to/from shader as signed int
-    /// - Single: attrib single is copied to/from shader as Single
-    /// - UIntToSingle: attrib unsigned integer is converted Single in shader
-    /// - SIntToSingle: attrib signed integer is converted Single in shader
-    /// (32 bit integers cannot be converted to Single during fetch)
+    /// Represents the format of a vertex attribute entry. Possible type conversions:
+    /// <para/>UNorm: attrib unsigned integer is converted to/from [0.0, 1.0] in shader
+    /// <para/>UInt: attrib unsigned integer is copied to/from shader as unsigned int
+    /// <para/>SNorm: attrib signed integer is converted to/from [-1.0, 1.0] in shader
+    /// <para/>SInt: attrib signed integer is copied to/from shader as signed int
+    /// <para/>Single: attrib single is copied to/from shader as Single
+    /// <para/>UIntToSingle: attrib unsigned integer is converted Single in shader
+    /// <para/>SIntToSingle: attrib signed integer is converted Single in shader
     /// </summary>
     public enum GX2AttribFormat : uint
     {

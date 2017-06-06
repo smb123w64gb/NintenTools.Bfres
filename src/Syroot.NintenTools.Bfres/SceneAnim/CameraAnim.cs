@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 using Syroot.Maths;
 using Syroot.NintenTools.Bfres.Core;
 
@@ -44,7 +45,7 @@ namespace Syroot.NintenTools.Bfres
 
         public IList<AnimCurve> Curves { get; private set; }
 
-        public CameraAnimResult Result { get; set; }
+        public CameraAnimData BaseData { get; set; }
 
         public INamedResDataList<UserData> UserData { get; private set; }
 
@@ -58,7 +59,7 @@ namespace Syroot.NintenTools.Bfres
             BakedSize = head.SizBaked;
             Name = loader.GetName(head.OfsName);
             Curves = loader.LoadList<AnimCurve>(head.OfsCurveList, head.NumCurve);
-            Result = loader.Load<CameraAnimResult>(head.OfsResult);
+            BaseData = loader.Load<CameraAnimData>(head.OfsBaseData);
             UserData = loader.LoadNamedDictList<UserData>(head.OfsUserDataDict);
         }
     }
@@ -82,7 +83,7 @@ namespace Syroot.NintenTools.Bfres
         internal uint SizBaked;
         internal uint OfsName;
         internal uint OfsCurveList;
-        internal uint OfsResult;
+        internal uint OfsBaseData;
         internal uint OfsUserDataDict;
 
         // ---- CONSTRUCTORS & DESTRUCTOR ------------------------------------------------------------------------------
@@ -99,7 +100,7 @@ namespace Syroot.NintenTools.Bfres
             SizBaked = loader.ReadUInt32();
             OfsName = loader.ReadOffset();
             OfsCurveList = loader.ReadOffset();
-            OfsResult = loader.ReadOffset();
+            OfsBaseData = loader.ReadOffset();
             OfsUserDataDict = loader.ReadOffset();
         }
     }
@@ -113,7 +114,8 @@ namespace Syroot.NintenTools.Bfres
         Perspective = 1 << 10
     }
 
-    public class CameraAnimResult : IResData
+    [StructLayout(LayoutKind.Sequential)]
+    public struct CameraAnimData : IResData
     {
         // ---- PROPERTIES ---------------------------------------------------------------------------------------------
 
@@ -143,5 +145,20 @@ namespace Syroot.NintenTools.Bfres
             Rotation = loader.ReadVector3F();
             Twist = loader.ReadSingle();
         }
+    }
+
+    public enum CameraAnimDataOffset : uint
+    {
+        ClipNear = 0x00,
+        ClipFar = 0x04,
+        AspectRatio = 0x08,
+        FieldOFView = 0x0C,
+        PositionX = 0x10,
+        PositionY = 0x14,
+        PositionZ = 0x18,
+        RotationX = 0x1C,
+        RotationY = 0x20,
+        RotationZ = 0x24,
+        Twist = 0x28
     }
 }

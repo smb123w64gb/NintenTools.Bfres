@@ -11,7 +11,7 @@ namespace Syroot.NintenTools.Bfres.Test
         private static Stopwatch _stopwatch = new Stopwatch();
         private static string[] _searchPaths = new string[]
         {
-            @"D:\Pictures\BFRES",
+            @"D:\Pictures\zBFRES",
             @"D:\Archive\Wii U\_Roms\MK8"
         };
 
@@ -19,8 +19,7 @@ namespace Syroot.NintenTools.Bfres.Test
 
         private static void Main(string[] args)
         {
-            ResFile resFile = new ResFile(@"D:\Pictures\BFRES\Koopa.bfres");
-
+            ResFile resFile = new ResFile(@"D:\Pictures\zBFRES\Koopa.bfres");
             LoadResFiles();
 
             Console.WriteLine("Done.");
