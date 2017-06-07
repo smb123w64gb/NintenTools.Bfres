@@ -29,9 +29,9 @@ namespace Syroot.NintenTools.Bfres
 
         public sbyte LightTypeIndex { get; set; }
 
-        public sbyte DistanceAttenuationFuncIndex { get; set; }
+        public sbyte DistanceAttnFuncIndex { get; set; }
 
-        public sbyte AngleAttenuationFuncIndex { get; set; }
+        public sbyte AngleAttnFuncIndex { get; set; }
 
         public uint BakedSize { get; private set; }
 
@@ -51,9 +51,9 @@ namespace Syroot.NintenTools.Bfres
 
         public string LightTypeName { get; set; }
 
-        public string DistanceAttenuationFuncName { get; set; }
+        public string DistanceAttnFuncName { get; set; }
 
-        public string AngleAttenuationFuncName { get; set; }
+        public string AngleAttnFuncName { get; set; }
 
         public IList<AnimCurve> Curves { get; private set; }
 
@@ -69,18 +69,20 @@ namespace Syroot.NintenTools.Bfres
             Flags = head.Flags;
             FrameCount = head.NumFrame;
             LightTypeIndex = head.IdxLightType;
-            DistanceAttenuationFuncIndex = head.IdxDistanceAttenuationFunc;
-            AngleAttenuationFuncIndex = head.IdxAngleAttenuationFunc;
+            DistanceAttnFuncIndex = head.IdxDistanceAttnFunc;
+            AngleAttnFuncIndex = head.IdxAngleAttnFunc;
             BakedSize = head.SizBaked;
             Name = loader.GetName(head.OfsName);
             LightTypeName = loader.GetName(head.OfsLightTypeName);
-            DistanceAttenuationFuncName = loader.GetName(head.OfsDistAttenuationFuncName);
-            AngleAttenuationFuncName = loader.GetName(head.OfsAngleAttenuationFuncName);
+            DistanceAttnFuncName = loader.GetName(head.OfsDistAttnFuncName);
+            AngleAttnFuncName = loader.GetName(head.OfsAngleAttnFuncName);
             Curves = loader.LoadList<AnimCurve>(head.OfsCurveList, head.NumCurve);
 
-            loader.Position = head.OfsResult;
-            BaseData = new LightAnimData(Flags);
-            ((IResData)BaseData).Load(loader);
+            if (head.OfsResult != 0)
+            {
+                loader.Position = head.OfsResult;
+                BaseData = new LightAnimData(loader, Flags);
+            }
 
             UserData = loader.LoadNamedDictList<UserData>(head.OfsUserDataDict);
         }
@@ -107,13 +109,13 @@ namespace Syroot.NintenTools.Bfres
         internal int NumFrame;
         internal byte NumCurve;
         internal sbyte IdxLightType;
-        internal sbyte IdxDistanceAttenuationFunc;
-        internal sbyte IdxAngleAttenuationFunc;
+        internal sbyte IdxDistanceAttnFunc;
+        internal sbyte IdxAngleAttnFunc;
         internal uint SizBaked;
         internal uint OfsName;
         internal uint OfsLightTypeName;
-        internal uint OfsDistAttenuationFuncName;
-        internal uint OfsAngleAttenuationFuncName;
+        internal uint OfsDistAttnFuncName;
+        internal uint OfsAngleAttnFuncName;
         internal uint OfsCurveList;
         internal uint OfsResult;
         internal uint OfsUserDataDict;
@@ -128,13 +130,13 @@ namespace Syroot.NintenTools.Bfres
             NumFrame = loader.ReadInt32();
             NumCurve = loader.ReadByte();
             IdxLightType = loader.ReadSByte();
-            IdxDistanceAttenuationFunc = loader.ReadSByte();
-            IdxAngleAttenuationFunc = loader.ReadSByte();
+            IdxDistanceAttnFunc = loader.ReadSByte();
+            IdxAngleAttnFunc = loader.ReadSByte();
             SizBaked = loader.ReadUInt32();
             OfsName = loader.ReadOffset();
             OfsLightTypeName = loader.ReadOffset();
-            OfsDistAttenuationFuncName = loader.ReadOffset();
-            OfsAngleAttenuationFuncName = loader.ReadOffset();
+            OfsDistAttnFuncName = loader.ReadOffset();
+            OfsAngleAttnFuncName = loader.ReadOffset();
             OfsCurveList = loader.ReadOffset();
             OfsResult = loader.ReadOffset();
             OfsUserDataDict = loader.ReadOffset();
@@ -150,85 +152,9 @@ namespace Syroot.NintenTools.Bfres
         ResultEnable = 1 << 9,
         ResultPosition = 1 << 10,
         ResultRotation = 1 << 11,
-        ResultDistanceAttenuation = 1 << 12,
-        ResultAngleAttenuation =  1 << 13,
+        ResultDistanceAttn = 1 << 12,
+        ResultAngleAttn =  1 << 13,
         ResultColor0 = 1 << 14,
         ResultColor1 = 1 << 15
-    }
-
-    [StructLayout(LayoutKind.Sequential)]
-    public struct LightAnimData : IResData
-    {
-        // ---- FIELDS -------------------------------------------------------------------------------------------------
-
-        private LightAnimFlags _flags;
-
-        // ---- CONSTRUCTORS & DESTRUCTOR ------------------------------------------------------------------------------
-
-        internal LightAnimData(LightAnimFlags flags)
-        {
-            _flags = flags;
-            Enable = 0;
-            Position = Vector3F.Zero;
-            Rotation = Vector3F.Zero;
-            DistanceAttenuation = Vector2F.Zero;
-            AngleAttenuation = Vector2F.Zero;
-            Color0 = Vector3F.Zero;
-            Color1 = Vector3F.Zero;
-        }
-
-        // ---- PROPERTIES ---------------------------------------------------------------------------------------------
-
-        public int Enable { get; set; }
-
-        public Vector3F Position { get; set; }
-
-        public Vector3F Rotation { get; set; }
-
-        public Vector2F DistanceAttenuation { get; set; }
-
-        public Vector2F AngleAttenuation { get; set; }
-
-        public Vector3F Color0 { get; set; }
-
-        public Vector3F Color1 { get; set; }
-
-        // ---- METHODS ------------------------------------------------------------------------------------------------
-
-        void IResData.Load(ResFileLoader loader)
-        {
-            if (_flags.HasFlag(LightAnimFlags.ResultEnable)) Enable = loader.ReadInt32();
-            if (_flags.HasFlag(LightAnimFlags.ResultPosition)) Position = loader.ReadVector3F();
-            if (_flags.HasFlag(LightAnimFlags.ResultRotation)) Rotation = loader.ReadVector3F();
-            if (_flags.HasFlag(LightAnimFlags.ResultDistanceAttenuation)) DistanceAttenuation = loader.ReadVector2F();
-            if (_flags.HasFlag(LightAnimFlags.ResultAngleAttenuation)) AngleAttenuation = loader.ReadVector2F();
-            if (_flags.HasFlag(LightAnimFlags.ResultColor0)) Color0 = loader.ReadVector3F();
-            if (_flags.HasFlag(LightAnimFlags.ResultColor1)) Color1 = loader.ReadVector3F();
-        }
-
-        void IResData.Reference(ResFileLoader loader)
-        {
-        }
-    }
-
-    public enum LightAnimDataOffset : uint
-    {
-        Enable = 0x00,
-        PositionX = 0x04,
-        PositionY = 0x08,
-        PositionZ = 0x0C,
-        RotationX = 0x10,
-        RotationY = 0x14,
-        RotationZ = 0x18,
-        DistanceAttenuationX = 0x1C,
-        DistanceAttenuationY = 0x20,
-        AngleAttenuationX = 0x24,
-        AngleAttenuationY = 0x28,
-        Color0R = 0x2C,
-        Color0G = 0x30,
-        Color0B = 0x34,
-        Color1R = 0x38,
-        Color1G = 0x3C,
-        Color1B = 0x40
     }
 }

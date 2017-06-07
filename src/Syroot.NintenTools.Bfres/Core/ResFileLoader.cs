@@ -68,14 +68,7 @@ namespace Syroot.NintenTools.Bfres.Core
         internal T GetData<T>(uint offset)
             where T : IResData
         {
-            if (offset == 0)
-            {
-                return default(T);
-            }
-            else
-            {
-                return (T)_dataMap[offset];
-            }
+            return offset == 0 ? default(T) : (T)_dataMap[offset];
         }
 
         /// <summary>
@@ -540,6 +533,7 @@ namespace Syroot.NintenTools.Bfres.Core
 
         // ---- METHODS (PRIVATE) --------------------------------------------------------------------------------------
 
+        [DebuggerStepThrough]
         private T LoadInstance<T>()
             where T : IResData, new()
         {

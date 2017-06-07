@@ -172,7 +172,7 @@ namespace Syroot.NintenTools.Bfres
         {
             Flags = loader.ReadUInt16();
             NumKey = loader.ReadUInt16();
-            AnimDataOffset = loader.ReadUInt16();
+            AnimDataOffset = loader.ReadUInt32();
             FrameStart = loader.ReadSingle();
             FrameEnd = loader.ReadSingle();
             Scale = loader.ReadSingle();

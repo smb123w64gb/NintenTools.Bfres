@@ -11,8 +11,7 @@ namespace Syroot.NintenTools.Bfres
     public class TextureRef : INamedResData
     {
         // ---- FIELDS -------------------------------------------------------------------------------------------------
-
-        private string _name;
+        
         private uint _ofsTexture;
 
         // ---- EVENTS -------------------------------------------------------------------------------------------------
@@ -23,13 +22,13 @@ namespace Syroot.NintenTools.Bfres
 
         public string Name
         {
-            get { return _name; }
-            set
+            get { return Texture.Name; }
+            set 
             {
                 if (value == null) throw new ArgumentNullException(nameof(value));
-                if (_name != value)
+                if (Texture.Name != value)
                 {
-                    _name = value;
+                    Texture.Name = value;
                     NameChanged?.Invoke(this, EventArgs.Empty);
                 }
             }
@@ -42,7 +41,7 @@ namespace Syroot.NintenTools.Bfres
         void IResData.Load(ResFileLoader loader)
         {
             TextureRefHead head = new TextureRefHead(loader);
-            Name = loader.GetName(head.OfsName);
+            //Name = loader.GetName(head.OfsName); // Ignore the name as it is read from the Texture.
             _ofsTexture = head.OfsTexture;
         }
 

@@ -62,8 +62,8 @@ typedef struct // BoneAnim
 	// Read base transformation values.
 	FSeek(baseValueArrayOffset.target);
 	if (flags & 0x08) Vector3F baseScale;
-	if (flags & 0x10) Vector4F baseRotation;
 	if (flags & 0x20) Vector3F baseTranslation;
+	if (flags & 0x10) Vector4F baseRotation;
 	FSeek(pos); // Seek back to header end.	
 } BoneAnim <bgcolor=0xEBBDBD, read=BoneAnimRead>;
 

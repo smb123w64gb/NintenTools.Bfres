@@ -27,7 +27,7 @@ namespace Syroot.NintenTools.Bfres
 
         public int FrameCount { get; set; }
 
-        public sbyte DistanceAttenuationFuncIndex { get; set; }
+        public sbyte DistanceAttnFuncIndex { get; set; }
 
         public uint BakedSize { get; private set; }
 
@@ -45,7 +45,7 @@ namespace Syroot.NintenTools.Bfres
             }
         }
 
-        public string DistanceAttenuationFuncName { get; set; }
+        public string DistanceAttnFuncName { get; set; }
 
         public IList<AnimCurve> Curves { get; private set; }
 
@@ -60,12 +60,18 @@ namespace Syroot.NintenTools.Bfres
             FogAnimHead head = new FogAnimHead(loader);
             Flags = head.Flags;
             FrameCount = head.NumFrame;
-            DistanceAttenuationFuncIndex = head.IdxDistanceAttenuationFunc;
+            DistanceAttnFuncIndex = head.IdxDistanceAttnFunc;
             BakedSize = head.SizBaked;
             Name = loader.GetName(head.OfsName);
-            DistanceAttenuationFuncName = loader.GetName(head.OfsDistanceAttenuationFuncName);
+            DistanceAttnFuncName = loader.GetName(head.OfsDistanceAttnFuncName);
             Curves = loader.LoadList<AnimCurve>(head.OfsCurveList, head.NumCurve);
-            BaseData = loader.Load<FogAnimData>(head.OfsBaseData);
+
+            if (head.OfsBaseData != 0)
+            {
+                loader.Position = head.OfsBaseData;
+                BaseData = new FogAnimData(loader);
+            }
+
             UserData = loader.LoadNamedDictList<UserData>(head.OfsUserDataDict);
         }
 
@@ -89,11 +95,11 @@ namespace Syroot.NintenTools.Bfres
         internal FogAnimFlags Flags;
         internal int NumFrame;
         internal byte NumCurve;
-        internal sbyte IdxDistanceAttenuationFunc;
+        internal sbyte IdxDistanceAttnFunc;
         internal ushort NumUserData;
         internal uint SizBaked;
         internal uint OfsName;
-        internal uint OfsDistanceAttenuationFuncName;
+        internal uint OfsDistanceAttnFuncName;
         internal uint OfsCurveList;
         internal uint OfsBaseData;
         internal uint OfsUserDataDict;
@@ -106,11 +112,11 @@ namespace Syroot.NintenTools.Bfres
             Flags = loader.ReadEnum<FogAnimFlags>(true);
             NumFrame = loader.ReadInt32();
             NumCurve = loader.ReadByte();
-            IdxDistanceAttenuationFunc = loader.ReadSByte();
+            IdxDistanceAttnFunc = loader.ReadSByte();
             NumUserData = loader.ReadUInt16();
             SizBaked = loader.ReadUInt32();
             OfsName = loader.ReadOffset();
-            OfsDistanceAttenuationFuncName = loader.ReadOffset();
+            OfsDistanceAttnFuncName = loader.ReadOffset();
             OfsCurveList = loader.ReadOffset();
             OfsBaseData = loader.ReadOffset();
             OfsUserDataDict = loader.ReadOffset();
@@ -122,36 +128,5 @@ namespace Syroot.NintenTools.Bfres
     {
         BakedCurve = 1 << 0,
         Looping = 1 << 2
-    }
-    
-    [StructLayout(LayoutKind.Sequential)]
-    public struct FogAnimData : IResData
-    {
-        // ---- PROPERTIES ---------------------------------------------------------------------------------------------
-
-        public Vector2F DistanceAttenuation { get; set; }
-        
-        public Vector3F Color { get; set; }
-
-        // ---- METHODS ------------------------------------------------------------------------------------------------
-
-        void IResData.Load(ResFileLoader loader)
-        {
-            DistanceAttenuation = loader.ReadVector2F();
-            Color = loader.ReadVector3F();
-        }
-
-        void IResData.Reference(ResFileLoader loader)
-        {
-        }
-    }
-
-    public enum FogAnimDataOffset : uint
-    {
-        DistanceAttenuationX = 0x00,
-        DistanceAttenuationY = 0x04,
-        ColorR = 0x08,
-        ColorG = 0x0C,
-        ColorB = 0x10
     }
 }

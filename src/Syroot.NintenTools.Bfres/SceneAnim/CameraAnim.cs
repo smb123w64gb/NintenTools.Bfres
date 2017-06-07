@@ -59,7 +59,13 @@ namespace Syroot.NintenTools.Bfres
             BakedSize = head.SizBaked;
             Name = loader.GetName(head.OfsName);
             Curves = loader.LoadList<AnimCurve>(head.OfsCurveList, head.NumCurve);
-            BaseData = loader.Load<CameraAnimData>(head.OfsBaseData);
+
+            if (head.OfsBaseData != 0)
+            {
+                loader.Position = head.OfsBaseData;
+                BaseData = new CameraAnimData(loader);
+            }
+
             UserData = loader.LoadNamedDictList<UserData>(head.OfsUserDataDict);
         }
 
@@ -116,57 +122,5 @@ namespace Syroot.NintenTools.Bfres
         Looping = 1 << 2,
         EulerZXY = 1 << 8,
         Perspective = 1 << 10
-    }
-
-    [StructLayout(LayoutKind.Sequential)]
-    public struct CameraAnimData : IResData
-    {
-        // ---- PROPERTIES ---------------------------------------------------------------------------------------------
-
-        public float ClipNear { get; set; }
-
-        public float ClipFar { get; set; }
-
-        public float AspectRatio { get; set; }
-
-        public float FieldOfView { get; set; }
-
-        public Vector3F Position { get; set; }
-
-        public Vector3F Rotation { get; set; }
-
-        public float Twist { get; set; }
-
-        // ---- METHODS ------------------------------------------------------------------------------------------------
-
-        void IResData.Load(ResFileLoader loader)
-        {
-            ClipNear = loader.ReadSingle();
-            ClipFar = loader.ReadSingle();
-            AspectRatio = loader.ReadSingle();
-            FieldOfView = loader.ReadSingle();
-            Position = loader.ReadVector3F();
-            Rotation = loader.ReadVector3F();
-            Twist = loader.ReadSingle();
-        }
-
-        void IResData.Reference(ResFileLoader loader)
-        {
-        }
-    }
-
-    public enum CameraAnimDataOffset : uint
-    {
-        ClipNear = 0x00,
-        ClipFar = 0x04,
-        AspectRatio = 0x08,
-        FieldOFView = 0x0C,
-        PositionX = 0x10,
-        PositionY = 0x14,
-        PositionZ = 0x18,
-        RotationX = 0x1C,
-        RotationY = 0x20,
-        RotationZ = 0x24,
-        Twist = 0x28
     }
 }
