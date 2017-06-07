@@ -7,7 +7,7 @@ namespace Syroot.NintenTools.Bfres
     /// <summary>
     /// Represents a 4-byte value which can hold differently typed data.
     /// </summary>
-    [DebuggerDisplay(nameof(DWord) + " Int32={Int32}, Single={Single}")]
+    [DebuggerDisplay("{" + nameof(Int32) + "} / {" + nameof(Single) + "}")]
     [StructLayout(LayoutKind.Explicit)]
     public struct DWord : IConvertible
     {
