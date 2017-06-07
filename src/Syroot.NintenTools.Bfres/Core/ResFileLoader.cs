@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Text;
 using Syroot.BinaryData;
@@ -15,7 +16,8 @@ namespace Syroot.NintenTools.Bfres.Core
         // ---- CONSTANTS ----------------------------------------------------------------------------------------------
 
         private const int _sizNode = 16;
-
+        private IDictionary<uint, IResData> _dataMap;
+        
         // ---- CONSTRUCTORS & DESTRUCTOR ------------------------------------------------------------------------------
 
         internal ResFileLoader(ResFile resFile, Stream stream, bool leaveOpen = false)
@@ -23,6 +25,7 @@ namespace Syroot.NintenTools.Bfres.Core
         {
             ByteOrder = ByteOrder.BigEndian;
             ResFile = resFile;
+            _dataMap = new Dictionary<uint, IResData>();
         }
 
         internal ResFileLoader(ResFile resFile, string fileName)
@@ -32,15 +35,55 @@ namespace Syroot.NintenTools.Bfres.Core
 
         // ---- PROPERTIES ---------------------------------------------------------------------------------------------
 
+        /// <summary>
+        /// Gets the loaded <see cref="ResFile"/> instance.
+        /// </summary>
         internal ResFile ResFile { get; }
 
-        // ---- METHODS ------------------------------------------------------------------------------------------------
+        // ---- METHODS (INTERNAL) -------------------------------------------------------------------------------------
+
+        /// <summary>
+        /// Starts deserializing the data from the <see cref="ResFile"/> root.
+        /// </summary>
+        internal void Execute()
+        {
+            // Load the raw data into structures.
+            ((IResData)ResFile).Load(this);
+
+            // Resolve any references.
+            foreach (KeyValuePair<uint, IResData> mapping in _dataMap)
+            {
+                mapping.Value.Reference(this);
+            }
+        }
+
+        /// <summary>
+        /// Gets the <see cref="IResData"/> instance at the specified <paramref name="offset"/> or <c>null</c> if the
+        /// offset is 0. Can only be used after the raw file has been loaded.
+        /// </summary>
+        /// <typeparam name="T">The type of <see cref="IResData"/> to return.</typeparam>
+        /// <param name="offset">The absolute address where the data of the instance to retrieve starts.</param>
+        /// <returns>The <see cref="IResData"/> instance at the specified address or <c>null</c> if the offset is 0.
+        /// </returns>
+        internal T GetData<T>(uint offset)
+            where T : IResData
+        {
+            if (offset == 0)
+            {
+                return default(T);
+            }
+            else
+            {
+                return (T)_dataMap[offset];
+            }
+        }
 
         /// <summary>
         /// Reads and returns the <see cref="String"/> from the given offset.
         /// </summary>
         /// <param name="offset">The total offset to read the <see cref="String"/> from.</param>
         /// <returns>The read <see cref="String"/>.</returns>
+        [DebuggerStepThrough]
         internal string GetName(uint offset, Encoding encoding = null)
         {
             encoding = encoding ?? Encoding;
@@ -49,12 +92,13 @@ namespace Syroot.NintenTools.Bfres.Core
                 return ReadString(BinaryStringFormat.ZeroTerminated, encoding);
             }
         }
-        
+
         /// <summary>
         /// Reads and returns <see cref="String"/> instances from the given <paramref name="offsets"/>.
         /// </summary>
         /// <param name="offsets">The total offsets to read the <see cref="String"/> instances from.</param>
         /// <returns>The read <see cref="String"/> instances.</returns>
+        [DebuggerStepThrough]
         internal IList<string> GetNames(uint[] offsets, Encoding encoding = null)
         {
             encoding = encoding ?? Encoding;
@@ -77,6 +121,7 @@ namespace Syroot.NintenTools.Bfres.Core
         /// <typeparam name="T">The type of <see cref="IResData"/> to load.</typeparam>
         /// <param name="offset">The offset to read the content from.</param>
         /// <returns>The new instance or <c>null</c>.</returns>
+        [DebuggerStepThrough]
         internal T Load<T>(uint offset)
             where T : IResData, new()
         {
@@ -93,6 +138,7 @@ namespace Syroot.NintenTools.Bfres.Core
         /// </summary>
         /// <param name="offset">The offset at which to read the dictionary.</param>
         /// <returns>The read list.</returns>
+        [DebuggerStepThrough]
         internal IList<string> LoadDictNames(uint offset)
         {
             List<string> list = new List<string>();
@@ -125,6 +171,7 @@ namespace Syroot.NintenTools.Bfres.Core
         /// <typeparam name="T">The type of the elements. Must implement <see cref="IResData"/>.</typeparam>
         /// <param name="offset">The offset at which to read the dictionary.</param>
         /// <returns>The read dictionary.</returns>
+        [DebuggerStepThrough]
         internal IDictionary<string, T> LoadDict<T>(uint offset)
             where T : IResData, new()
         {
@@ -163,6 +210,7 @@ namespace Syroot.NintenTools.Bfres.Core
         /// <typeparam name="T">The type of the elements. Must implement <see cref="IResData"/>.</typeparam>
         /// <param name="offset">The offset at which to read the dictionary.</param>
         /// <returns>The read list.</returns>
+        [DebuggerStepThrough]
         internal INamedResDataList<T> LoadNamedDictList<T>(uint offset)
             where T : INamedResData, new()
         {
@@ -201,6 +249,7 @@ namespace Syroot.NintenTools.Bfres.Core
         /// <param name="offset">The offset at which to read the list.</param>
         /// <param name="count">The number of elements to read.</param>
         /// <returns>The read list.</returns>
+        [DebuggerStepThrough]
         internal IList<T> LoadList<T>(uint offset, int count)
             where T : IResData, new()
         {
@@ -228,6 +277,7 @@ namespace Syroot.NintenTools.Bfres.Core
         /// <param name="offset">The offset at which to read the list.</param>
         /// <param name="count">The number of elements to read.</param>
         /// <returns>The read list.</returns>
+        [DebuggerStepThrough]
         internal INamedResDataList<T> LoadNamedList<T>(uint offset, int count)
             where T : INamedResData, new()
         {
@@ -493,9 +543,22 @@ namespace Syroot.NintenTools.Bfres.Core
         private T LoadInstance<T>()
             where T : IResData, new()
         {
+            uint offset = (uint)Position;
+
+            // Same data can be referenced multiple times. Load it in any case to move in the stream, needed for arrays.
             T instance = new T();
             instance.Load(this);
-            return instance;
+
+            // If possible, return an instance already representing the data.
+            if (_dataMap.TryGetValue(offset, out IResData existingInstance))
+            {
+                return (T)existingInstance;
+            }
+            else
+            {
+                _dataMap.Add(offset, instance);
+                return instance;
+            }
         }
     }
 }

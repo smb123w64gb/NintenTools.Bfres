@@ -53,6 +53,10 @@ namespace Syroot.NintenTools.Bfres
             DependIndex = head.IdxDepend;
             Name = loader.GetName(head.OfsName);
         }
+
+        void IResData.Reference(ResFileLoader loader)
+        {
+        }
     }
 
     /// <summary>
@@ -75,7 +79,6 @@ namespace Syroot.NintenTools.Bfres
 
         internal ShaderParamHead(ResFileLoader loader)
         {
-            // TODO: This layout does not work out for 3.2.0.1 files (s. MK8 Gear.bfres).
             if (loader.ResFile.Version >= 0x03030000)
             {
                 Type = loader.ReadEnum<ShaderParamType>(true);
@@ -89,7 +92,7 @@ namespace Syroot.NintenTools.Bfres
             }
             else
             {
-                // Guess
+                // GUESS
                 Type = loader.ReadEnum<ShaderParamType>(true);
                 loader.Seek(1);
                 OfsData = loader.ReadUInt16();
@@ -108,6 +111,6 @@ namespace Syroot.NintenTools.Bfres
         Float2x2 = 17, Float2x3, Float2x4,
         Float3x2 = 21, Float3x3, Float3x4,
         Float4x2 = 25, Float4x3, Float4x4,
-        Srt2D, Srt3D, TexSrt, Matrix3x2 /*guess*/
+        Srt2D, Srt3D, TexSrt, Matrix3x2/*GUESS*/
     }
 }

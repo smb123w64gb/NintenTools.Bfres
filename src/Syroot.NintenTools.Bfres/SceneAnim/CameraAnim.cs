@@ -62,6 +62,10 @@ namespace Syroot.NintenTools.Bfres
             BaseData = loader.Load<CameraAnimData>(head.OfsBaseData);
             UserData = loader.LoadNamedDictList<UserData>(head.OfsUserDataDict);
         }
+
+        void IResData.Reference(ResFileLoader loader)
+        {
+        }
     }
 
     /// <summary>
@@ -144,6 +148,10 @@ namespace Syroot.NintenTools.Bfres
             Position = loader.ReadVector3F();
             Rotation = loader.ReadVector3F();
             Twist = loader.ReadSingle();
+        }
+
+        void IResData.Reference(ResFileLoader loader)
+        {
         }
     }
 

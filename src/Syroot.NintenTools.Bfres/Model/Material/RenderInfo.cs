@@ -82,6 +82,10 @@ namespace Syroot.NintenTools.Bfres
             Name = loader.GetName(head.OfsName);
             _value = head.Value;
         }
+
+        void IResData.Reference(ResFileLoader loader)
+        {
+        }
     }
 
     /// <summary>

@@ -18,5 +18,9 @@ namespace Syroot.NintenTools.Bfres
             TargetAttribIndices = loader.ReadBytes(20);
             TargetAttribIndexOffsets = loader.ReadBytes(4);
         }
+
+        void IResData.Reference(ResFileLoader loader)
+        {
+        }
     }
 }

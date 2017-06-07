@@ -55,6 +55,10 @@ namespace Syroot.NintenTools.Bfres
             BlendControl = new BlendControl(head.BlendControl, head.BlendControlTarget);
             BlendColor = head.BlendColor;
         }
+
+        void IResData.Reference(ResFileLoader loader)
+        {
+        }
     }
 
     /// <summary>

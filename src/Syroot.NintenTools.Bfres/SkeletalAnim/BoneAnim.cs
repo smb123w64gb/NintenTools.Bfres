@@ -4,8 +4,8 @@ using Syroot.NintenTools.Bfres.Core;
 
 namespace Syroot.NintenTools.Bfres
 {
-    [DebuggerDisplay(nameof(TexPatternAnim) + " {" + nameof(Name) + "}")]
-    public class TexPatternAnim : INamedResData
+    [DebuggerDisplay(nameof(BoneAnim) + " {" + nameof(Name) + "}")]
+    public class BoneAnim : INamedResData
     {
         // ---- FIELDS -------------------------------------------------------------------------------------------------
 

@@ -116,6 +116,10 @@ namespace Syroot.NintenTools.Bfres
 
             UserData = loader.LoadNamedDictList<UserData>(head.OfsUserDataDict);
         }
+
+        void IResData.Reference(ResFileLoader loader)
+        {
+        }
     }
 
     /// <summary>

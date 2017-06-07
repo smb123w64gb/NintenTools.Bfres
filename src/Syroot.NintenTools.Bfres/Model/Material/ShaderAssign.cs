@@ -31,6 +31,10 @@ namespace Syroot.NintenTools.Bfres
             SamplerAssigns = loader.LoadDictNames(head.OfsSamplerAssignDict);
             ShaderOptions = loader.LoadDictNames(head.OfsShaderOptionDict);
         }
+
+        void IResData.Reference(ResFileLoader loader)
+        {
+        }
     }
 
     /// <summary>

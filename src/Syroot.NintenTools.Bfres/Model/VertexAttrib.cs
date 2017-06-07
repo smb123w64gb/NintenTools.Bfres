@@ -52,6 +52,10 @@ namespace Syroot.NintenTools.Bfres
             Offset = head.Offset;
             Format = head.Format;
         }
+
+        void IResData.Reference(ResFileLoader loader)
+        {
+        }
     }
 
     /// <summary>

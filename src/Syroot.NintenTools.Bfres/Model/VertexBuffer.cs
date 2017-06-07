@@ -28,6 +28,10 @@ namespace Syroot.NintenTools.Bfres
             Attributes = loader.LoadNamedDictList<VertexAttrib>(head.OfsVertexAttribDict);
             Buffers = loader.LoadList<Buffer>(head.OfsBufferList, head.NumBuffer);
         }
+
+        void IResData.Reference(ResFileLoader loader)
+        {
+        }
     }
 
     /// <summary>

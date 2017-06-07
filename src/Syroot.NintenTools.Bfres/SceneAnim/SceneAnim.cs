@@ -58,6 +58,10 @@ namespace Syroot.NintenTools.Bfres
             FogAnims = loader.LoadNamedDictList<FogAnim>(head.OfsFogAnimDict);
             UserData = loader.LoadNamedDictList<UserData>(head.OfsUserDataDict);
         }
+
+        void IResData.Reference(ResFileLoader loader)
+        {
+        }
     }
 
     /// <summary>

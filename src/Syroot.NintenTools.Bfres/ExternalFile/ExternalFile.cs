@@ -20,6 +20,10 @@ namespace Syroot.NintenTools.Bfres
             loader.Seek(head.OfsData);
             Data = loader.ReadBytes((int)head.SizData);
         }
+
+        void IResData.Reference(ResFileLoader loader)
+        {
+        }
     }
 
     /// <summary>

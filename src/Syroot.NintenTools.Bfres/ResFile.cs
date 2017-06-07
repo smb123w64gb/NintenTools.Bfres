@@ -26,7 +26,7 @@ namespace Syroot.NintenTools.Bfres
         public ResFile(Stream stream, bool leaveOpen = false)
         {
             ResFileLoader loader = new ResFileLoader(this, stream, leaveOpen);
-            ((IResData)this).Load(loader);
+            loader.Execute();
         }
 
         public ResFile(string fileName)
@@ -102,6 +102,10 @@ namespace Syroot.NintenTools.Bfres
             ShapeAnims = loader.LoadNamedDictList<ShapeAnim>(head.OfsShapeAnimDict);
             SceneAnims = loader.LoadNamedDictList<SceneAnim>(head.OfsSceneAnimDict);
             ExternalFiles = loader.LoadDict<ExternalFile>(head.OfsExternalFileDict);
+        }
+
+        void IResData.Reference(ResFileLoader loader)
+        {
         }
     }
 

@@ -36,5 +36,9 @@ namespace Syroot.NintenTools.Bfres
         void IResData.Load(ResFileLoader loader)
         {
         }
+
+        void IResData.Reference(ResFileLoader loader)
+        {
+        }
     }
 }

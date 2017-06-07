@@ -4,19 +4,31 @@ using Syroot.NintenTools.Bfres.Core;
 
 namespace Syroot.NintenTools.Bfres
 {
+    /// <summary>
+    /// Represents an FSKA subfile in a <see cref="ResFile"/>, storing armature animations of <see cref="Bone"/>
+    /// instances in a <see cref="Skeleton"/>.
+    /// fog settings.
+    /// </summary>
     [DebuggerDisplay(nameof(SkeletalAnim) + " {" + nameof(Name) + "}")]
     public class SkeletalAnim : INamedResData
     {
+        // ---- CONSTANTS ----------------------------------------------------------------------------------------------
+
+        private const uint _flagsScalingMask = 0b00000000_00000000_00000011_00000000;
+        private const uint _flagsRotationMask = 0b00000000_00000000_01110000_00000000;
+
         // ---- FIELDS -------------------------------------------------------------------------------------------------
 
         private string _name;
+        private uint _flags;
+        private uint _ofsBindSkeleton;
 
         // ---- EVENTS -------------------------------------------------------------------------------------------------
 
         public event EventHandler NameChanged;
 
         // ---- PROPERTIES ---------------------------------------------------------------------------------------------
-
+        
         public string Name
         {
             get { return _name; }
@@ -31,10 +43,120 @@ namespace Syroot.NintenTools.Bfres
             }
         }
 
+        public string Path { get; set; }
+
+        public SkeletalAnimFlagsScaling FlagsScaling
+        {
+            get { return (SkeletalAnimFlagsScaling)(_flags & _flagsScalingMask); }
+            set { _flags &= ~_flagsScalingMask | (uint)value; }
+        }
+
+        public SkeletalAnimFlagsRotation FlagsRotation
+        {
+            get { return (SkeletalAnimFlagsRotation)(_flags & _flagsRotationMask); }
+            set { _flags &= ~_flagsRotationMask | (uint)value; }
+        }
+
+        public int FrameCount { get; set; }
+
+        public uint BakedSize { get; set; }
+        
+        public INamedResDataList<BoneAnim> BoneAnims { get; private set; }
+
+        public Skeleton BindSkeleton { get; set; }
+
+        public ushort[] BindIndices { get; set; }
+
+        public INamedResDataList<UserData> UserData { get; private set; }
+
         // ---- METHODS ------------------------------------------------------------------------------------------------
 
         void IResData.Load(ResFileLoader loader)
         {
+            SkeletalAnimHead head = new SkeletalAnimHead(loader);
+            Name = loader.GetName(head.OfsName);
+            Path = loader.GetName(head.OfsPath);
+            _flags = head.Flags;
+            FrameCount = head.NumFrame;
+            BakedSize = head.SizBaked;
+            BoneAnims = loader.LoadNamedList<BoneAnim>(head.OfsBoneAnimList, head.NumBoneAnim);
+            _ofsBindSkeleton = head.OfsBindSkeleton;
+
+            loader.Position = head.OfsBindIndexList;
+            BindIndices = loader.ReadUInt16s(head.NumBoneAnim);
+
+            UserData = loader.LoadNamedDictList<UserData>(head.OfsUserDataDict);
         }
+
+        void IResData.Reference(ResFileLoader loader)
+        {
+            BindSkeleton = loader.GetData<Skeleton>(_ofsBindSkeleton);
+        }
+    }
+
+    /// <summary>
+    /// Represents the header of a <see cref="SkeletalAnim"/> instance.
+    /// </summary>
+    internal class SkeletalAnimHead
+    {
+        // ---- CONSTANTS ----------------------------------------------------------------------------------------------
+
+        private const string _signature = "FSKA";
+
+        // ---- FIELDS -------------------------------------------------------------------------------------------------
+
+        internal uint Signature;
+        internal uint OfsName;
+        internal uint OfsPath;
+        internal uint Flags;
+        internal int NumFrame;
+        internal ushort NumBoneAnim;
+        internal ushort NumUserData;
+        internal int NumCurve;
+        internal uint SizBaked;
+        internal uint OfsBoneAnimList;
+        internal uint OfsBindSkeleton;
+        internal uint OfsBindIndexList;
+        internal uint OfsUserDataDict;
+
+        // ---- CONSTRUCTORS & DESTRUCTOR ------------------------------------------------------------------------------
+
+        internal SkeletalAnimHead(ResFileLoader loader)
+        {
+            Signature = loader.ReadSignature(_signature);
+            OfsName = loader.ReadOffset();
+            OfsPath = loader.ReadOffset();
+            Flags = loader.ReadUInt32();
+            NumFrame = loader.ReadInt32();
+            NumBoneAnim = loader.ReadUInt16();
+            NumUserData = loader.ReadUInt16();
+            NumCurve = loader.ReadInt32();
+            SizBaked = loader.ReadUInt32();
+            OfsBoneAnimList = loader.ReadOffset();
+            OfsBindSkeleton = loader.ReadOffset();
+            OfsBindIndexList = loader.ReadOffset();
+            OfsUserDataDict = loader.ReadOffset();
+        }
+    }
+
+    [Flags]
+    public enum SkeletalAnimFlags : uint
+    {
+        BakedCurve = 1 << 0,
+        Looping = 1 << 2
+    }
+
+    public enum SkeletalAnimFlagsScaling : uint
+    {
+        None,
+        Standard = 1 << 8,
+        Maya = 2 << 8,
+        Softimage = 3 << 8
+    }
+
+    public enum SkeletalAnimFlagsRotation : uint
+    {
+        Quaternion,
+        EulerXYZ = 1 << 12
     }
 }

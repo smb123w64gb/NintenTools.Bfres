@@ -90,6 +90,10 @@ namespace Syroot.NintenTools.Bfres
             Type = head.Type;
             _value = head.Value;
         }
+
+        void IResData.Reference(ResFileLoader loader)
+        {
+        }
     }
 
     /// <summary>

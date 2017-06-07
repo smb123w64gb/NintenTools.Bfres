@@ -13,8 +13,8 @@ namespace Syroot.NintenTools.Bfres
     {
         // ---- CONSTANTS ----------------------------------------------------------------------------------------------
 
-        private const uint _flagsScaleMask = 0b00000000_00000000_00000011_00000000;
-        private const uint _flagsRotateMask = 0b00000000_00000000_01110000_00000000;
+        private const uint _flagsScalingMask = 0b00000000_00000000_00000011_00000000;
+        private const uint _flagsRotationMask = 0b00000000_00000000_01110000_00000000;
 
         // ---- FIELDS -------------------------------------------------------------------------------------------------
 
@@ -22,16 +22,16 @@ namespace Syroot.NintenTools.Bfres
         
         // ---- PROPERTIES ---------------------------------------------------------------------------------------------
 
-        public SkeletonFlagsScale FlagsScale
+        public SkeletonFlagsScaling FlagsScaling
         {
-            get { return (SkeletonFlagsScale)(_flags & _flagsScaleMask); }
-            set { _flags &= ~_flagsScaleMask | (uint)value; }
+            get { return (SkeletonFlagsScaling)(_flags & _flagsScalingMask); }
+            set { _flags &= ~_flagsScalingMask | (uint)value; }
         }
 
         public SkeletonFlagsRotation FlagsRotation
         {
-            get { return (SkeletonFlagsRotation)(_flags & _flagsRotateMask); }
-            set { _flags &= ~_flagsRotateMask | (uint)value; }
+            get { return (SkeletonFlagsRotation)(_flags & _flagsRotationMask); }
+            set { _flags &= ~_flagsRotationMask | (uint)value; }
         }
         
         public INamedResDataList<Bone> Bones { get; private set; }
@@ -57,6 +57,10 @@ namespace Syroot.NintenTools.Bfres
                 loader.Position = head.OfsInverseModelMatrixList;
                 InverseModelMatrices = loader.ReadMatrix3x4s((int)head.NumSmoothMatrix);
             }
+        }
+
+        void IResData.Reference(ResFileLoader loader)
+        {
         }
     }
 
@@ -100,7 +104,7 @@ namespace Syroot.NintenTools.Bfres
         }
     }
 
-    public enum SkeletonFlagsScale : uint
+    public enum SkeletonFlagsScaling : uint
     {
         None,
         Standard = 1 << 8,

@@ -68,6 +68,10 @@ namespace Syroot.NintenTools.Bfres
             BaseData = loader.Load<FogAnimData>(head.OfsBaseData);
             UserData = loader.LoadNamedDictList<UserData>(head.OfsUserDataDict);
         }
+
+        void IResData.Reference(ResFileLoader loader)
+        {
+        }
     }
 
     /// <summary>
@@ -135,6 +139,10 @@ namespace Syroot.NintenTools.Bfres
         {
             DistanceAttenuation = loader.ReadVector2F();
             Color = loader.ReadVector3F();
+        }
+
+        void IResData.Reference(ResFileLoader loader)
+        {
         }
     }
 

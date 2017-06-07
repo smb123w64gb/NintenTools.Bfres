@@ -84,6 +84,10 @@ namespace Syroot.NintenTools.Bfres
 
             UserData = loader.LoadNamedDictList<UserData>(head.OfsUserDataDict);
         }
+
+        void IResData.Reference(ResFileLoader loader)
+        {
+        }
     }
 
     /// <summary>
@@ -200,6 +204,10 @@ namespace Syroot.NintenTools.Bfres
             if (_flags.HasFlag(LightAnimFlags.ResultAngleAttenuation)) AngleAttenuation = loader.ReadVector2F();
             if (_flags.HasFlag(LightAnimFlags.ResultColor0)) Color0 = loader.ReadVector3F();
             if (_flags.HasFlag(LightAnimFlags.ResultColor1)) Color1 = loader.ReadVector3F();
+        }
+
+        void IResData.Reference(ResFileLoader loader)
+        {
         }
     }
 

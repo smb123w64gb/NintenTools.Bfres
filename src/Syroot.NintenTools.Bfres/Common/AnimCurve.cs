@@ -142,6 +142,10 @@ namespace Syroot.NintenTools.Bfres
                     break;
             }
         }
+
+        void IResData.Reference(ResFileLoader loader)
+        {
+        }
     }
 
     /// <summary>

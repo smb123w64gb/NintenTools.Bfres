@@ -60,6 +60,10 @@ namespace Syroot.NintenTools.Bfres
             Materials = loader.LoadNamedDictList<Material>(head.OfsMaterialDict);
             UserData = loader.LoadNamedDictList<UserData>(head.OfsUserDataDict);
         }
+
+        void IResData.Reference(ResFileLoader loader)
+        {
+        }
     }
 
     /// <summary>

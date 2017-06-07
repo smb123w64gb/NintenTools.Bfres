@@ -22,6 +22,10 @@ namespace Syroot.NintenTools.Bfres
             loader.Position = head.OfsData;
             Data = loader.ReadBytes((int)head.Size * head.NumBuffering);
         }
+
+        void IResData.Reference(ResFileLoader loader)
+        {
+        }
     }
 
     /// <summary>

@@ -46,6 +46,10 @@ namespace Syroot.NintenTools.Bfres
             TexSampler = new TexSampler(head.GX2Sampler);
             Name = loader.GetName(head.OfsName);
         }
+
+        void IResData.Reference(ResFileLoader loader)
+        {
+        }
     }
 
     /// <summary>

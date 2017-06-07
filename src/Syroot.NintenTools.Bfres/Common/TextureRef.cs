@@ -13,6 +13,7 @@ namespace Syroot.NintenTools.Bfres
         // ---- FIELDS -------------------------------------------------------------------------------------------------
 
         private string _name;
+        private uint _ofsTexture;
 
         // ---- EVENTS -------------------------------------------------------------------------------------------------
 
@@ -34,12 +35,20 @@ namespace Syroot.NintenTools.Bfres
             }
         }
 
+        public Texture Texture { get; set; }
+
         // ---- METHODS ------------------------------------------------------------------------------------------------
 
         void IResData.Load(ResFileLoader loader)
         {
             TextureRefHead head = new TextureRefHead(loader);
             Name = loader.GetName(head.OfsName);
+            _ofsTexture = head.OfsTexture;
+        }
+
+        void IResData.Reference(ResFileLoader loader)
+        {
+            Texture = loader.GetData<Texture>(_ofsTexture);
         }
     }
 

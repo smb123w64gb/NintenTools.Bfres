@@ -35,6 +35,10 @@ namespace Syroot.NintenTools.Bfres
             IndexBuffer = loader.Load<Buffer>(head.OfsIndexBuffer);
             Offset = head.Offset;
         }
+
+        void IResData.Reference(ResFileLoader loader)
+        {
+        }
     }
 
     /// <summary>

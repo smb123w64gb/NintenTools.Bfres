@@ -56,6 +56,8 @@ namespace Syroot.NintenTools.Bfres
 
         public byte[] VolatileFlags { get; private set; }
 
+        // TODO: Methods to access ShaderParam variable values.
+
         // ---- METHODS ------------------------------------------------------------------------------------------------
 
         void IResData.Load(ResFileLoader loader)
@@ -78,8 +80,10 @@ namespace Syroot.NintenTools.Bfres
                 VolatileFlags = loader.ReadBytes((int)Math.Ceiling((float)head.NumShaderParamVolatile / sizeof(byte)));
             }
         }
-
-        // TODO: Methods to access ShaderParam variable values.
+        
+        void IResData.Reference(ResFileLoader loader)
+        {
+        }
     }
 
     /// <summary>

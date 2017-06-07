@@ -83,6 +83,10 @@ namespace Syroot.NintenTools.Bfres
                 SubMeshBoundingIndices = loader.ReadUInt16s(head.NumSubMeshBoundingNodes);
             }
         }
+
+        void IResData.Reference(ResFileLoader loader)
+        {
+        }
     }
 
     /// <summary>
