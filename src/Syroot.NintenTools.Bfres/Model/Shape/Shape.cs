@@ -74,6 +74,7 @@ namespace Syroot.NintenTools.Bfres
             KeyShapes = loader.LoadDict<KeyShape>(head.OfsKeyShapeDict);
             loader.Position = head.OfsSubMeshBoundingList;
             SubMeshBoundings = loader.ReadBoundings(Meshes[0].SubMeshes.Count); // TODO: Validate count.
+
             // Normally nonexistent.
             if (head.NumSubMeshBoundingNodes != 0)
             {
@@ -158,7 +159,7 @@ namespace Syroot.NintenTools.Bfres
             UserPointer = loader.ReadUInt32();
         }
     }
-    
+
     public enum ShapeFlags : uint
     {
         HasVertexBuffer = 1 << 1

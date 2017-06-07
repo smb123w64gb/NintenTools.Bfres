@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using Syroot.NintenTools.Bfres.Core;
-using Syroot.NintenTools.Bfres.GX2;
 
 namespace Syroot.NintenTools.Bfres
 {
@@ -24,9 +23,12 @@ namespace Syroot.NintenTools.Bfres
         void IResData.Load(ResFileLoader loader)
         {
             VertexBufferHead head = new VertexBufferHead(loader);
-            VertexSkinCount = head.NumVertexSkin;
-            Attributes = loader.LoadNamedDictList<VertexAttrib>(head.OfsVertexAttribDict);
-            Buffers = loader.LoadList<Buffer>(head.OfsBufferList, head.NumBuffer);
+            using (loader.TemporarySeek())
+            {
+                VertexSkinCount = head.NumVertexSkin;
+                Attributes = loader.LoadDictList<VertexAttrib>(head.OfsVertexAttribDict);
+                Buffers = loader.LoadList<Buffer>(head.OfsBufferList, head.NumBuffer);
+            }
         }
 
         void IResData.Reference(ResFileLoader loader)

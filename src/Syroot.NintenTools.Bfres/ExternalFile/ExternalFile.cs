@@ -17,8 +17,11 @@ namespace Syroot.NintenTools.Bfres
         void IResData.Load(ResFileLoader loader)
         {
             ExternalFileHead head = new ExternalFileHead(loader);
-            loader.Seek(head.OfsData);
-            Data = loader.ReadBytes((int)head.SizData);
+            if (head.OfsData != 0)
+            {
+                loader.Seek(head.OfsData);
+                Data = loader.ReadBytes((int)head.SizData);
+            }
         }
 
         void IResData.Reference(ResFileLoader loader)

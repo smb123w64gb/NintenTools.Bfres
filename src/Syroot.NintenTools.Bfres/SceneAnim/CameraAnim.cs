@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Runtime.InteropServices;
-using Syroot.Maths;
 using Syroot.NintenTools.Bfres.Core;
 
 namespace Syroot.NintenTools.Bfres
@@ -66,7 +64,7 @@ namespace Syroot.NintenTools.Bfres
                 BaseData = new CameraAnimData(loader);
             }
 
-            UserData = loader.LoadNamedDictList<UserData>(head.OfsUserDataDict);
+            UserData = loader.LoadDictList<UserData>(head.OfsUserDataDict);
         }
 
         void IResData.Reference(ResFileLoader loader)

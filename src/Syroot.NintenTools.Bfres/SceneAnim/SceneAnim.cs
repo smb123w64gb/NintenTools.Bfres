@@ -53,10 +53,10 @@ namespace Syroot.NintenTools.Bfres
             SceneAnimHead head = new SceneAnimHead(loader);
             Name = loader.GetName(head.OfsName);
             Path = loader.GetName(head.OfsPath);
-            CameraAnims = loader.LoadNamedDictList<CameraAnim>(head.OfsCameraAnimDict);
-            LightAnims = loader.LoadNamedDictList<LightAnim>(head.OfsLightAnimDict);
-            FogAnims = loader.LoadNamedDictList<FogAnim>(head.OfsFogAnimDict);
-            UserData = loader.LoadNamedDictList<UserData>(head.OfsUserDataDict);
+            CameraAnims = loader.LoadDictList<CameraAnim>(head.OfsCameraAnimDict);
+            LightAnims = loader.LoadDictList<LightAnim>(head.OfsLightAnimDict);
+            FogAnims = loader.LoadDictList<FogAnim>(head.OfsFogAnimDict);
+            UserData = loader.LoadDictList<UserData>(head.OfsUserDataDict);
         }
 
         void IResData.Reference(ResFileLoader loader)

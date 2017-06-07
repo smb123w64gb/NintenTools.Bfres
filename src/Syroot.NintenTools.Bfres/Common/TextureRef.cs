@@ -4,35 +4,21 @@ using Syroot.NintenTools.Bfres.Core;
 
 namespace Syroot.NintenTools.Bfres
 {
+    // TODO: This class should possibly not exist, reference textures directly.
+
     /// <summary>
     /// Represents a reference to a <see cref="Texture"/> instance by name.
     /// </summary>
     [DebuggerDisplay(nameof(TextureRef) + " {" + nameof(Name) + "}")]
-    public class TextureRef : INamedResData
+    public class TextureRef : IResData
     {
         // ---- FIELDS -------------------------------------------------------------------------------------------------
-        
+
         private uint _ofsTexture;
-
-        // ---- EVENTS -------------------------------------------------------------------------------------------------
-
-        public event EventHandler NameChanged;
 
         // ---- PROPERTIES ---------------------------------------------------------------------------------------------
 
-        public string Name
-        {
-            get { return Texture.Name; }
-            set 
-            {
-                if (value == null) throw new ArgumentNullException(nameof(value));
-                if (Texture.Name != value)
-                {
-                    Texture.Name = value;
-                    NameChanged?.Invoke(this, EventArgs.Empty);
-                }
-            }
-        }
+        public string Name { get; set; }
 
         public Texture Texture { get; set; }
 
@@ -41,7 +27,7 @@ namespace Syroot.NintenTools.Bfres
         void IResData.Load(ResFileLoader loader)
         {
             TextureRefHead head = new TextureRefHead(loader);
-            //Name = loader.GetName(head.OfsName); // Ignore the name as it is read from the Texture.
+            Name = loader.GetName(head.OfsName);
             _ofsTexture = head.OfsTexture;
         }
 

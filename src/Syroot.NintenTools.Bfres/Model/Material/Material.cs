@@ -44,7 +44,7 @@ namespace Syroot.NintenTools.Bfres
 
         public ShaderAssign ShaderAssign { get; private set; }
 
-        public INamedResDataList<TextureRef> TextureRefs { get; private set; }
+        public IList<TextureRef> TextureRefs { get; private set; }
 
         public INamedResDataList<Sampler> Samplers { get; private set; }
 
@@ -65,15 +65,16 @@ namespace Syroot.NintenTools.Bfres
             MaterialHead head = new MaterialHead(loader);
             Name = loader.GetName(head.OfsName);
             Flags = head.Flags;
-            RenderInfos = loader.LoadNamedDictList<RenderInfo>(head.OfsRenderInfoDict);
+            RenderInfos = loader.LoadDictList<RenderInfo>(head.OfsRenderInfoDict);
             RenderState = loader.Load<RenderState>(head.OfsRenderState);
             ShaderAssign = loader.Load<ShaderAssign>(head.OfsShaderAssign);
-            TextureRefs = loader.LoadNamedList<TextureRef>(head.OfsTextureRefList, head.NumTextureRef);
-            Samplers = loader.LoadNamedDictList<Sampler>(head.OfsSamplerDict);
-            ShaderParams = loader.LoadNamedDictList<ShaderParam>(head.OfsShaderParamDict);
+            TextureRefs = loader.LoadList<TextureRef>(head.OfsTextureRefList, head.NumTextureRef);
+            Samplers = loader.LoadDictList<Sampler>(head.OfsSamplerDict);
+            ShaderParams = loader.LoadDictList<ShaderParam>(head.OfsShaderParamDict);
             loader.Position = head.OfsParamSource;
             ParamData = loader.ReadBytes(head.SizParamSource);
-            UserData = loader.LoadNamedDictList<UserData>(head.OfsUserDataDict);
+            UserData = loader.LoadDictList<UserData>(head.OfsUserDataDict);
+
             if (head.OfsVolatileFlag != 0)
             {
                 loader.Position = head.OfsVolatileFlag;

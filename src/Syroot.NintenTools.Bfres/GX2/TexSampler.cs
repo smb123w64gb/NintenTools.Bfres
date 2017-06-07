@@ -123,14 +123,12 @@ namespace Syroot.NintenTools.Bfres.GX2
 
         private float UInt32ToSingle(uint value)
         {
-            // TODO: Validate correctness of conversion.
-            return value / 64f;
+            return value / 64f; // TODO: Validate correctness of conversion.
         }
 
         private uint SingleToUInt32(float value)
         {
-            // TODO: Validate correctness of conversion.
-            return (uint)(Algebra.Clamp(value, 0, 13) * 64f);
+            return (uint)(Algebra.Clamp(value, 0, 13) * 64f); // TODO: Validate correctness of conversion.
         }
     }
 }

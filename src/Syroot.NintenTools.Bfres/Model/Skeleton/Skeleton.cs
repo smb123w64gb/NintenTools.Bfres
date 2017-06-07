@@ -46,12 +46,14 @@ namespace Syroot.NintenTools.Bfres
         {
             SkeletonHead head = new SkeletonHead(loader);
             _flags = head.Flags;
-            Bones = loader.LoadNamedDictList<Bone>(head.OfsBoneDict);
+            Bones = loader.LoadDictList<Bone>(head.OfsBoneDict);
+
             if (head.OfsMatrixToBoneTable != 0)
             {
                 loader.Position = head.OfsMatrixToBoneTable;
                 MatrixToBoneTable = loader.ReadUInt16s((int)(head.NumSmoothMatrix + head.NumRigidMatrix));
             }
+
             if (head.OfsInverseModelMatrixList != 0)
             {
                 loader.Position = head.OfsInverseModelMatrixList;

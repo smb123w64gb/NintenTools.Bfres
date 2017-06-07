@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using Syroot.NintenTools.Bfres.Core;
 
@@ -7,7 +8,6 @@ namespace Syroot.NintenTools.Bfres
     /// <summary>
     /// Represents an FSKA subfile in a <see cref="ResFile"/>, storing armature animations of <see cref="Bone"/>
     /// instances in a <see cref="Skeleton"/>.
-    /// fog settings.
     /// </summary>
     [DebuggerDisplay(nameof(SkeletalAnim) + " {" + nameof(Name) + "}")]
     public class SkeletalAnim : INamedResData
@@ -61,7 +61,7 @@ namespace Syroot.NintenTools.Bfres
 
         public uint BakedSize { get; set; }
         
-        public INamedResDataList<BoneAnim> BoneAnims { get; private set; }
+        public IList<BoneAnim> BoneAnims { get; private set; }
 
         public Skeleton BindSkeleton { get; set; }
 
@@ -79,13 +79,13 @@ namespace Syroot.NintenTools.Bfres
             _flags = head.Flags;
             FrameCount = head.NumFrame;
             BakedSize = head.SizBaked;
-            BoneAnims = loader.LoadNamedList<BoneAnim>(head.OfsBoneAnimList, head.NumBoneAnim);
+            BoneAnims = loader.LoadList<BoneAnim>(head.OfsBoneAnimList, head.NumBoneAnim);
             _ofsBindSkeleton = head.OfsBindSkeleton;
 
             loader.Position = head.OfsBindIndexList;
             BindIndices = loader.ReadUInt16s(head.NumBoneAnim);
 
-            UserData = loader.LoadNamedDictList<UserData>(head.OfsUserDataDict);
+            UserData = loader.LoadDictList<UserData>(head.OfsUserDataDict);
         }
 
         void IResData.Reference(ResFileLoader loader)

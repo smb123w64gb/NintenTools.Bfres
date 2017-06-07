@@ -16,7 +16,7 @@
         /// <summary>
         /// Resolves any references between <see cref="IResData"/> instances.
         /// </summary>
-        /// <param name="resFileLoader">The <see cref="ResFileLoader"/> to query reference instances with.</param>
-        void Reference(ResFileLoader resFileLoader);
+        /// <param name="loader">The <see cref="ResFileLoader"/> to query reference instances with.</param>
+        void Reference(ResFileLoader loader);
     }
 }

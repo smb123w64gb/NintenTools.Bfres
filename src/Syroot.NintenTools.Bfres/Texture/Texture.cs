@@ -28,7 +28,7 @@ namespace Syroot.NintenTools.Bfres
         public uint Height { get; set; }
 
         public uint Depth { get; set; }
-        
+
         public uint MipCount { get; set; }
 
         public GX2SurfaceFormat Format { get; set; }
@@ -58,7 +58,7 @@ namespace Syroot.NintenTools.Bfres
         public uint CompSel { get; set; }
 
         public uint[] Regs { get; set; }
-        
+
         public string Name
         {
             get { return _name; }
@@ -114,7 +114,7 @@ namespace Syroot.NintenTools.Bfres
             loader.Position = head.OfsMipData;
             MipData = loader.ReadBytes((int)head.SizMipData);
 
-            UserData = loader.LoadNamedDictList<UserData>(head.OfsUserDataDict);
+            UserData = loader.LoadDictList<UserData>(head.OfsUserDataDict);
         }
 
         void IResData.Reference(ResFileLoader loader)

@@ -18,9 +18,15 @@ namespace Syroot.NintenTools.Bfres
         void IResData.Load(ResFileLoader loader)
         {
             BufferHead head = new BufferHead(loader);
-            Stride = head.Stride;
-            loader.Position = head.OfsData;
-            Data = loader.ReadBytes((int)head.Size * head.NumBuffering);
+            using (loader.TemporarySeek())
+            {
+                Stride = head.Stride;
+                if (head.OfsData != 0)
+                {
+                    loader.Position = head.OfsData;
+                    Data = loader.ReadBytes((int)head.Size * head.NumBuffering);
+                }
+            }
         }
 
         void IResData.Reference(ResFileLoader loader)

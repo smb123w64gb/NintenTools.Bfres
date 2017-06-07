@@ -11,12 +11,8 @@ namespace Syroot.NintenTools.Bfres
     /// Represents a NintendoWare for Cafe (NW4F) graphics data archive file.
     /// </summary>
     [DebuggerDisplay(nameof(ResFile) + " {" + nameof(Name) + "}")]
-    public class ResFile : INamedResData
+    public class ResFile : IResData
     {
-        // ---- FIELDS -------------------------------------------------------------------------------------------------
-
-        private string _name;
-
         // ---- CONSTRUCTORS & DESTRUCTOR ------------------------------------------------------------------------------
 
         public ResFile()
@@ -33,30 +29,14 @@ namespace Syroot.NintenTools.Bfres
             : this(new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.Read))
         {
         }
-
-        // ---- EVENTS -------------------------------------------------------------------------------------------------
-
-        public event EventHandler NameChanged;
-
+        
         // ---- PROPERTIES ---------------------------------------------------------------------------------------------
 
         public uint Version { get; private set; }
 
         public ByteOrder ByteOrder { get; private set; }
 
-        public string Name
-        {
-            get { return _name; }
-            set
-            {
-                if (value == null) throw new ArgumentNullException(nameof(value));
-                if (_name != value)
-                {
-                    _name = value;
-                    NameChanged?.Invoke(this, EventArgs.Empty);
-                }
-            }
-        }
+        public string Name { get; set; }
 
         public INamedResDataList<Model> Models { get; private set; }
 
@@ -90,17 +70,17 @@ namespace Syroot.NintenTools.Bfres
             Version = head.Version;
             ByteOrder = head.ByteOrder;
             Name = loader.GetName(head.OfsName);
-            Models = loader.LoadNamedDictList<Model>(head.OfsModelDict);
-            Textures = loader.LoadNamedDictList<Texture>(head.OfsTextureDict);
-            SkeletalAnims = loader.LoadNamedDictList<SkeletalAnim>(head.OfsSkeletalAnimDict);
-            ShaderParamAnims = loader.LoadNamedDictList<ShaderParamAnim>(head.OfsShaderParamDict);
-            ColorAnims = loader.LoadNamedDictList<ShaderParamAnim>(head.OfsShaderParamDict);
-            TexSrtAnims = loader.LoadNamedDictList<ShaderParamAnim>(head.OfsShaderParamDict);
-            TexPatternAnims = loader.LoadNamedDictList<TexPatternAnim>(head.OfsTexPatternAnimDict);
-            BoneVisibilityAnims = loader.LoadNamedDictList<VisibilityAnim>(head.OfsBoneVisibilityAnimDict);
-            MatVisibilityAnims = loader.LoadNamedDictList<VisibilityAnim>(head.OfsMatVisibilityAnimDict);
-            ShapeAnims = loader.LoadNamedDictList<ShapeAnim>(head.OfsShapeAnimDict);
-            SceneAnims = loader.LoadNamedDictList<SceneAnim>(head.OfsSceneAnimDict);
+            Models = loader.LoadDictList<Model>(head.OfsModelDict);
+            Textures = loader.LoadDictList<Texture>(head.OfsTextureDict);
+            SkeletalAnims = loader.LoadDictList<SkeletalAnim>(head.OfsSkeletalAnimDict);
+            ShaderParamAnims = loader.LoadDictList<ShaderParamAnim>(head.OfsShaderParamDict);
+            ColorAnims = loader.LoadDictList<ShaderParamAnim>(head.OfsShaderParamDict);
+            TexSrtAnims = loader.LoadDictList<ShaderParamAnim>(head.OfsShaderParamDict);
+            TexPatternAnims = loader.LoadDictList<TexPatternAnim>(head.OfsTexPatternAnimDict);
+            BoneVisibilityAnims = loader.LoadDictList<VisibilityAnim>(head.OfsBoneVisibilityAnimDict);
+            MatVisibilityAnims = loader.LoadDictList<VisibilityAnim>(head.OfsMatVisibilityAnimDict);
+            ShapeAnims = loader.LoadDictList<ShapeAnim>(head.OfsShapeAnimDict);
+            SceneAnims = loader.LoadDictList<SceneAnim>(head.OfsSceneAnimDict);
             ExternalFiles = loader.LoadDict<ExternalFile>(head.OfsExternalFileDict);
         }
 

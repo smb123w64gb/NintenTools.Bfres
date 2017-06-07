@@ -15,7 +15,10 @@ namespace Syroot.NintenTools.Bfres.Core
     {
         // ---- CONSTANTS ----------------------------------------------------------------------------------------------
 
-        private const int _sizNode = 16;
+        private const int _dictNodeSize = 16;
+
+        // ---- FIELDS -------------------------------------------------------------------------------------------------
+
         private IDictionary<uint, IResData> _dataMap;
         
         // ---- CONSTRUCTORS & DESTRUCTOR ------------------------------------------------------------------------------
@@ -143,7 +146,7 @@ namespace Syroot.NintenTools.Bfres.Core
             int entryCount = ReadInt32();
 
             // Read the dictionary nodes.
-            Seek(_sizNode); // Skip the root node.
+            Seek(_dictNodeSize); // Skip the root node.
             for (; entryCount > 0; entryCount--)
             {
                 uint keyBits = ReadUInt32();
@@ -177,7 +180,7 @@ namespace Syroot.NintenTools.Bfres.Core
             int entryCount = ReadInt32();
 
             // Read the dictionary nodes.
-            Seek(_sizNode); // Skip the root node.
+            Seek(_dictNodeSize); // Skip the root node.
             for (; entryCount > 0; entryCount--)
             {
                 uint keyBits = ReadUInt32();
@@ -204,7 +207,7 @@ namespace Syroot.NintenTools.Bfres.Core
         /// <param name="offset">The offset at which to read the dictionary.</param>
         /// <returns>The read list.</returns>
         [DebuggerStepThrough]
-        internal INamedResDataList<T> LoadNamedDictList<T>(uint offset)
+        internal INamedResDataList<T> LoadDictList<T>(uint offset)
             where T : INamedResData, new()
         {
             NamedResDataList<T> list = new NamedResDataList<T>();
@@ -216,7 +219,7 @@ namespace Syroot.NintenTools.Bfres.Core
             int entryCount = ReadInt32();
 
             // Read the dictionary nodes.
-            Seek(_sizNode); // Skip the root node.
+            Seek(_dictNodeSize); // Skip the root node.
             for (; entryCount > 0; entryCount--)
             {
                 uint keyBits = ReadUInt32();
@@ -253,41 +256,37 @@ namespace Syroot.NintenTools.Bfres.Core
             Position = offset;
             for (; count > 0; count--)
             {
-                using (TemporarySeek())
-                {
-                    list.Add(LoadInstance<T>());
-                }
+                list.Add(LoadInstance<T>());
             }
 
             return list;
         }
 
         /// <summary>
-        /// Reads an <see cref="IList{T}"/> from the given <paramref name="offset"/> and element
-        /// <paramref name="count"/>. If the offset is 0, an empty list is returned.
+        /// Reads a <see cref="AnimConstant"/> instance from the current stream and returns it.
         /// </summary>
-        /// <typeparam name="T">The type of the elements. Must implement <see cref="IResData"/>.</typeparam>
-        /// <param name="offset">The offset at which to read the list.</param>
-        /// <param name="count">The number of elements to read.</param>
-        /// <returns>The read list.</returns>
-        [DebuggerStepThrough]
-        internal INamedResDataList<T> LoadNamedList<T>(uint offset, int count)
-            where T : INamedResData, new()
+        /// <returns>The <see cref="AnimConstant"/> instance.</returns>
+        internal AnimConstant ReadAnimConstant()
         {
-            NamedResDataList<T> list = new NamedResDataList<T>(count);
-            if (offset == 0 || count == 0) return list;
-
-            // Seek to the list start and read it.
-            Position = offset;
-            for (; count > 0; count--)
+            return new AnimConstant()
             {
-                using (TemporarySeek())
-                {
-                    list.Add(LoadInstance<T>());
-                }
-            }
+                TargetOffset = ReadUInt32(),
+                Value = ReadInt32()
+            };
+        }
 
-            return list;
+        /// <summary>
+        /// Reads a <see cref="AnimConstant"/> instance from the current stream and returns it.
+        /// </summary>
+        /// <returns>The <see cref="AnimConstant"/> instance.</returns>
+        internal AnimConstant[] ReadAnimConstants(int count)
+        {
+            AnimConstant[] values = new AnimConstant[count];
+            for (int i = 0; i < count; i++)
+            {
+                values[i] = ReadAnimConstant();
+            }
+            return values;
         }
 
         /// <summary>
@@ -317,7 +316,7 @@ namespace Syroot.NintenTools.Bfres.Core
             }
             return values;
         }
-
+        
         /// <summary>
         /// Reads a BFRES signature consisting of 4 ASCII characters encoded as an <see cref="UInt32"/> and checks for
         /// validity.
@@ -482,7 +481,7 @@ namespace Syroot.NintenTools.Bfres.Core
             }
             return values;
         }
-        
+
         /// <summary>
         /// Reads a <see cref="Vector4"/> instance from the current stream and returns it.
         /// </summary>

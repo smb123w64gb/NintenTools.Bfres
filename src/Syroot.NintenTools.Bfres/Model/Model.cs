@@ -56,9 +56,9 @@ namespace Syroot.NintenTools.Bfres
             Path = loader.GetName(head.OfsPath);
             Skeleton = loader.Load<Skeleton>(head.OfsSkeleton);
             VertexBuffers = loader.LoadList<VertexBuffer>(head.OfsVertexBufferList, head.NumVertexBuffer);
-            Shapes = loader.LoadNamedDictList<Shape>(head.OfsShapeDict);
-            Materials = loader.LoadNamedDictList<Material>(head.OfsMaterialDict);
-            UserData = loader.LoadNamedDictList<UserData>(head.OfsUserDataDict);
+            Shapes = loader.LoadDictList<Shape>(head.OfsShapeDict);
+            Materials = loader.LoadDictList<Material>(head.OfsMaterialDict);
+            UserData = loader.LoadDictList<UserData>(head.OfsUserDataDict);
         }
 
         void IResData.Reference(ResFileLoader loader)

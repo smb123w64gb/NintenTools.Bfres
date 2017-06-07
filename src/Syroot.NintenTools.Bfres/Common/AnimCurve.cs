@@ -1,5 +1,4 @@
-﻿using Syroot.Maths;
-using Syroot.NintenTools.Bfres.Core;
+﻿using Syroot.NintenTools.Bfres.Core;
 
 namespace Syroot.NintenTools.Bfres
 {
@@ -57,7 +56,7 @@ namespace Syroot.NintenTools.Bfres
 
         public float Scale { get; set; }
 
-        public float Offset { get; set; }
+        public DWord Offset { get; set; }
 
         public float Delta { get; set; }
 
@@ -89,57 +88,60 @@ namespace Syroot.NintenTools.Bfres
         void IResData.Load(ResFileLoader loader)
         {
             AnimCurveHead head = new AnimCurveHead(loader);
-            _flags = head.Flags;
-            AnimDataOffset = head.AnimDataOffset;
-            StartFrame = head.FrameStart;
-            EndFrame = head.FrameEnd;
-            Scale = head.Scale;
-            Offset = head.Offset;
-            Delta = head.Delta;
-
-            loader.Position = head.OfsFrameList;
-            switch (FrameType)
+            using (loader.TemporarySeek())
             {
-                case AnimCurveFrameType.Single:
-                    Frames = loader.ReadSingles(head.NumKey);
-                    break;
-                case AnimCurveFrameType.Int16:
-                    Frames = new float[head.NumKey];
-                    for (int i = 0; i < head.NumKey; i++)
-                    {
-                        Frames[i] = loader.ReadInt16();
-                    }
-                    break;
-                case AnimCurveFrameType.Byte:
-                    Frames = new float[head.NumKey];
-                    for (int i = 0; i < head.NumKey; i++)
-                    {
-                        Frames[i] = loader.ReadByte();
-                    }
-                    break;
-            }
+                _flags = head.Flags;
+                AnimDataOffset = head.AnimDataOffset;
+                StartFrame = head.FrameStart;
+                EndFrame = head.FrameEnd;
+                Scale = head.Scale;
+                Offset = head.Offset;
+                Delta = head.Delta;
 
-            loader.Position = head.OfsKeyList;
-            int keyElementCount = head.NumKey * GetElementsPerKey();
-            switch (KeyType)
-            {
-                case AnimCurveKeyType.Single:
-                    Keys = loader.ReadSingles(keyElementCount);
-                    break;
-                case AnimCurveKeyType.Int16:
-                    Keys = new float[keyElementCount];
-                    for (int i = 0; i < head.NumKey; i++)
-                    {
-                        Keys[i] = loader.ReadInt16();
-                    }
-                    break;
-                case AnimCurveKeyType.Byte:
-                    Keys = new float[keyElementCount];
-                    for (int i = 0; i < head.NumKey; i++)
-                    {
-                        Keys[i] = loader.ReadByte();
-                    }
-                    break;
+                loader.Position = head.OfsFrameList;
+                switch (FrameType)
+                {
+                    case AnimCurveFrameType.Single:
+                        Frames = loader.ReadSingles(head.NumKey);
+                        break;
+                    case AnimCurveFrameType.Int16:
+                        Frames = new float[head.NumKey];
+                        for (int i = 0; i < head.NumKey; i++)
+                        {
+                            Frames[i] = loader.ReadInt16();
+                        }
+                        break;
+                    case AnimCurveFrameType.Byte:
+                        Frames = new float[head.NumKey];
+                        for (int i = 0; i < head.NumKey; i++)
+                        {
+                            Frames[i] = loader.ReadByte();
+                        }
+                        break;
+                }
+
+                loader.Position = head.OfsKeyList;
+                int keyElementCount = head.NumKey * GetElementsPerKey();
+                switch (KeyType)
+                {
+                    case AnimCurveKeyType.Single:
+                        Keys = loader.ReadSingles(keyElementCount);
+                        break;
+                    case AnimCurveKeyType.Int16:
+                        Keys = new float[keyElementCount];
+                        for (int i = 0; i < head.NumKey; i++)
+                        {
+                            Keys[i] = loader.ReadInt16();
+                        }
+                        break;
+                    case AnimCurveKeyType.Byte:
+                        Keys = new float[keyElementCount];
+                        for (int i = 0; i < head.NumKey; i++)
+                        {
+                            Keys[i] = loader.ReadByte();
+                        }
+                        break;
+                }
             }
         }
 
@@ -161,7 +163,7 @@ namespace Syroot.NintenTools.Bfres
         internal float FrameStart;
         internal float FrameEnd;
         internal float Scale;
-        internal float Offset; // TODO: Can also be Int32.
+        internal DWord Offset;
         internal float Delta; // 3.4.0.0+
         internal uint OfsFrameList;
         internal uint OfsKeyList;
@@ -209,5 +211,13 @@ namespace Syroot.NintenTools.Bfres
         BakedInt = 5 << 4,
         StepBool = 6 << 4,
         BakedBool = 7 << 4
+    }
+
+    public struct AnimConstant
+    {
+        // ---- FIELDS -------------------------------------------------------------------------------------------------
+
+        public uint TargetOffset;
+        public DWord Value;
     }
 }

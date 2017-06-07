@@ -30,10 +30,6 @@
 		<Reference Include="Microsoft.CSharp" />
 	</ItemGroup>
 
-	<ItemGroup>
-	  <Folder Include="Collections\" />
-	</ItemGroup>
-
 	<PropertyGroup Condition="'$(Configuration)' == 'Debug'">
 		<DebugType>portable</DebugType>
 	</PropertyGroup>

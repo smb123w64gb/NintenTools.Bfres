@@ -9,7 +9,7 @@ namespace Syroot.NintenTools.Bfres
     /// Represents the animation of a single <see cref="Bone"/> in a <see cref="SkeletalAnim"/> subfile.
     /// </summary>
     [DebuggerDisplay(nameof(BoneAnim) + " {" + nameof(Name) + "}")]
-    public class BoneAnim : INamedResData
+    public class BoneAnim : IResData
     {
         // ---- CONSTANTS ----------------------------------------------------------------------------------------------
 
@@ -20,11 +20,6 @@ namespace Syroot.NintenTools.Bfres
         // ---- FIELDS -------------------------------------------------------------------------------------------------
 
         private uint _flags;
-        private string _name;
-
-        // ---- EVENTS -------------------------------------------------------------------------------------------------
-
-        public event EventHandler NameChanged;
 
         // ---- PROPERTIES ---------------------------------------------------------------------------------------------
 
@@ -46,19 +41,7 @@ namespace Syroot.NintenTools.Bfres
             set { _flags &= ~_flagsMaskTransform | (uint)value; }
         }
 
-        public string Name
-        {
-            get { return _name; }
-            set
-            {
-                if (value == null) throw new ArgumentNullException(nameof(value));
-                if (_name != value)
-                {
-                    _name = value;
-                    NameChanged?.Invoke(this, EventArgs.Empty);
-                }
-            }
-        }
+        public string Name { get; set; }
 
         public byte BeginRotate { get; set; }
 
@@ -68,7 +51,7 @@ namespace Syroot.NintenTools.Bfres
 
         public int BeginCurve { get; set; }
 
-        public IList<AnimCurve> Curves { get; set; }
+        public IList<AnimCurve> Curves { get; private set; }
 
         public BoneAnimData BaseData { get; set; }
 
@@ -77,18 +60,21 @@ namespace Syroot.NintenTools.Bfres
         void IResData.Load(ResFileLoader loader)
         {
             BoneAnimHead head = new BoneAnimHead(loader);
-            _flags = head.Flags;
-            Name = loader.GetName(head.OfsName);
-            BeginRotate = head.BeginRotate;
-            BeginTranslate = head.BeginTranslate;
-            BeginBaseTranslate = head.BeginBaseTranslate;
-            BeginCurve = head.BeginCurve;
-            Curves = loader.LoadList<AnimCurve>(head.OfsCurveList, head.NumCurve);
-
-            if (head.OfsBaseData != 0)
+            using (loader.TemporarySeek())
             {
-                loader.Position = head.OfsBaseData;
-                BaseData = new BoneAnimData(loader, FlagsBase);
+                _flags = head.Flags;
+                Name = loader.GetName(head.OfsName);
+                BeginRotate = head.BeginRotate;
+                BeginTranslate = head.BeginTranslate;
+                BeginBaseTranslate = head.BeginBaseTranslate;
+                BeginCurve = head.BeginCurve;
+                Curves = loader.LoadList<AnimCurve>(head.OfsCurveList, head.NumCurve);
+
+                if (head.OfsBaseData != 0)
+                {
+                    loader.Position = head.OfsBaseData;
+                    BaseData = new BoneAnimData(loader, FlagsBase);
+                }
             }
         }
 

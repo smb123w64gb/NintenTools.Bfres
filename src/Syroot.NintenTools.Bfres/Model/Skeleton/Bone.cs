@@ -107,7 +107,7 @@ namespace Syroot.NintenTools.Bfres
             Scale = head.Scale;
             Rotation = head.Rotation;
             Position = head.Position;
-            UserData = loader.LoadNamedDictList<UserData>(head.OfsUserDataDict);
+            UserData = loader.LoadDictList<UserData>(head.OfsUserDataDict);
         }
 
         void IResData.Reference(ResFileLoader loader)

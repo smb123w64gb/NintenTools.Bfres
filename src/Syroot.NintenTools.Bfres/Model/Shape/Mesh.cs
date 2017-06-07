@@ -29,11 +29,14 @@ namespace Syroot.NintenTools.Bfres
         void IResData.Load(ResFileLoader loader)
         {
             MeshHead head = new MeshHead(loader);
-            PrimitiveType = head.PrimitiveType;
-            Format = head.Format;
-            SubMeshes = loader.LoadList<SubMesh>(head.OfsSubMeshList, head.NumSubMesh);
-            IndexBuffer = loader.Load<Buffer>(head.OfsIndexBuffer);
-            Offset = head.Offset;
+            using (loader.TemporarySeek())
+            {
+                PrimitiveType = head.PrimitiveType;
+                Format = head.Format;
+                SubMeshes = loader.LoadList<SubMesh>(head.OfsSubMeshList, head.NumSubMesh);
+                IndexBuffer = loader.Load<Buffer>(head.OfsIndexBuffer);
+                Offset = head.Offset;
+            }
         }
 
         void IResData.Reference(ResFileLoader loader)
