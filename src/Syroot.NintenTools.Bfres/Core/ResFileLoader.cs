@@ -78,6 +78,7 @@ namespace Syroot.NintenTools.Bfres.Core
         /// Reads and returns the <see cref="String"/> from the given offset.
         /// </summary>
         /// <param name="offset">The total offset to read the <see cref="String"/> from.</param>
+        /// <param name="encoding">The <see cref="Encoding"/> to use to read the string.</param>
         /// <returns>The read <see cref="String"/>.</returns>
         [DebuggerStepThrough]
         internal string GetName(uint offset, Encoding encoding = null)
@@ -93,6 +94,7 @@ namespace Syroot.NintenTools.Bfres.Core
         /// Reads and returns <see cref="String"/> instances from the given <paramref name="offsets"/>.
         /// </summary>
         /// <param name="offsets">The total offsets to read the <see cref="String"/> instances from.</param>
+        /// <param name="encoding">The <see cref="Encoding"/> to use to read the string.</param>
         /// <returns>The read <see cref="String"/> instances.</returns>
         [DebuggerStepThrough]
         internal IList<string> GetNames(uint[] offsets, Encoding encoding = null)
@@ -270,7 +272,7 @@ namespace Syroot.NintenTools.Bfres.Core
         {
             return new AnimConstant()
             {
-                TargetOffset = ReadUInt32(),
+                AnimDataOffset = ReadUInt32(),
                 Value = ReadInt32()
             };
         }

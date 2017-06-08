@@ -2,6 +2,9 @@
 
 namespace Syroot.NintenTools.Bfres.GX2
 {
+    /// <summary>
+    /// Represents GX2 settings controlling how depth and stencil buffer checks are performed and handled.
+    /// </summary>
     public class DepthControl
     {
         // ---- CONSTANTS ----------------------------------------------------------------------------------------------
@@ -22,15 +25,20 @@ namespace Syroot.NintenTools.Bfres.GX2
 
         // ---- CONSTRUCTORS & DESTRUCTOR ------------------------------------------------------------------------------
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DepthControl"/> class.
+        /// </summary>
+        public DepthControl()
+        {
+        }
+
         internal DepthControl(uint value)
         {
             Value = value;
         }
 
         // ---- PROPERTIES ---------------------------------------------------------------------------------------------
-
-        public uint Value { get; set; }
-
+        
         public bool DepthTestEnabled
         {
             get { return Value.GetBit(_depthTestBit); }
@@ -108,5 +116,7 @@ namespace Syroot.NintenTools.Bfres.GX2
             get { return (GX2StencilFunction)Value.Decode(_backStencilZFailBit, _backStencilZFailBits); }
             set { Value = Value.Encode((uint)value, _backStencilZFailBit, _backStencilZFailBits); }
         }
+
+        internal uint Value { get; set; }
     }
 }

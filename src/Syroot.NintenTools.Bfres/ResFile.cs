@@ -14,16 +14,30 @@ namespace Syroot.NintenTools.Bfres
     {
         // ---- CONSTRUCTORS & DESTRUCTOR ------------------------------------------------------------------------------
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ResFile"/> class.
+        /// </summary>
         public ResFile()
         {
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ResFile"/> class from the given <paramref name="stream"/> which
+        /// is optionally left open.
+        /// </summary>
+        /// <param name="stream">The <see cref="Stream"/> to load the data from.</param>
+        /// <param name="leaveOpen"><c>true</c> to leave the stream open after reading, otherwise <c>false</c>.</param>
         public ResFile(Stream stream, bool leaveOpen = false)
         {
             ResFileLoader loader = new ResFileLoader(this, stream, leaveOpen);
             loader.Execute();
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ResFile"/> class from the file with the given
+        /// <paramref name="fileName"/>.
+        /// </summary>
+        /// <param name="fileName">The name of the file to load the data from.</param>
         public ResFile(string fileName)
             : this(new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.Read))
         {
@@ -31,34 +45,80 @@ namespace Syroot.NintenTools.Bfres
         
         // ---- PROPERTIES ---------------------------------------------------------------------------------------------
 
+        /// <summary>
+        /// Gets the revision of the BFRES structure formats.
+        /// </summary>
         public uint Version { get; private set; }
 
+        /// <summary>
+        /// Gets the byte order in which data is stored.
+        /// </summary>
         public ByteOrder ByteOrder { get; private set; }
 
+        /// <summary>
+        /// Gets or sets a name describing the contents.
+        /// </summary>
         public string Name { get; set; }
 
+        /// <summary>
+        /// Gets the stored <see cref="Model"/> (FMDL) instances.
+        /// </summary>
         public INamedResDataList<Model> Models { get; private set; }
 
+        /// <summary>
+        /// Gets the stored <see cref="Texture"/> (FTEX) instances.
+        /// </summary>
         public INamedResDataList<Texture> Textures { get; private set; }
 
+        /// <summary>
+        /// Gets the stored <see cref="SkeletalAnim"/> (FSKA) instances.
+        /// </summary>
         public INamedResDataList<SkeletalAnim> SkeletalAnims { get; private set; }
 
+        /// <summary>
+        /// Gets the stored <see cref="ShaderParamAnim"/> (FSHU) instances.
+        /// </summary>
         public INamedResDataList<ShaderParamAnim> ShaderParamAnims { get; private set; }
 
+        /// <summary>
+        /// Gets the stored <see cref="ShaderParamAnim"/> (FSHU) instances for color animations.
+        /// </summary>
         public INamedResDataList<ShaderParamAnim> ColorAnims { get; private set; }
 
+        /// <summary>
+        /// Gets the stored <see cref="ShaderParamAnim"/> (FSHU) instances for texture SRT animations.
+        /// </summary>
         public INamedResDataList<ShaderParamAnim> TexSrtAnims { get; private set; }
 
+        /// <summary>
+        /// Gets the stored <see cref="TexPatternAnim"/> (FTXP) instances.
+        /// </summary>
         public INamedResDataList<TexPatternAnim> TexPatternAnims { get; private set; }
 
+        /// <summary>
+        /// Gets the stored <see cref="VisibilityAnim"/> (FVIS) instances for bone visibility animations.
+        /// </summary>
         public INamedResDataList<VisibilityAnim> BoneVisibilityAnims { get; private set; }
 
+        /// <summary>
+        /// Gets the stored <see cref="VisibilityAnim"/> (FVIS) instances for material visibility animations.
+        /// </summary>
         public INamedResDataList<VisibilityAnim> MatVisibilityAnims { get; private set; }
 
+        /// <summary>
+        /// Gets the stored <see cref="ShapeAnim"/> (FSHA) instances.
+        /// </summary>
         public INamedResDataList<ShapeAnim> ShapeAnims { get; private set; }
 
+        /// <summary>
+        /// Gets the stored <see cref="SceneAnim"/> (FSCN) instances.
+        /// </summary>
         public INamedResDataList<SceneAnim> SceneAnims { get; private set; }
 
+        /// <summary>
+        /// Gets attached <see cref="ExternalFile"/> instances. The key of the dictionary typically represents the name
+        /// of the file they were originally created from.
+        /// </summary>
         public IDictionary<string, ExternalFile> ExternalFiles { get; private set; }
 
         // ---- METHODS ------------------------------------------------------------------------------------------------

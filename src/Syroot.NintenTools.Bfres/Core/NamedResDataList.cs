@@ -22,11 +22,19 @@ namespace Syroot.NintenTools.Bfres.Core
 
         // ---- CONSTRUCTORS & DESTRUCTOR ------------------------------------------------------------------------------
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="NamedResDataList{T}"/> class.
+        /// </summary>
         public NamedResDataList()
         {
             _list = new List<T>();
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="NamedResDataList{T}"/> class that has the specified initial
+        /// <paramref name="capacity"/>.
+        /// </summary>
+        /// <param name="capacity">The number of elements that the new list can initially store.</param>
         public NamedResDataList(int capacity)
         {
             _list = new List<T>(capacity);
@@ -34,6 +42,11 @@ namespace Syroot.NintenTools.Bfres.Core
 
         // ---- OPERATORS ----------------------------------------------------------------------------------------------
 
+        /// <summary>
+        /// Gets or sets the element at the specified <paramref name="index"/>.
+        /// </summary>
+        /// <param name="index">The zero-based index of the element to get or set.</param>
+        /// <returns>The element at the specified index.</returns>
         public T this[int index]
         {
             get { return _list[index]; }
@@ -46,6 +59,14 @@ namespace Syroot.NintenTools.Bfres.Core
             }
         }
 
+        /// <summary>
+        /// Gets or sets the element with the specified <paramref name="name"/>.
+        /// </summary>
+        /// <param name="name">The name of the element to get or set.</param>
+        /// <returns>The element with the specified <paramref name="name"/>.</returns>
+        /// <exception cref="ArgumentException">An element with the same name already exists in the list.</exception>
+        /// <exception cref="KeyNotFoundException">An element with the given <paramref name="name"/> does not exist.
+        /// </exception>
         public T this[string name]
         {
             get
@@ -76,11 +97,17 @@ namespace Syroot.NintenTools.Bfres.Core
 
         // ---- PROPERTIES ---------------------------------------------------------------------------------------------
 
+        /// <summary>
+        /// Gets the number of elements contained in the <see cref="INamedResDataList{T}"/>.
+        /// </summary>
         public int Count
         {
             get { return _list.Count; }
         }
 
+        /// <summary>
+        /// Gets a value indicating whether the <see cref="INamedResDataList{T}"/> is read-only.
+        /// </summary>
         public bool IsReadOnly
         {
             get { return false; }
@@ -88,6 +115,10 @@ namespace Syroot.NintenTools.Bfres.Core
 
         // ---- METHODS (PUBLIC) ---------------------------------------------------------------------------------------
 
+        /// <summary>
+        /// Adds an <paramref name="item"/> to the <see cref="INamedResDataList{T}"/>.
+        /// </summary>
+        /// <param name="item">The object to add to the <see cref="INamedResDataList{T}"/>.</param>
         public void Add(T item)
         {
             if (item == null) throw new ArgumentNullException(nameof(item));
@@ -96,6 +127,9 @@ namespace Syroot.NintenTools.Bfres.Core
             _list.Add(item);
         }
 
+        /// <summary>
+        /// Removes all items from the <see cref="INamedResDataList{T}"/>.
+        /// </summary>
         public void Clear()
         {
             foreach (T instance in _list)
@@ -105,6 +139,12 @@ namespace Syroot.NintenTools.Bfres.Core
             _list.Clear();
         }
 
+        /// <summary>
+        /// Determines whether the <see cref="INamedResDataList{T}"/> contains a specific value.
+        /// </summary>
+        /// <param name="item">The object to locate in the <see cref="INamedResDataList{T}"/>.</param>
+        /// <returns><c>true</c> if item is found in the <see cref="INamedResDataList{T}"/>; otherwise, <c>false</c>.
+        /// </returns>
         public bool Contains(T item)
         {
             if (item == null) throw new ArgumentNullException(nameof(item));
@@ -112,6 +152,11 @@ namespace Syroot.NintenTools.Bfres.Core
             return _list.Contains(item);
         }
 
+        /// <summary>
+        /// Returns a value indicating whether the list contains an instance with the given <paramref name="name"/>.
+        /// </summary>
+        /// <param name="name">The name of the instance to search for.</param>
+        /// <returns><c>true</c> if an instance has the given name, otherwise <c>false</c>.</returns>
         public bool Contains(string name)
         {
             if (name == null) throw new ArgumentNullException(nameof(name));
@@ -119,16 +164,32 @@ namespace Syroot.NintenTools.Bfres.Core
             return CheckNameExists(name);
         }
 
+        /// <summary>
+        /// Copies the elements of the <see cref="INamedResDataList{T}"/> to an <paramref name="array"/>, starting at a
+        /// particular <paramref name="arrayIndex"/>.
+        /// </summary>
+        /// <param name="array">The one-dimensional <see cref="Array"/> that is the destination of the elements copied
+        /// from <see cref="INamedResDataList{T}"/>. The <see cref="Array"/> must have zero-based indexing.</param>
+        /// <param name="arrayIndex">The zero-based index in array at which copying begins.</param>
         public void CopyTo(T[] array, int arrayIndex)
         {
             _list.CopyTo(array, arrayIndex);
         }
 
+        /// <summary>
+        /// Returns an enumerator that iterates through the collection.
+        /// </summary>
+        /// <returns>An enumerator that can be used to iterate through the collection.</returns>
         public IEnumerator<T> GetEnumerator()
         {
             return _list.GetEnumerator();
         }
 
+        /// <summary>
+        /// Determines the index of a specific <paramref name="item"/> in the <see cref="INamedResDataList{T}"/>.
+        /// </summary>
+        /// <param name="item">The object to locate in the <see cref="INamedResDataList{T}"/>.</param>
+        /// <returns>The index of item if found in the list; otherwise, -1.</returns>
         public int IndexOf(T item)
         {
             if (item == null) throw new ArgumentNullException(nameof(item));
@@ -136,6 +197,12 @@ namespace Syroot.NintenTools.Bfres.Core
             return _list.IndexOf(item);
         }
 
+        /// <summary>
+        /// Returns the zero-based index of the instance with the given <paramref name="name"/>, or <c>-1</c> if no
+        /// instance has that name.
+        /// </summary>
+        /// <param name="name">The name of the instance to search for.</param>
+        /// <returns>The zero-based index of the instance with the name, or <c>-1</c>.</returns>
         public int IndexOf(string name)
         {
             if (name == null) throw new ArgumentNullException(nameof(name));
@@ -150,6 +217,11 @@ namespace Syroot.NintenTools.Bfres.Core
             return -1;
         }
 
+        /// <summary>
+        /// Inserts an item to the <see cref="INamedResDataList{T}"/> at the specified <paramref name="item"/>.
+        /// </summary>
+        /// <param name="index">The zero-based index at which item should be inserted.</param>
+        /// <param name="item">The object to insert into the <see cref="INamedResDataList{T}"/>.</param>
         public void Insert(int index, T item)
         {
             if (item == null) throw new ArgumentNullException(nameof(item));
@@ -159,6 +231,14 @@ namespace Syroot.NintenTools.Bfres.Core
             _list.Insert(index, item);
         }
 
+        /// <summary>
+        /// Removes the first occurrence of a specific <paramref name="item"/> from the
+        /// <see cref="INamedResDataList{T}"/>.
+        /// </summary>
+        /// <param name="item">The object to remove from the <see cref="INamedResDataList{T}"/>.</param>
+        /// <returns><c>true</c> if the item was successfully removed from the <see cref="INamedResDataList{T}"/>;
+        /// otherwise <c>false</c>. This method also returns <c>false</c> if the item is not found in the original
+        /// <see cref="INamedResDataList{T}"/>.</returns>
         public bool Remove(T item)
         {
             if (item == null) throw new ArgumentNullException(nameof(item));
@@ -171,6 +251,12 @@ namespace Syroot.NintenTools.Bfres.Core
             return false;
         }
 
+        /// <summary>
+        /// Removes the instance with the given <paramref name="name"/>. If it existed and was removed, <c>true</c> is
+        /// returned, otherwise the list stays unchanged and <c>false</c> is returned.
+        /// </summary>
+        /// <param name="name">The name of the instance to search for.</param>
+        /// <returns><c>true</c> if an instance was found and removed, otherwise <c>false</c>.</returns>
         public bool Remove(string name)
         {
             if (name == null) throw new ArgumentNullException(nameof(name));
@@ -184,11 +270,23 @@ namespace Syroot.NintenTools.Bfres.Core
             return false;
         }
 
+        /// <summary>
+        /// Removes the <see cref="INamedResDataList{T}"/> item at the specified <paramref name="index"/>.
+        /// </summary>
+        /// <param name="index">The zero-based index of the item to remove.</param>
         public void RemoveAt(int index)
         {
             _list.RemoveAt(index);
         }
 
+        /// <summary>
+        /// Returns <c>true</c> when an instance with the given <paramref name="name"/> was found and assigned to
+        /// <paramref name="value"/>, otherwise <c>false</c>.
+        /// </summary>
+        /// <param name="name">The name of the instance to search for.</param>
+        /// <param name="value">The variable to assign a found instance to.</param>
+        /// <returns><c>true</c> if an instance was found and assigned to <paramref name="value"/>, otherwise
+        /// <c>false</c>.</returns>
         public bool TryGetValue(string name, out T value)
         {
             foreach (T instance in _list)
@@ -227,7 +325,7 @@ namespace Syroot.NintenTools.Bfres.Core
         }
 
         // ---- METHODS ------------------------------------------------------------------------------------------------
-
+        
         IEnumerator IEnumerable.GetEnumerator()
         {
             return _list.GetEnumerator();

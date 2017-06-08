@@ -2,6 +2,9 @@
 
 namespace Syroot.NintenTools.Bfres.GX2
 {
+    /// <summary>
+    /// Represents GX2 settings controlling additional color blending options.
+    /// </summary>
     public class ColorControl
     {
         // ---- CONSTANTS ----------------------------------------------------------------------------------------------
@@ -13,6 +16,13 @@ namespace Syroot.NintenTools.Bfres.GX2
 
         // ---- CONSTRUCTORS & DESTRUCTOR ------------------------------------------------------------------------------
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ColorControl"/> class.
+        /// </summary>
+        public ColorControl()
+        {
+        }
+
         internal ColorControl(uint value)
         {
             Value = value;
@@ -20,8 +30,6 @@ namespace Syroot.NintenTools.Bfres.GX2
 
         // ---- PROPERTIES ---------------------------------------------------------------------------------------------
 
-        public uint Value { get; set; }
-        
         public bool MultiWriteEnabled
         {
             get { return Value.GetBit(_multiWriteBit); }
@@ -45,5 +53,7 @@ namespace Syroot.NintenTools.Bfres.GX2
             get { return (GX2LogicOp)Value.Decode(_logicOpBit, _logicOpBits); }
             set { Value = Value.Encode((uint)value, _logicOpBit, _logicOpBits); }
         }
+
+        internal uint Value { get; set; }
     }
 }

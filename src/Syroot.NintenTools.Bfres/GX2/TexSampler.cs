@@ -3,6 +3,9 @@ using Syroot.NintenTools.Bfres.Core;
 
 namespace Syroot.NintenTools.Bfres.GX2
 {
+    /// <summary>
+    /// Represents a GX2 texture sampler controlling how a texture is samples and drawn onto a surface.
+    /// </summary>
     public class TexSampler
     {
         // ---- CONSTANTS ----------------------------------------------------------------------------------------------
@@ -26,15 +29,20 @@ namespace Syroot.NintenTools.Bfres.GX2
 
         // ---- CONSTRUCTORS & DESTRUCTOR ------------------------------------------------------------------------------
 
-        public TexSampler(uint[] values)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TexSampler"/> instance.
+        /// </summary>
+        public TexSampler()
+        {
+        }
+
+        internal TexSampler(uint[] values)
         {
             Values = values;
         }
 
         // ---- PROPERTIES ---------------------------------------------------------------------------------------------
-
-        public uint[] Values { get; set; }
-
+        
         public GX2TexClamp ClampX
         {
             get { return (GX2TexClamp)Values[0].Decode(_clampXBit, _clampXBits); }
@@ -118,6 +126,8 @@ namespace Syroot.NintenTools.Bfres.GX2
             get { return Values[2].GetBit(_depthCompareBit); }
             set { Values[2] = Values[2].SetBit(_depthCompareBit, value); }
         }
+
+        internal uint[] Values { get; set; }
 
         // ---- METHODS (PRIVATE) --------------------------------------------------------------------------------------
 

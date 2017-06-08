@@ -1,7 +1,11 @@
-﻿using Syroot.NintenTools.Bfres.Core;
+﻿using System;
+using Syroot.NintenTools.Bfres.Core;
 
 namespace Syroot.NintenTools.Bfres.GX2
 {
+    /// <summary>
+    /// Represents GX2 settings controlling additional alpha blending options.
+    /// </summary>
     public class AlphaControl
     {
         // ---- CONSTANTS ----------------------------------------------------------------------------------------------
@@ -11,6 +15,13 @@ namespace Syroot.NintenTools.Bfres.GX2
 
         // ---- CONSTRUCTORS & DESTRUCTOR ------------------------------------------------------------------------------
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AlphaControl"/> class.
+        /// </summary>
+        public AlphaControl()
+        {
+        }
+
         internal AlphaControl(uint value, float refValue)
         {
             Value = value;
@@ -18,8 +29,6 @@ namespace Syroot.NintenTools.Bfres.GX2
         }
 
         // ---- PROPERTIES ---------------------------------------------------------------------------------------------
-
-        public uint Value { get; set; }
 
         public bool AlphaTestEnabled
         {
@@ -34,5 +43,7 @@ namespace Syroot.NintenTools.Bfres.GX2
         }
 
         public float RefValue { get; set; }
+
+        internal uint Value { get; set; }
     }
 }

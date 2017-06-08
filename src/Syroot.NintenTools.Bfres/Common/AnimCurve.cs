@@ -1,4 +1,5 @@
-﻿using Syroot.NintenTools.Bfres.Core;
+﻿using System;
+using Syroot.NintenTools.Bfres.Core;
 
 namespace Syroot.NintenTools.Bfres
 {
@@ -48,8 +49,13 @@ namespace Syroot.NintenTools.Bfres
             set { _flags &= (ushort)(~_flagsMaskCurveType | (ushort)value); }
         }
 
+        /// <summary>
+        /// Gets or sets the memory offset relative to the start of the corresponding animation data structure to
+        /// animate the field stored at that address. Note that enums exist in the specific animation which map offsets
+        /// to names.
+        /// </summary>
         public uint AnimDataOffset { get; set; }
-
+        
         public float StartFrame { get; set; }
 
         public float EndFrame { get; set; }
@@ -58,11 +64,21 @@ namespace Syroot.NintenTools.Bfres
 
         public DWord Offset { get; set; }
 
+        /// <summary>
+        /// Only existent in BFRES files of version 3.4.0.0 or newer.
+        /// </summary>
         public float Delta { get; set; }
 
-        public float[] Frames { get; set; }
+        /// <summary>
+        /// Gets the frame numbers at which keys of the same index in the <see cref="Keys"/> array are placed.
+        /// </summary>
+        public float[] Frames { get; private set; }
 
-        public float[] Keys { get; set; }
+        /// <summary>
+        /// Gets an array of elements forming the keys placed at the frames of the same index in the
+        /// <see cref="Frames"/> array.
+        /// </summary>
+        public float[] Keys { get; private set; }
 
         // ---- METHODS (PUBLIC) ---------------------------------------------------------------------------------------
 
@@ -188,36 +204,104 @@ namespace Syroot.NintenTools.Bfres
         }
     }
 
+    /// <summary>
+    /// Represents the possible data types in which <see cref="AnimCurve.Frames"/> are stored. For simple library use,
+    /// they are always converted them to and from <see cref="Single"/> instances.
+    /// </summary>
     public enum AnimCurveFrameType : ushort
     {
+        /// <summary>
+        /// The frames are stored as <see cref="Single"/> instances.
+        /// </summary>
         Single,
+
+        /// <summary>
+        /// The frames are stored as <see cref="Int16"/> instances.
+        /// </summary>
         Int16,
+
+        /// <summary>
+        /// The frames are stored as <see cref="Byte"/> instances.
+        /// </summary>
         Byte
     }
 
+    /// <summary>
+    /// Represents the possible data types in which <see cref="AnimCurve.Keys"/> are stored. For simple library use,
+    /// they are always converted them to and from <see cref="Single"/> instances.
+    /// </summary>
     public enum AnimCurveKeyType : ushort
     {
+        /// <summary>
+        /// The keys are stored as <see cref="Single"/> instances.
+        /// </summary>
         Single = 0 << 2,
+
+        /// <summary>
+        /// The keys are stored as <see cref="Int16"/> instances.
+        /// </summary>
         Int16 = 1 << 2,
+
+        /// <summary>
+        /// The keys are stored as <see cref="Byte"/> instances.
+        /// </summary>
         Byte = 2 << 2
     }
 
+    /// <summary>
+    /// Represents the type of key values stored by this curve. This also determines the number of required elements to
+    /// define a key in the <see cref="AnimCurve.Keys"/> array. Use the <see cref="AnimCurve.GetElementsPerKey()"/>
+    /// method to retrieve the number of elements required for the <see cref="AnimCurve.CurveType"/> of that curve.
+    /// </summary>
     public enum AnimCurveType : ushort
     {
+        /// <summary>
+        /// The curve uses cubic interpolation. 4 elements of the <see cref="AnimCurve.Keys"/> array form a key.
+        /// </summary>
         Cubic = 0 << 4,
+
+        /// <summary>
+        /// The curve uses linear interpolation. 2 elements of the <see cref="AnimCurve.Keys"/> array form a key.
+        /// </summary>
         Linear = 1 << 4,
+
+        /// <summary>
+        /// 1 element of the <see cref="AnimCurve.Keys"/> array forms a key.
+        /// </summary>
         BakedFloat = 2 << 4,
+
+        /// <summary>
+        /// 1 element of the <see cref="AnimCurve.Keys"/> array forms a key.
+        /// </summary>
         StepInt = 4 << 4,
+
+        /// <summary>
+        /// 1 element of the <see cref="AnimCurve.Keys"/> array forms a key.
+        /// </summary>
         BakedInt = 5 << 4,
+
+        /// <summary>
+        /// 1 element of the <see cref="AnimCurve.Keys"/> array forms a key.
+        /// </summary>
         StepBool = 6 << 4,
+
+        /// <summary>
+        /// 1 element of the <see cref="AnimCurve.Keys"/> array forms a key.
+        /// </summary>
         BakedBool = 7 << 4
     }
-
+    
     public struct AnimConstant
     {
         // ---- FIELDS -------------------------------------------------------------------------------------------------
 
-        public uint TargetOffset;
+        /// <summary>
+        /// Gets or sets the memory offset relative to the start of the corresponding animation data structure to
+        /// animate the field stored at that address. Note that enums exist in the specific animation which map offsets
+        /// to names.
+        /// </summary>
+        public uint AnimDataOffset;
+
         public DWord Value;
     }
 }

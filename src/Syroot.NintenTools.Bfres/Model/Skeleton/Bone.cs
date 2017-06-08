@@ -29,10 +29,17 @@ namespace Syroot.NintenTools.Bfres
 
         // ---- EVENTS -------------------------------------------------------------------------------------------------
 
+        /// <summary>
+        /// Raised when the <see cref="Name"/> property was changed.
+        /// </summary>
         public event EventHandler NameChanged;
 
         // ---- PROPERTIES ---------------------------------------------------------------------------------------------
 
+        /// <summary>
+        /// The name with which the instance can be referenced uniquely in <see cref="INamedResDataList{Bone}"/>
+        /// instances.
+        /// </summary>
         public string Name
         {
             get { return _name; }

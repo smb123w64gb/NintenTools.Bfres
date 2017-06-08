@@ -9,8 +9,14 @@ namespace Syroot.NintenTools.Bfres
     {
         // ---- PROPERTIES ---------------------------------------------------------------------------------------------
 
+        /// <summary>
+        /// The size of a full vertex in bytes.
+        /// </summary>
         public ushort Stride { get; set; }
         
+        /// <summary>
+        /// The raw bytes stored.
+        /// </summary>
         public byte[] Data { get; set; }
 
         // ---- METHODS ------------------------------------------------------------------------------------------------
