@@ -49,7 +49,7 @@ namespace Syroot.NintenTools.Bfres
 
         public ushort[] BindIndices { get; set; }
 
-        public IList<ShaderParamMatAnim> MaterialAnims { get; private set; }
+        public IList<ShaderParamMatAnim> ShaderParamMatAnims { get; private set; }
 
         public INamedResDataList<UserData> UserData { get; private set; }
 
@@ -68,10 +68,10 @@ namespace Syroot.NintenTools.Bfres
             if (head.OfsBindIndexList != 0)
             {
                 loader.Position = head.OfsBindIndexList;
-                BindIndices = loader.ReadUInt16s(head.NumMaterialAnim);
+                BindIndices = loader.ReadUInt16s(head.NumMatAnim);
             }
 
-            MaterialAnims = loader.LoadList<ShaderParamMatAnim>(head.OfsMaterialAnimList, head.NumMaterialAnim);
+            ShaderParamMatAnims = loader.LoadList<ShaderParamMatAnim>(head.OfsMatAnimList, head.NumMatAnim);
             UserData = loader.LoadDictList<UserData>(head.OfsUserDataDict);
         }
 
@@ -97,14 +97,14 @@ namespace Syroot.NintenTools.Bfres
         internal uint OfsPath;
         internal ShaderParamAnimFlags Flags;
         internal int NumFrame;
-        internal ushort NumMaterialAnim;
+        internal ushort NumMatAnim;
         internal ushort NumUserData;
         internal int NumParamAnim;
         internal int NumCurve;
         internal uint SizBaked;
         internal uint OfsBindModel;
         internal uint OfsBindIndexList;
-        internal uint OfsMaterialAnimList;
+        internal uint OfsMatAnimList;
         internal uint OfsUserDataDict;
 
         // ---- CONSTRUCTORS & DESTRUCTOR ------------------------------------------------------------------------------
@@ -116,14 +116,14 @@ namespace Syroot.NintenTools.Bfres
             OfsPath = loader.ReadOffset();
             Flags = loader.ReadEnum<ShaderParamAnimFlags>(true);
             NumFrame = loader.ReadInt32();
-            NumMaterialAnim = loader.ReadUInt16();
+            NumMatAnim = loader.ReadUInt16();
             NumUserData = loader.ReadUInt16();
             NumParamAnim = loader.ReadInt32();
             NumCurve = loader.ReadInt32();
             SizBaked = loader.ReadUInt32();
             OfsBindModel = loader.ReadOffset();
             OfsBindIndexList = loader.ReadOffset();
-            OfsMaterialAnimList = loader.ReadOffset();
+            OfsMatAnimList = loader.ReadOffset();
             OfsUserDataDict = loader.ReadOffset();
         }
     }

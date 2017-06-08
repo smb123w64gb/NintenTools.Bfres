@@ -65,7 +65,7 @@ namespace Syroot.NintenTools.Bfres
 
         public Skeleton BindSkeleton { get; set; }
 
-        public ushort[] BindIndices { get; set; }
+        public ushort[] BindIndices { get; private set; }
 
         public INamedResDataList<UserData> UserData { get; private set; }
 
@@ -82,8 +82,11 @@ namespace Syroot.NintenTools.Bfres
             BoneAnims = loader.LoadList<BoneAnim>(head.OfsBoneAnimList, head.NumBoneAnim);
             _ofsBindSkeleton = head.OfsBindSkeleton;
 
-            loader.Position = head.OfsBindIndexList;
-            BindIndices = loader.ReadUInt16s(head.NumBoneAnim);
+            if (head.OfsBindIndexList != 0)
+            {
+                loader.Position = head.OfsBindIndexList;
+                BindIndices = loader.ReadUInt16s(head.NumBoneAnim);
+            }
 
             UserData = loader.LoadDictList<UserData>(head.OfsUserDataDict);
         }

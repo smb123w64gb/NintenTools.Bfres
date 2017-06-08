@@ -12,7 +12,7 @@ namespace Syroot.NintenTools.Bfres
         public uint Flags;
         public Vector3F Scale;
         public Vector3F Translate;
-        // public uint Padding;
+        public uint Padding;
         public Vector4F Rotate;
 
         // ---- CONSTRUCTORS & DESTRUCTOR ------------------------------------------------------------------------------
@@ -22,7 +22,7 @@ namespace Syroot.NintenTools.Bfres
             Flags = 0; // Never in files.
             Scale = flags.HasFlag(BoneAnimFlagsBase.Scale) ? loader.ReadVector3F() : Vector3F.Zero;
             Translate = flags.HasFlag(BoneAnimFlagsBase.Translate) ? loader.ReadVector3F() : Vector3F.Zero;
-            // Padding = 0; // Never in files.
+            Padding = 0; // Never in files.
             Rotate = flags.HasFlag(BoneAnimFlagsBase.Rotate) ? loader.ReadVector4F() : Vector4F.Zero;
         }
     }

@@ -10,15 +10,32 @@ namespace Syroot.NintenTools.Bfres
     /// Represents a reference to a <see cref="Texture"/> instance by name.
     /// </summary>
     [DebuggerDisplay(nameof(TextureRef) + " {" + nameof(Name) + "}")]
-    public class TextureRef : IResData
+    public class TextureRef : INamedResData
     {
         // ---- FIELDS -------------------------------------------------------------------------------------------------
 
+        private string _name;
         private uint _ofsTexture;
+
+        // ---- EVENTS -------------------------------------------------------------------------------------------------
+
+        public event EventHandler NameChanged;
 
         // ---- PROPERTIES ---------------------------------------------------------------------------------------------
 
-        public string Name { get; set; }
+        public string Name
+        {
+            get { return _name; }
+            set
+            {
+                if (value == null) throw new ArgumentNullException(nameof(value));
+                if (_name != value)
+                {
+                    _name = value;
+                    NameChanged?.Invoke(this, EventArgs.Empty);
+                }
+            }
+        }
 
         public Texture Texture { get; set; }
 

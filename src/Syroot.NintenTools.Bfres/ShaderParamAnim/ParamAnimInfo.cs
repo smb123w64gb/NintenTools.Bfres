@@ -1,10 +1,12 @@
-﻿using Syroot.NintenTools.Bfres.Core;
+﻿using System.Diagnostics;
+using Syroot.NintenTools.Bfres.Core;
 
 namespace Syroot.NintenTools.Bfres
 {
     /// <summary>
     /// Represents a parameter animation info in a <see cref="ShaderParamMatAnim"/> instance.
     /// </summary>
+    [DebuggerDisplay(nameof(ParamAnimInfo) + " {" + nameof(Name) + "}")]
     public class ParamAnimInfo : IResData
     {
         // ---- PROPERTIES ---------------------------------------------------------------------------------------------

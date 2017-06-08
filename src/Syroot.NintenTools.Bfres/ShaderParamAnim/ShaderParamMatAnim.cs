@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Diagnostics;
 using Syroot.NintenTools.Bfres.Core;
 
 namespace Syroot.NintenTools.Bfres
@@ -7,6 +7,7 @@ namespace Syroot.NintenTools.Bfres
     /// <summary>
     /// Represents a material parameter animation in a <see cref="ShaderParamAnim"/> subfile.
     /// </summary>
+    [DebuggerDisplay(nameof(ShaderParamMatAnim) + " {" + nameof(Name) + "}")]
     public class ShaderParamMatAnim : IResData
     {
         // ---- PROPERTIES ---------------------------------------------------------------------------------------------
