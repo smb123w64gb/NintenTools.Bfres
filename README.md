@@ -24,7 +24,7 @@ The goal of this .NET library is to provide easy access to data stored in the BF
 
 The following features are **not yet implemented**, but planned:
 - Methods simplifying access to vertex data from `VertexBuffer` instances in combination with `VertexAttrib`.
-- Classes mapping typical `ExternalFile` contents (like BFSHAR shader data), manually loadable on demand.
+- Classes mapping typical `ExternalFile` contents (like BFSHA shader data), manually loadable on demand.
 - Storing (modified) data into new files.
 
 The following features are **not planned**:
