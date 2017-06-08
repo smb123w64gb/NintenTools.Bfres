@@ -1,7 +1,7 @@
 ﻿namespace Syroot.NintenTools.Bfres.Core
 {
     /// <summary>
-    /// Represents the common interface for <see cref="ResFile"/> instances.
+    /// Represents the common interface for <see cref="ResFile"/> data instances.
     /// </summary>
     public interface IResData
     {

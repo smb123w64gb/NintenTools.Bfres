@@ -51,9 +51,9 @@ namespace Syroot.NintenTools.Bfres
             set { _flags &= (ushort)(~_flagsMask | (ushort)value); }
         }
 
-        public VisiblityAnimType Type
+        public VisibilityAnimType Type
         {
-            get { return (VisiblityAnimType)(_flags & _flagsMaskType); }
+            get { return (VisibilityAnimType)(_flags & _flagsMaskType); }
             set { _flags &= (ushort)(~_flagsMaskType | (ushort)value); }
         }
 
@@ -170,7 +170,7 @@ namespace Syroot.NintenTools.Bfres
         Looping = 1 << 2
     }
 
-    public enum VisiblityAnimType : ushort
+    public enum VisibilityAnimType : ushort
     {
         Bone,
         Material = 1 << 8

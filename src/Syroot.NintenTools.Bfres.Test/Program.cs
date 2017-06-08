@@ -21,7 +21,7 @@ namespace Syroot.NintenTools.Bfres.Test
         {
             ResFile resFile = new ResFile(@"D:\Pictures\zBFRES\Koopa.bfres");
             LoadResFiles();
-
+            
             Console.WriteLine("Done.");
             Console.ReadLine();
         }

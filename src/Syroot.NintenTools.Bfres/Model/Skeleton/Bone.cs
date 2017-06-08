@@ -17,7 +17,7 @@ namespace Syroot.NintenTools.Bfres
 
         private const uint _flagsMask = 0b00000000_00000000_00000000_00000001;
         private const uint _flagsMaskScale = 0b00000000_00000000_00000011_00000000;
-        private const uint _flagsMaskRotation = 0b00000000_00000000_01110000_00000000;
+        private const uint _flagsMaskRotate = 0b00000000_00000000_01110000_00000000;
         private const uint _flagsMaskBillboard = 0b00000000_00000111_00000000_00000000;
         private const uint _flagsMaskTransform = 0b00001111_10000000_00000000_00000000;
         private const uint _flagsMaskTransformCumulative = 0b11110000_00000000_00000000_00000000;
@@ -61,10 +61,10 @@ namespace Syroot.NintenTools.Bfres
             set { _flags &= ~_flagsMask | (uint)value; }
         }
 
-        public BoneFlagsRotation FlagsRotation
+        public BoneFlagsRotate FlagsRotation
         {
-            get { return (BoneFlagsRotation)(_flags & _flagsMaskRotation); }
-            set { _flags &= ~_flagsMaskRotation | (uint)value; }
+            get { return (BoneFlagsRotate)(_flags & _flagsMaskRotate); }
+            set { _flags &= ~_flagsMaskRotate | (uint)value; }
         }
 
         public BoneFlagsBillboard FlagsBillboard
@@ -159,7 +159,7 @@ namespace Syroot.NintenTools.Bfres
         Visible = 1 << 0   
     }
     
-    public enum BoneFlagsRotation : uint
+    public enum BoneFlagsRotate : uint
     {
         Quaternion,
         EulerXYZ = 1 << 12
