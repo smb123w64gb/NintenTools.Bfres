@@ -14,8 +14,8 @@ namespace Syroot.NintenTools.Bfres
     {
         // ---- CONSTANTS ----------------------------------------------------------------------------------------------
 
-        private const uint _flagsScalingMask = 0b00000000_00000000_00000011_00000000;
-        private const uint _flagsRotationMask = 0b00000000_00000000_01110000_00000000;
+        private const uint _flagsMaskScale = 0b00000000_00000000_00000011_00000000;
+        private const uint _flagsMaskRotate = 0b00000000_00000000_01110000_00000000;
 
         // ---- FIELDS -------------------------------------------------------------------------------------------------
 
@@ -45,16 +45,16 @@ namespace Syroot.NintenTools.Bfres
 
         public string Path { get; set; }
 
-        public SkeletalAnimFlagsScaling FlagsScaling
+        public SkeletalAnimFlagsScale FlagsScale
         {
-            get { return (SkeletalAnimFlagsScaling)(_flags & _flagsScalingMask); }
-            set { _flags &= ~_flagsScalingMask | (uint)value; }
+            get { return (SkeletalAnimFlagsScale)(_flags & _flagsMaskScale); }
+            set { _flags &= ~_flagsMaskScale | (uint)value; }
         }
 
-        public SkeletalAnimFlagsRotation FlagsRotation
+        public SkeletalAnimFlagsRotate FlagsRotate
         {
-            get { return (SkeletalAnimFlagsRotation)(_flags & _flagsRotationMask); }
-            set { _flags &= ~_flagsRotationMask | (uint)value; }
+            get { return (SkeletalAnimFlagsRotate)(_flags & _flagsMaskRotate); }
+            set { _flags &= ~_flagsMaskRotate | (uint)value; }
         }
 
         public int FrameCount { get; set; }
@@ -149,7 +149,7 @@ namespace Syroot.NintenTools.Bfres
         Looping = 1 << 2
     }
 
-    public enum SkeletalAnimFlagsScaling : uint
+    public enum SkeletalAnimFlagsScale : uint
     {
         None,
         Standard = 1 << 8,
@@ -157,7 +157,7 @@ namespace Syroot.NintenTools.Bfres
         Softimage = 3 << 8
     }
 
-    public enum SkeletalAnimFlagsRotation : uint
+    public enum SkeletalAnimFlagsRotate : uint
     {
         Quaternion,
         EulerXYZ = 1 << 12
