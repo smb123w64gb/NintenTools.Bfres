@@ -6,11 +6,11 @@
 		<AssemblyName>Syroot.NintenTools.Bfres</AssemblyName>
 		<AssemblyTitle>NintenTools.Bfres</AssemblyTitle>
 		<Authors>Syroot</Authors>
-		<VersionPrefix>0.2.0</VersionPrefix>
+		<VersionPrefix>0.9.0</VersionPrefix>
 
 		<PackageId>Syroot.NintenTools.Bfres</PackageId>
 		<PackageTags>bfres;cafe;nintendo;nw4f;wiiu</PackageTags>
-		<PackageReleaseNotes>Add support for FSCN, FSHU and FSKA files.</PackageReleaseNotes>
+		<PackageReleaseNotes>Add support for FSHA, FTXP and FVIS subfiles.</PackageReleaseNotes>
 		<PackageIconUrl>https://raw.githubusercontent.com/Syroot/NintenTools.Bfres/master/res/Logo.png</PackageIconUrl>
 		<PackageProjectUrl>https://github.com/Syroot/NintenTools.Bfres</PackageProjectUrl>
 		<PackageLicenseUrl>https://raw.githubusercontent.com/Syroot/NintenTools.Bfres/master/LICENSE</PackageLicenseUrl>
