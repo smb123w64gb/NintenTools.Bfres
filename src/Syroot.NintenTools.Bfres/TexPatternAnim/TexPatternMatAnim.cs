@@ -17,18 +17,18 @@ namespace Syroot.NintenTools.Bfres
         /// Gets or sets the index of the first <see cref="AnimCurve"/> of this instance relative to all curves in the
         /// owning <see cref="TexPatternAnim"/>.
         /// </summary>
-        internal int BeginCurve { get; set; }
+        public int BeginCurve { get; set; }
 
         /// <summary>
         /// Gets or sets the index of the first <see cref="PatternAnimInfo"/> of this instance relative to all pattern
         /// animation infos in the owning <see cref="TexPatternAnim"/>.
         /// </summary>
-        internal int BeginPatAnim { get; set; }
+        public int BeginPatAnim { get; set; }
 
         /// <summary>
         /// Gets the name of the animated <see cref="Material"/>.
         /// </summary>
-        internal string Name { get; set; }
+        public string Name { get; set; }
 
         /// <summary>
         /// Gets the list of <see cref="PatternAnimInfo"/> instances.
