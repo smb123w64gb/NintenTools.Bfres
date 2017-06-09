@@ -60,7 +60,8 @@ namespace Syroot.NintenTools.Bfres
         public int FrameCount { get; set; }
 
         /// <summary>
-        /// Gets or sets the number of bytes required to bake all <see cref="Curves"/>.
+        /// Gets or sets the number of bytes required to bake all <see cref="AnimCurve"/> instances of all
+        /// <see cref="VertexShapeAnims"/>.
         /// </summary>
         public uint BakedSize { get; set; }
 

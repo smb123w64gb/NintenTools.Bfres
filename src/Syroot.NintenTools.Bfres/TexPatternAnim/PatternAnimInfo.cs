@@ -11,11 +11,20 @@ namespace Syroot.NintenTools.Bfres
     {
         // ---- PROPERTIES ---------------------------------------------------------------------------------------------
 
-        public sbyte CurveIndex;
+        /// <summary>
+        /// Gets or sets the index of the curve in the <see cref="TexPatternMatAnim"/>.
+        /// </summary>
+        public sbyte CurveIndex { get; set; }
 
-        public sbyte SubBindIndex;
+        /// <summary>
+        /// Gets the index of the texture in the <see cref="Material"/>.
+        /// </summary>
+        public sbyte SubBindIndex { get; set; }
 
-        public string Name;
+        /// <summary>
+        /// Gets or sets the name of the <see cref="Sampler"/> in the <see cref="Material"/>.
+        /// </summary>
+        public string Name { get; set; }
 
         // ---- METHODS ------------------------------------------------------------------------------------------------
 

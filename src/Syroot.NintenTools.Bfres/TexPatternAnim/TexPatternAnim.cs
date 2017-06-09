@@ -59,7 +59,8 @@ namespace Syroot.NintenTools.Bfres
         public int FrameCount { get; set; }
 
         /// <summary>
-        /// Gets or sets the number of bytes required to bake all <see cref="Curves"/>.
+        /// Gets or sets the number of bytes required to bake all <see cref="AnimCurve"/> instances of all
+        /// <see cref="TexPatternMatAnims"/>.
         /// </summary>
         public uint BakedSize { get; set; }
 
@@ -68,10 +69,21 @@ namespace Syroot.NintenTools.Bfres
         /// </summary>
         public Model BindModel { get; set; }
 
+        /// <summary>
+        /// Gets the indices of the <see cref="Material"/> instances in the <see cref="Model.Materials"/> list to bind
+        /// for each animation. <see cref="UInt16.MaxValue"/> specifies no binding.
+        /// </summary>
         public ushort[] BindIndices { get; private set; }
 
+        /// <summary>
+        /// Gets the <see cref="TexPatternAnim"/> instances creating the animation.
+        /// </summary>
         public IList<TexPatternMatAnim> TexPatternMatAnims { get; private set; }
 
+        /// <summary>
+        /// Gets the <see cref="TextureRef"/> instances pointing to <see cref="Texture"/> instances participating in the
+        /// animation.
+        /// </summary>
         public INamedResDataList<TextureRef> TextureRefs { get; private set; }
 
         /// <summary>
