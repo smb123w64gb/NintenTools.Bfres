@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using Syroot.NintenTools.Bfres.GX2;
 
 namespace Syroot.NintenTools.Bfres.Test
 {

@@ -36,6 +36,9 @@ namespace Syroot.NintenTools.Bfres
 
         public sbyte DistanceAttnFuncIndex { get; set; }
 
+        /// <summary>
+        /// Gets or sets the number of bytes required to bake all <see cref="Curves"/>.
+        /// </summary>
         public uint BakedSize { get; private set; }
 
         /// <summary>

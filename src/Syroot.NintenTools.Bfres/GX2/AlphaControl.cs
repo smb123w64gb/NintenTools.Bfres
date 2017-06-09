@@ -1,5 +1,4 @@
-﻿using System;
-using Syroot.NintenTools.Bfres.Core;
+﻿using Syroot.NintenTools.Bfres.Core;
 
 namespace Syroot.NintenTools.Bfres.GX2
 {
@@ -30,18 +29,27 @@ namespace Syroot.NintenTools.Bfres.GX2
 
         // ---- PROPERTIES ---------------------------------------------------------------------------------------------
 
+        /// <summary>
+        /// Gets or sets a value indicating whether alpha testing is enabled at all.
+        /// </summary>
         public bool AlphaTestEnabled
         {
             get { return Value.GetBit(_alphaFuncEnabledBit); }
             set { Value = Value.SetBit(_alphaFuncEnabledBit, value); }
         }
 
+        /// <summary>
+        /// Gets or sets the comparison functions to use for alpha testing.
+        /// </summary>
         public GX2CompareFunction AlphaFunc
         {
             get { return (GX2CompareFunction)Value.Decode(_alphaFuncBit, _alphaFuncBits); }
             set { Value = Value.Encode((uint)value, _alphaFuncBit, _alphaFuncBits); }
         }
 
+        /// <summary>
+        /// Gets or sets the reference value used for alpha testing.
+        /// </summary>
         public float RefValue { get; set; }
 
         internal uint Value { get; set; }

@@ -36,7 +36,7 @@ namespace Syroot.NintenTools.Bfres.GX2
         {
         }
 
-        internal TexSampler(uint[] values)
+        public TexSampler(uint[] values)
         {
             Values = values;
         }

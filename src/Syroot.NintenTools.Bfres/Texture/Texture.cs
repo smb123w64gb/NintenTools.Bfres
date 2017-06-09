@@ -24,30 +24,70 @@ namespace Syroot.NintenTools.Bfres
 
         // ---- PROPERTIES ---------------------------------------------------------------------------------------------
 
+        /// <summary>
+        /// Gets or sets the shape of the texture.
+        /// </summary>
         public GX2SurfaceDim Dim { get; set; }
 
+        /// <summary>
+        /// Gets or sets the width of the texture.
+        /// </summary>
         public uint Width { get; set; }
 
+        /// <summary>
+        /// Gets or sets the height of the texture.
+        /// </summary>
         public uint Height { get; set; }
 
+        /// <summary>
+        /// Gets or sets the depth of the texture.
+        /// </summary>
         public uint Depth { get; set; }
 
+        /// <summary>
+        /// Gets or sets the number of mipmaps stored in the <see cref="MipData"/>.
+        /// </summary>
         public uint MipCount { get; set; }
 
+        /// <summary>
+        /// Gets or sets the desired texture data buffer format.
+        /// </summary>
         public GX2SurfaceFormat Format { get; set; }
 
+        /// <summary>
+        /// Gets or sets the number of samples for the texture.
+        /// </summary>
         public GX2AAMode AAMode { get; set; }
 
+        /// <summary>
+        /// Gets or sets the texture data usage hint.
+        /// </summary>
         public GX2SurfaceUse Use { get; set; }
 
+        /// <summary>
+        /// Gets or sets the tiling mode.
+        /// </summary>
         public GX2TileMode TileMode { get; set; }
 
+        /// <summary>
+        /// Gets or sets the swizzling value.
+        /// </summary>
         public uint Swizzle { get; set; }
 
+        /// <summary>
+        /// Gets or sets the swizzling alignment.
+        /// </summary>
         public uint Alignment { get; set; }
 
+        /// <summary>
+        /// Gets or sets the pixel swizzling stride.
+        /// </summary>
         public uint Pitch { get; set; }
 
+        /// <summary>
+        /// Gets or sets the offsets in the <see cref="MipData"/> array to the data of the mipmap level corresponding
+        /// to the array index.
+        /// </summary>
         public uint[] MipOffsets { get; set; }
 
         public uint ViewMipFirst { get; set; }
@@ -58,8 +98,11 @@ namespace Syroot.NintenTools.Bfres
 
         public uint ViewSliceCount { get; set; }
 
+        /// <summary>
+        /// Gets or sets the GX2CompSel value.
+        /// </summary>
         public uint CompSel { get; set; }
-
+        
         public uint[] Regs { get; set; }
 
         /// <summary>
@@ -85,8 +128,14 @@ namespace Syroot.NintenTools.Bfres
         /// </summary>
         public string Path { get; set; }
 
+        /// <summary>
+        /// Gets or sets the raw texture data bytes.
+        /// </summary>
         public byte[] Data { get; set; }
 
+        /// <summary>
+        /// Gets or sets the raw mipmap level data bytes for all levels.
+        /// </summary>
         public byte[] MipData { get; set; }
 
         /// <summary>

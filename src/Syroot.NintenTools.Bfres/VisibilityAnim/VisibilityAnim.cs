@@ -78,6 +78,9 @@ namespace Syroot.NintenTools.Bfres
         /// </summary>
         public int FrameCount { get; set; }
 
+        /// <summary>
+        /// Gets or sets the number of bytes required to bake all <see cref="Curves"/>.
+        /// </summary>
         public uint BakedSize { get; set; }
 
         /// <summary>
@@ -85,16 +88,27 @@ namespace Syroot.NintenTools.Bfres
         /// </summary>
         public Model BindModel { get; set; }
 
+        /// <summary>
+        /// Gets the indices of entries in the <see cref="Skeleton.Bones"/> or <see cref="Model.Materials"/>
+        /// dictionaries to bind to for each animation. <see cref="UInt16.MaxValue"/> specifies no binding.
+        /// </summary>
         public ushort[] BindIndices { get; private set; }
 
+        /// <summary>
+        /// Gets the names of entries in the <see cref="Skeleton.Bones"/> or <see cref="Model.Materials"/> dictionaries
+        /// to bind to for each animation.
+        /// </summary>
         public IList<string> Names { get; private set; }
 
         /// <summary>
         /// Gets <see cref="AnimCurve"/> instances animating properties of objects stored in this section.
         /// </summary>
         public IList<AnimCurve> Curves { get; private set; }
-
-        public byte[] BaseDataList { get; private set; } // Bits controlling visibility.
+        
+        /// <summary>
+        /// Gets bytes storing the initial visibility as one bit for each <see cref="Bone"/> or <see cref="Material"/>.
+        /// </summary>
+        public byte[] BaseDataList { get; private set; } 
 
         /// <summary>
         /// Gets customly attached <see cref="UserData"/> instances.

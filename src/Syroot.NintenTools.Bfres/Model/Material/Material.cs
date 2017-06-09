@@ -57,6 +57,9 @@ namespace Syroot.NintenTools.Bfres
 
         public INamedResDataList<ShaderParam> ShaderParams { get; private set; }
 
+        /// <summary>
+        /// Gets the raw data block which stores <see cref="ShaderParam"/> values.
+        /// </summary>
         public byte[] ParamData { get; private set; }
         
         /// <summary>

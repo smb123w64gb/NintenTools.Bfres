@@ -200,11 +200,11 @@ namespace Syroot.NintenTools.Bfres.GX2
         /// </summary>
         Inverse = 0x55,
         /// <summary>
-        /// Source & Destination
+        /// Source &amp; Destination
         /// </summary>
         And = 0x88,
         /// <summary>
-        /// ~(Source & Destination)
+        /// ~(Source &amp; Destination)
         /// </summary>
         NAnd = 0x77,
         /// <summary>
@@ -224,11 +224,11 @@ namespace Syroot.NintenTools.Bfres.GX2
         /// </summary>
         Equivalent = 0x99,
         /// <summary>
-        /// Source & ~Destination
+        /// Source &amp; ~Destination
         /// </summary>
         ReverseAnd = 0x44,
         /// <summary>
-        /// ~Source & Destination
+        /// ~Source &amp; Destination
         /// </summary>
         InverseAnd = 0x22,
         /// <summary>
