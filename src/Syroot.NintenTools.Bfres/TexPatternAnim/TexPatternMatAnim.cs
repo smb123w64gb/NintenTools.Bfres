@@ -20,7 +20,10 @@ namespace Syroot.NintenTools.Bfres
         internal string Name { get; set; }
 
         internal IList<PatternAnimInfo> PatternAnimInfos { get; private set; }
-        
+
+        /// <summary>
+        /// Gets <see cref="AnimCurve"/> instances animating properties of objects stored in this section.
+        /// </summary>
         public IList<AnimCurve> Curves { get; private set; }
 
         public IList<ushort> BaseDataList { get; private set; } // Flags?

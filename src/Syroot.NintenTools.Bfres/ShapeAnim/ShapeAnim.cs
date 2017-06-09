@@ -27,8 +27,8 @@ namespace Syroot.NintenTools.Bfres
         // ---- PROPERTIES ---------------------------------------------------------------------------------------------
 
         /// <summary>
-        /// The name with which the instance can be referenced uniquely in <see cref="INamedResDataList{ShapeAnim}"/>
-        /// instances.
+        /// Gets or sets the name with which the instance can be referenced uniquely in
+        /// <see cref="INamedResDataList{ShapeAnim}"/> instances.
         /// </summary>
         public string Name
         {
@@ -44,20 +44,35 @@ namespace Syroot.NintenTools.Bfres
             }
         }
 
+        /// <summary>
+        /// Gets or sets the path of the file which originally supplied the data of this instance.
+        /// </summary>
         public string Path { get; set; }
 
+        /// <summary>
+        /// Gets or sets flags controlling how animation data is stored or how the animation should be played.
+        /// </summary>
         public ShapeAnimFlags Flags { get; set; }
 
+        /// <summary>
+        /// Gets or sets the total number of frames this animation plays.
+        /// </summary>
         public int FrameCount { get; set; }
 
         public uint BakedSize { get; set; }
 
+        /// <summary>
+        /// Gets or sets the <see cref="Model"/> instance affected by this animation.
+        /// </summary>
         public Model BindModel { get; set; }
 
         public ushort[] BindIndices { get; private set; }
 
         public IList<VertexShapeAnim> VertexShapeAnims { get; private set; }
 
+        /// <summary>
+        /// Gets customly attached <see cref="UserData"/> instances.
+        /// </summary>
         public INamedResDataList<UserData> UserData { get; private set; }
 
         // ---- METHODS ------------------------------------------------------------------------------------------------
@@ -135,10 +150,20 @@ namespace Syroot.NintenTools.Bfres
         }
     }
 
+    /// <summary>
+    /// Represents flags specifying how animation data is stored or should be played.
+    /// </summary>
     [Flags]
     public enum ShapeAnimFlags : ushort
     {
+        /// <summary>
+        /// The stored curve data has been baked.
+        /// </summary>
         BakedCurve = 1 << 0,
+
+        /// <summary>
+        /// The animation repeats from the start after the last frame has been played.
+        /// </summary>
         Looping = 1 << 2
     }
 }

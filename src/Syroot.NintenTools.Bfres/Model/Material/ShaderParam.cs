@@ -32,8 +32,8 @@ namespace Syroot.NintenTools.Bfres
         public ushort DependIndex { get; set; }
 
         /// <summary>
-        /// The name with which the instance can be referenced uniquely in <see cref="INamedResDataList{ShaderParam}"/>
-        /// instances.
+        /// Gets or sets the name with which the instance can be referenced uniquely in
+        /// <see cref="INamedResDataList{ShaderParam}"/> instances.
         /// </summary>
         public string Name
         {

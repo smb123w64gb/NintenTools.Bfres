@@ -25,8 +25,8 @@ namespace Syroot.NintenTools.Bfres
         // ---- PROPERTIES ---------------------------------------------------------------------------------------------
 
         /// <summary>
-        /// The name with which the instance can be referenced uniquely in <see cref="INamedResDataList{Model}"/>
-        /// instances.
+        /// Gets or sets the name with which the instance can be referenced uniquely in
+        /// <see cref="INamedResDataList{Model}"/> instances.
         /// </summary>
         public string Name
         {
@@ -41,7 +41,10 @@ namespace Syroot.NintenTools.Bfres
                 }
             }
         }
-
+        
+        /// <summary>
+        /// Gets or sets the path of the file which originally supplied the data of this instance.
+        /// </summary>
         public string Path { get; set; }
 
         public Skeleton Skeleton { get; set; }
@@ -52,6 +55,9 @@ namespace Syroot.NintenTools.Bfres
 
         public INamedResDataList<Material> Materials { get; private set; }
 
+        /// <summary>
+        /// Gets customly attached <see cref="UserData"/> instances.
+        /// </summary>
         public INamedResDataList<UserData> UserData { get; private set; }
 
         // ---- METHODS ------------------------------------------------------------------------------------------------

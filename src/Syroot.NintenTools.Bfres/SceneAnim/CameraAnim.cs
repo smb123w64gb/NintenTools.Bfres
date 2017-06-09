@@ -23,16 +23,22 @@ namespace Syroot.NintenTools.Bfres
         public event EventHandler NameChanged;
 
         // ---- PROPERTIES ---------------------------------------------------------------------------------------------
-        
+
+        /// <summary>
+        /// Gets or sets flags controlling how animation data is stored or how the animation should be played.
+        /// </summary>
         public CameraAnimFlags Flags { get; set; }
 
+        /// <summary>
+        /// Gets or sets the total number of frames this animation plays.
+        /// </summary>
         public int FrameCount { get; set; }
 
         public uint BakedSize { get; private set; }
 
         /// <summary>
-        /// The name with which the instance can be referenced uniquely in <see cref="INamedResDataList{CameraAnim}"/>
-        /// instances.
+        /// Gets or sets the name with which the instance can be referenced uniquely in
+        /// <see cref="INamedResDataList{CameraAnim}"/> instances.
         /// </summary>
         public string Name
         {
@@ -48,10 +54,16 @@ namespace Syroot.NintenTools.Bfres
             }
         }
 
+        /// <summary>
+        /// Gets <see cref="AnimCurve"/> instances animating properties of objects stored in this section.
+        /// </summary>
         public IList<AnimCurve> Curves { get; private set; }
 
         public CameraAnimData BaseData { get; set; }
 
+        /// <summary>
+        /// Gets customly attached <see cref="UserData"/> instances.
+        /// </summary>
         public INamedResDataList<UserData> UserData { get; private set; }
 
         // ---- METHODS ------------------------------------------------------------------------------------------------
@@ -119,12 +131,23 @@ namespace Syroot.NintenTools.Bfres
             OfsUserDataDict = loader.ReadOffset();
         }
     }
-
+    
+    /// <summary>
+    /// Represents flags specifying how animation data is stored or should be played.
+    /// </summary>
     [Flags]
     public enum CameraAnimFlags : ushort
     {
+        /// <summary>
+        /// The stored curve data has been baked.
+        /// </summary>
         BakedCurve = 1 << 0,
+
+        /// <summary>
+        /// The animation repeats from the start after the last frame has been played.
+        /// </summary>
         Looping = 1 << 2,
+        
         EulerZXY = 1 << 8,
         Perspective = 1 << 10
     }

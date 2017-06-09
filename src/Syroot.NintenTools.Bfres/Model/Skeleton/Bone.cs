@@ -37,8 +37,8 @@ namespace Syroot.NintenTools.Bfres
         // ---- PROPERTIES ---------------------------------------------------------------------------------------------
 
         /// <summary>
-        /// The name with which the instance can be referenced uniquely in <see cref="INamedResDataList{Bone}"/>
-        /// instances.
+        /// Gets or sets the name with which the instance can be referenced uniquely in
+        /// <see cref="INamedResDataList{Bone}"/> instances.
         /// </summary>
         public string Name
         {
@@ -98,6 +98,9 @@ namespace Syroot.NintenTools.Bfres
 
         public Vector3F Position { get; set; }
 
+        /// <summary>
+        /// Gets customly attached <see cref="UserData"/> instances.
+        /// </summary>
         public INamedResDataList<UserData> UserData { get; private set; }
 
         // ---- METHODS ------------------------------------------------------------------------------------------------

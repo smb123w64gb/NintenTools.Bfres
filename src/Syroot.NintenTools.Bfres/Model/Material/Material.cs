@@ -26,8 +26,8 @@ namespace Syroot.NintenTools.Bfres
         // ---- PROPERTIES ---------------------------------------------------------------------------------------------
         
         /// <summary>
-        /// The name with which the instance can be referenced uniquely in <see cref="INamedResDataList{Material}"/>
-        /// instances.
+        /// Gets or sets the name with which the instance can be referenced uniquely in
+        /// <see cref="INamedResDataList{Material}"/> instances.
         /// </summary>
         public string Name
         {
@@ -58,7 +58,10 @@ namespace Syroot.NintenTools.Bfres
         public INamedResDataList<ShaderParam> ShaderParams { get; private set; }
 
         public byte[] ParamData { get; private set; }
-
+        
+        /// <summary>
+        /// Gets customly attached <see cref="UserData"/> instances.
+        /// </summary>
         public INamedResDataList<UserData> UserData { get; private set; }
 
         public byte[] VolatileFlags { get; private set; }

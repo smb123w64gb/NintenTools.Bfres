@@ -19,7 +19,10 @@ namespace Syroot.NintenTools.Bfres
         public string Name { get; set; }
 
         public IList<ParamAnimInfo> ParamAnimInfos { get; private set; }
-        
+
+        /// <summary>
+        /// Gets <see cref="AnimCurve"/> instances animating properties of objects stored in this section.
+        /// </summary>
         public IList<AnimCurve> Curves { get; private set; }
 
         public IList<AnimConstant> Constants { get; private set; }

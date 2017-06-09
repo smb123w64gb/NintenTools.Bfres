@@ -51,6 +51,9 @@ namespace Syroot.NintenTools.Bfres
 
         public int BeginCurve { get; set; }
 
+        /// <summary>
+        /// Gets <see cref="AnimCurve"/> instances animating properties of objects stored in this section.
+        /// </summary>
         public IList<AnimCurve> Curves { get; private set; }
 
         public BoneAnimData BaseData { get; set; }

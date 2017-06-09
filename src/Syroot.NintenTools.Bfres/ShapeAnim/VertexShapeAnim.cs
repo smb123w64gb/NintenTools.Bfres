@@ -20,6 +20,9 @@ namespace Syroot.NintenTools.Bfres
 
         public IList<KeyShapeAnimInfo> KeyShapeAnimInfos { get; private set; }
 
+        /// <summary>
+        /// Gets <see cref="AnimCurve"/> instances animating properties of objects stored in this section.
+        /// </summary>
         public IList<AnimCurve> Curves { get; private set; }
 
         public float[] BaseDataList { get; private set; }

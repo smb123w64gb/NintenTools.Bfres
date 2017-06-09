@@ -33,8 +33,8 @@ namespace Syroot.NintenTools.Bfres
         // ---- PROPERTIES ---------------------------------------------------------------------------------------------
 
         /// <summary>
-        /// The name with which the instance can be referenced uniquely in <see cref="INamedResDataList{SkeletalAnim}"/>
-        /// instances.
+        /// Gets or sets the name with which the instance can be referenced uniquely in
+        /// <see cref="INamedResDataList{SkeletalAnim}"/> instances.
         /// </summary>
         public string Name
         {
@@ -50,6 +50,9 @@ namespace Syroot.NintenTools.Bfres
             }
         }
 
+        /// <summary>
+        /// Gets or sets the path of the file which originally supplied the data of this instance.
+        /// </summary>
         public string Path { get; set; }
 
         public SkeletalAnimFlagsScale FlagsScale
@@ -64,16 +67,25 @@ namespace Syroot.NintenTools.Bfres
             set { _flags &= ~_flagsMaskRotate | (uint)value; }
         }
 
+        /// <summary>
+        /// Gets or sets the total number of frames this animation plays.
+        /// </summary>
         public int FrameCount { get; set; }
 
         public uint BakedSize { get; set; }
         
         public IList<BoneAnim> BoneAnims { get; private set; }
 
+        /// <summary>
+        /// Gets or sets the <see cref="Skeleton"/> instance affected by this animation.
+        /// </summary>
         public Skeleton BindSkeleton { get; set; }
 
         public ushort[] BindIndices { get; private set; }
 
+        /// <summary>
+        /// Gets customly attached <see cref="UserData"/> instances.
+        /// </summary>
         public INamedResDataList<UserData> UserData { get; private set; }
 
         // ---- METHODS ------------------------------------------------------------------------------------------------
@@ -149,10 +161,20 @@ namespace Syroot.NintenTools.Bfres
         }
     }
 
+    /// <summary>
+    /// Represents flags specifying how animation data is stored or should be played.
+    /// </summary>
     [Flags]
     public enum SkeletalAnimFlags : uint
     {
+        /// <summary>
+        /// The stored curve data has been baked.
+        /// </summary>
         BakedCurve = 1 << 0,
+
+        /// <summary>
+        /// The animation repeats from the start after the last frame has been played.
+        /// </summary>
         Looping = 1 << 2
     }
 

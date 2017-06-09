@@ -28,8 +28,8 @@ namespace Syroot.NintenTools.Bfres
         public RenderInfoType Type { get; private set; }
 
         /// <summary>
-        /// The name with which the instance can be referenced uniquely in <see cref="INamedResDataList{RenderInfo}"/>
-        /// instances.
+        /// Gets or sets the name with which the instance can be referenced uniquely in
+        /// <see cref="INamedResDataList{RenderInfo}"/> instances.
         /// </summary>
         public string Name
         {

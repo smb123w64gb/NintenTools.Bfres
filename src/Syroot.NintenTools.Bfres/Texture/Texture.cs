@@ -63,8 +63,8 @@ namespace Syroot.NintenTools.Bfres
         public uint[] Regs { get; set; }
 
         /// <summary>
-        /// The name with which the instance can be referenced uniquely in <see cref="INamedResDataList{Texture}"/>
-        /// instances.
+        /// Gets or sets the name with which the instance can be referenced uniquely in
+        /// <see cref="INamedResDataList{Texture}"/> instances.
         /// </summary>
         public string Name
         {
@@ -80,12 +80,18 @@ namespace Syroot.NintenTools.Bfres
             }
         }
 
+        /// <summary>
+        /// Gets or sets the path of the file which originally supplied the data of this instance.
+        /// </summary>
         public string Path { get; set; }
 
         public byte[] Data { get; set; }
 
         public byte[] MipData { get; set; }
 
+        /// <summary>
+        /// Gets customly attached <see cref="UserData"/> instances.
+        /// </summary>
         public INamedResDataList<UserData> UserData { get; private set; }
 
         // ---- METHODS ------------------------------------------------------------------------------------------------
