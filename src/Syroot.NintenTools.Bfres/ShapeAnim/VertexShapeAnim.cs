@@ -12,10 +12,14 @@ namespace Syroot.NintenTools.Bfres
     {
         // ---- PROPERTIES ---------------------------------------------------------------------------------------------
         
-        public int BeginKeyShapeAnim { get; set; }
-
+        /// <summary>
+        /// Gets or sets the name of the animated <see cref="Shape"/>.
+        /// </summary>
         public string Name { get; set; }
 
+        /// <summary>
+        /// Gets the list of <see cref="KeyShapeAnimInfo"/> instances.
+        /// </summary>
         public IList<KeyShapeAnimInfo> KeyShapeAnimInfos { get; private set; }
 
         /// <summary>
@@ -23,6 +27,9 @@ namespace Syroot.NintenTools.Bfres
         /// </summary>
         public IList<AnimCurve> Curves { get; private set; }
 
+        /// <summary>
+        /// Gets the list of base values, excluding the base shape (which is always being initialized with 0f).
+        /// </summary>
         public float[] BaseDataList { get; private set; }
 
         // ---- METHODS ------------------------------------------------------------------------------------------------
@@ -32,7 +39,6 @@ namespace Syroot.NintenTools.Bfres
             VertexShapeAnimHead head = new VertexShapeAnimHead(loader);
             using (loader.TemporarySeek())
             {
-                BeginKeyShapeAnim = head.BeginKeyShapeAnim;
                 Name = loader.GetName(head.OfsName);
                 KeyShapeAnimInfos = loader.LoadList<KeyShapeAnimInfo>(head.OfsKeyShapeAnimInfoList, head.NumKeyShapeAnim);
                 Curves = loader.LoadList<AnimCurve>(head.OfsCurveList, head.NumCurve);
@@ -59,8 +65,8 @@ namespace Syroot.NintenTools.Bfres
 
         internal ushort NumCurve;
         internal ushort NumKeyShapeAnim;
-        internal int BeginCurve; // Curve index relative to all curves.
-        internal int BeginKeyShapeAnim;
+        internal int BeginCurve; // First curve index relative to all.
+        internal int BeginKeyShapeAnim; // First KeyShapeAnim index relative to all.
         internal uint OfsName;
         internal uint OfsKeyShapeAnimInfoList;
         internal uint OfsCurveList;

@@ -110,7 +110,7 @@ namespace Syroot.NintenTools.Bfres
         internal byte BeginTranslate; // Apparently unused.
         internal byte NumCurve;
         internal byte BeginBaseTranslate;
-        internal int BeginCurve; // Curve index relative to all curves.
+        internal int BeginCurve; // First curve index relative to all.
         internal uint OfsCurveList;
         internal uint OfsBaseData;
 

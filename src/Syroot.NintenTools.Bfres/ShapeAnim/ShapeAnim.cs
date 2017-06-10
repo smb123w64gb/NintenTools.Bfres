@@ -69,9 +69,16 @@ namespace Syroot.NintenTools.Bfres
         /// Gets or sets the <see cref="Model"/> instance affected by this animation.
         /// </summary>
         public Model BindModel { get; set; }
-
+        
+        /// <summary>
+        /// Gets the indices of the <see cref="Shape"/> instances in the <see cref="Model.Shapes"/> dictionary to bind
+        /// for each animation. <see cref="UInt16.MaxValue"/> specifies no binding.
+        /// </summary>
         public ushort[] BindIndices { get; private set; }
 
+        /// <summary>
+        /// Gets the <see cref="VertexShapeAnim"/> instances creating the animation.
+        /// </summary>
         public IList<VertexShapeAnim> VertexShapeAnims { get; private set; }
 
         /// <summary>

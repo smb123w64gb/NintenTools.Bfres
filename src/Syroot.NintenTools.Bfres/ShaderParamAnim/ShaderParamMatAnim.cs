@@ -60,7 +60,7 @@ namespace Syroot.NintenTools.Bfres
         internal ushort NumAnimParam;
         internal ushort NumCurve;
         internal ushort NumConstant;
-        internal int BeginCurve; // Curve index relative to all curves.
+        internal int BeginCurve; // First curve index relative to all.
         internal int BeginParamAnim;
         internal uint OfsName;
         internal uint OfsParamAnimInfoList;

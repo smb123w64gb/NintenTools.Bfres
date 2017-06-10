@@ -11,10 +11,19 @@ namespace Syroot.NintenTools.Bfres
     {
         // ---- PROPERTIES ---------------------------------------------------------------------------------------------
 
+        /// <summary>
+        /// Gets or sets the index of the curve in the <see cref="VertexShapeAnim"/>.
+        /// </summary>
         public sbyte CurveIndex;
 
+        /// <summary>
+        /// Gets the index of the <see cref="KeyShape"/> in the <see cref="Shape"/>.
+        /// </summary>
         public sbyte SubBindIndex;
 
+        /// <summary>
+        /// Gets or sets the name of the <see cref="KeyShape"/> in the <see cref="Shape"/>.
+        /// </summary>
         public string Name;
 
         // ---- METHODS ------------------------------------------------------------------------------------------------
