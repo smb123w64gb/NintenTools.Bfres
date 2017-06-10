@@ -62,7 +62,7 @@ typedef struct // CameraAnim
 		AnimCurve animCurves[curveCount] <optimize=false>;
 	}
 	// Read base values.
-	FSeek(baseValueArrayOffset);
+	FSeek(baseValueArrayOffset.target);
 	CameraAnimResult baseValue;
 	// Read user data.
 	if (userDataDictOffset.value)
@@ -111,7 +111,7 @@ typedef struct // LightAnim
 		AnimCurve animCurves[curveCount] <optimize=false>;
 	}
 	// Read base values. TODO: Read only those specified in the flags.
-	FSeek(baseValueArrayOffset);
+	FSeek(baseValueArrayOffset.target);
 	LightAnimResult baseValue;
 	// Read user data.
 	if (userDataDictOffset.value)
@@ -155,8 +155,8 @@ typedef struct // FogAnim
 		AnimCurve animCurves[curveCount] <optimize=false>;
 	}
 	// Read base values.
-	FSeek(baseValueArrayOffset);
-	FogAnim baseValue;
+	FSeek(baseValueArrayOffset.target);
+	FogAnimResult baseValue;
 	// Read user data.
 	if (userDataDictOffset.value)
 	{
