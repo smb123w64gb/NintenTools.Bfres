@@ -17,7 +17,7 @@ namespace Syroot.NintenTools.Bfres
         public sbyte CurveIndex { get; set; }
 
         /// <summary>
-        /// Gets the index of the texture in the <see cref="Material"/>.
+        /// Gets or sets the index of the texture in the <see cref="Material"/>.
         /// </summary>
         public sbyte SubBindIndex { get; set; }
 

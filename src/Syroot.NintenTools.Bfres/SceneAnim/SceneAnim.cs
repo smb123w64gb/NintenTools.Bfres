@@ -48,10 +48,19 @@ namespace Syroot.NintenTools.Bfres
         /// </summary>
         public string Path { get; set; }
 
+        /// <summary>
+        /// Gets the <see cref="CameraAnim"/> instances.
+        /// </summary>
         public INamedResDataList<CameraAnim> CameraAnims { get; private set; }
-
-        public INamedResDataList<LightAnim> LightAnims { get; private set; }
         
+        /// <summary>
+        /// Gets the <see cref="LightAnim"/> instances.
+        /// </summary>
+        public INamedResDataList<LightAnim> LightAnims { get; private set; }
+
+        /// <summary>
+        /// Gets the <see cref="FogAnim"/> instances.
+        /// </summary>
         public INamedResDataList<FogAnim> FogAnims { get; private set; }
 
         /// <summary>

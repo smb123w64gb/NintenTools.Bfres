@@ -17,7 +17,7 @@ namespace Syroot.NintenTools.Bfres
         public sbyte CurveIndex;
 
         /// <summary>
-        /// Gets the index of the <see cref="KeyShape"/> in the <see cref="Shape"/>.
+        /// Gets or sets the index of the <see cref="KeyShape"/> in the <see cref="Shape"/>.
         /// </summary>
         public sbyte SubBindIndex;
 

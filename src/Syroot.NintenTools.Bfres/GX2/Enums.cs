@@ -1,4 +1,6 @@
-﻿using System;
+﻿#pragma warning disable 1591 // Document enum members only when necessary.
+
+using System;
 
 namespace Syroot.NintenTools.Bfres.GX2
 {
@@ -572,3 +574,5 @@ namespace Syroot.NintenTools.Bfres.GX2
         LinearSpecial
     }
 }
+
+#pragma warning restore 1591

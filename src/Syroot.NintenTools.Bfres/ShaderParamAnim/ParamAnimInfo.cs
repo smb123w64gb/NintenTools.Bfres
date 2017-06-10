@@ -11,18 +11,36 @@ namespace Syroot.NintenTools.Bfres
     {
         // ---- PROPERTIES ---------------------------------------------------------------------------------------------
 
+        /// <summary>
+        /// Gets or sets the index of the first <see cref="AnimCurve"/> instance in the parent
+        /// <see cref="ShaderParamMatAnim"/>.
+        /// </summary>
         public ushort BeginCurve { get; set; }
 
         public ushort FloatCurveCount { get; set; }
 
         public ushort IntCurveCount { get; set; }
 
+        /// <summary>
+        /// Gets or sets the index of the first <see cref="AnimConstant"/> instance in the parent
+        /// <see cref="ShaderParamMatAnim"/>.
+        /// </summary>
         public ushort BeginConstant { get; set; }
 
+        /// <summary>
+        /// Gets or sets the number of <see cref="AnimConstant"/> instances used in the parent
+        /// <see cref="ShaderParamMatAnim"/>.
+        /// </summary>
         public ushort ConstantCount { get; set; }
 
+        /// <summary>
+        /// Gets or sets the index of the <see cref="ShaderParam"/> in the <see cref="Material"/>.
+        /// </summary>
         public ushort SubBindIndex { get; set; }
 
+        /// <summary>
+        /// Gets the name of the animated <see cref="ShaderParam"/>.
+        /// </summary>
         public string Name { get; set; }
 
         // ---- METHODS ------------------------------------------------------------------------------------------------

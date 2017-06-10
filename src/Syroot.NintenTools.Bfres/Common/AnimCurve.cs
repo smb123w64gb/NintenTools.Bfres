@@ -56,8 +56,14 @@ namespace Syroot.NintenTools.Bfres
         /// </summary>
         public uint AnimDataOffset { get; set; }
         
+        /// <summary>
+        /// Gets or sets the first frame number of the animation.
+        /// </summary>
         public float StartFrame { get; set; }
 
+        /// <summary>
+        /// Gets or sets the last frame number of the animation.
+        /// </summary>
         public float EndFrame { get; set; }
 
         public float Scale { get; set; }

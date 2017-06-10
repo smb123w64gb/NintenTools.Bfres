@@ -39,78 +39,125 @@ namespace Syroot.NintenTools.Bfres.GX2
 
         // ---- PROPERTIES ---------------------------------------------------------------------------------------------
         
+        /// <summary>
+        /// Gets or sets a value indicating whether depth testing is enabled.
+        /// </summary>
         public bool DepthTestEnabled
         {
             get { return Value.GetBit(_depthTestBit); }
             set { Value = Value.SetBit(_depthTestBit, value); }
         }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether writing to the depth buffer is enabled.
+        /// </summary>
         public bool DepthWriteEnabled
         {
             get { return Value.GetBit(_depthWriteBit); }
             set { Value = Value.SetBit(_depthWriteBit, value); }
         }
 
+        /// <summary>
+        /// Gets or sets the depth buffer comparison function, controlling whether a new fragment is allowed to
+        /// overwrite the old value in the depth buffer.
+        /// </summary>
         public GX2CompareFunction DepthFunc
         {
             get { return (GX2CompareFunction)Value.Decode(_depthFuncBit, _depthFuncBits); }
             set { Value = Value.Encode((uint)value, _depthFuncBit, _depthFuncBits); }
         }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether stencil testing is enabled.
+        /// </summary>
         public bool StencilTestEnabled
         {
             get { return Value.GetBit(_stencilBit); }
             set { Value = Value.SetBit(_stencilBit, value); }
         }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether back-facing polygons are allowed to write to the stencil buffer or
+        /// not.
+        /// </summary>
         public bool BackStencilEnabled
         {
             get { return Value.GetBit(_backStencilBit); }
             set { Value = Value.SetBit(_backStencilBit, value); }
         }
 
+        /// <summary>
+        /// Gets or sets the front-facing polygon stencil comparison function.
+        /// </summary>
         public GX2CompareFunction FrontStencilFunc
         {
             get { return (GX2CompareFunction)Value.Decode(_frontStencilFuncBit, _frontStencilFuncBits); }
             set { Value = Value.Encode((uint)value, _frontStencilFuncBit, _frontStencilFuncBits); }
         }
 
+        /// <summary>
+        /// Gets or sets the stencil function configuring what to do with the existing stencil value when the stencil
+        /// test fails for front-facing polygons.
+        /// </summary>
         public GX2StencilFunction FrontStencilFail
         {
             get { return (GX2StencilFunction)Value.Decode(_frontStencilFailBit, _frontStencilFailBits); }
             set { Value = Value.Encode((uint)value, _frontStencilFailBit, _frontStencilFailBits); }
         }
 
+        /// <summary>
+        /// Gets or sets the stencil function taking effect when the stencil test passes with the depth buffer for
+        /// front-facing polygons.
+        /// </summary>
         public GX2StencilFunction FrontStencilZPass
         {
             get { return (GX2StencilFunction)Value.Decode(_frontStencilZPassBit, _frontStencilZPassBits); }
             set { Value = Value.Encode((uint)value, _frontStencilZPassBit, _frontStencilZPassBits); }
         }
 
+        /// <summary>
+        /// Gets or sets the function taking effect when the stencil test fails with the depth buffer for front-facing
+        /// polygons.
+        /// </summary>
         public GX2StencilFunction FrontStencilZFail
         {
             get { return (GX2StencilFunction)Value.Decode(_frontStencilZFailBit, _frontStencilZFailBits); }
             set { Value = Value.Encode((uint)value, _frontStencilZFailBit, _frontStencilZFailBits); }
         }
 
+        /// <summary>
+        /// Gets or sets the back-facing polygon stencil comparison function.
+        /// </summary>
         public GX2CompareFunction BackStencilFunc
         {
             get { return (GX2CompareFunction)Value.Decode(_backStencilFuncBit, _backStencilFuncBits); }
             set { Value = Value.Encode((uint)value, _backStencilFuncBit, _backStencilFuncBits); }
         }
 
+        /// <summary>
+        /// Gets or sets the stencil function configuring what to do with the existing stencil value when the stencil
+        /// test fails for back-facing polygons.
+        /// </summary>
         public GX2StencilFunction BackStencilFail
         {
             get { return (GX2StencilFunction)Value.Decode(_backStencilFailBit, _backStencilFailBits); }
             set { Value = Value.Encode((uint)value, _backStencilFailBit, _backStencilFailBits); }
         }
 
+        /// <summary>
+        /// Gets or sets the stencil function taking effect when the stencil test passes with the depth buffer for
+        /// back-facing polygons.
+        /// </summary>
         public GX2StencilFunction BackStencilZPass
         {
             get { return (GX2StencilFunction)Value.Decode(_backStencilZPassBit, _backStencilZPassBits); }
             set { Value = Value.Encode((uint)value, _backStencilZPassBit, _backStencilZPassBits); }
         }
 
+        /// <summary>
+        /// Gets or sets the function taking effect when the stencil test fails with the depth buffer for back-facing
+        /// polygons.
+        /// </summary>
         public GX2StencilFunction BackStencilZFail
         {
             get { return (GX2StencilFunction)Value.Decode(_backStencilZFailBit, _backStencilZFailBits); }

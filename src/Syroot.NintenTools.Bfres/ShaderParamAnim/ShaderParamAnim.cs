@@ -70,8 +70,15 @@ namespace Syroot.NintenTools.Bfres
         /// </summary>
         public Model BindModel { get; set; }
 
+        /// <summary>
+        /// Gets the indices of the <see cref="Material"/> instances in the <see cref="Model.Materials"/> dictionary to
+        /// bind for each animation. <see cref="UInt16.MaxValue"/> specifies no binding.
+        /// </summary>
         public ushort[] BindIndices { get; set; }
 
+        /// <summary>
+        /// Gets the <see cref="ShaderParamMatAnim"/> instances creating the animation.
+        /// </summary>
         public IList<ShaderParamMatAnim> ShaderParamMatAnims { get; private set; }
 
         /// <summary>

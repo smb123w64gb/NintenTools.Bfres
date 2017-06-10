@@ -36,91 +36,135 @@ namespace Syroot.NintenTools.Bfres.GX2
         {
         }
 
-        public TexSampler(uint[] values)
+        internal TexSampler(uint[] values)
         {
             Values = values;
         }
 
         // ---- PROPERTIES ---------------------------------------------------------------------------------------------
         
+        /// <summary>
+        /// Gets or sets the texture repetition mode on the X axis.
+        /// </summary>
         public GX2TexClamp ClampX
         {
             get { return (GX2TexClamp)Values[0].Decode(_clampXBit, _clampXBits); }
             set { Values[0] = Values[0].Encode((uint)value, _clampXBit, _clampXBits); }
         }
 
+        /// <summary>
+        /// Gets or sets the texture repetition mode on the Y axis.
+        /// </summary>
         public GX2TexClamp ClampY
         {
             get { return (GX2TexClamp)Values[0].Decode(_clampYBit, _clampYBits); }
             set { Values[0] = Values[0].Encode((uint)value, _clampYBit, _clampYBits); }
         }
 
+        /// <summary>
+        /// Gets or sets the texture repetition mode on the Z axis.
+        /// </summary>
         public GX2TexClamp ClampZ
         {
             get { return (GX2TexClamp)Values[0].Decode(_clampZBit, _clampZBits); }
             set { Values[0] = Values[0].Encode((uint)value, _clampZBit, _clampZBits); }
         }
 
+        /// <summary>
+        /// Gets or sets the texture filtering on the X and Y axes when the texture is drawn larger than the actual
+        /// texture's resolution.
+        /// </summary>
         public GX2TexXYFilterType MagFilter
         {
             get { return (GX2TexXYFilterType)Values[0].Decode(_xyMagFilterBit, _xyMagFilterBits); }
             set { Values[0] = Values[0].Encode((uint)value, _xyMagFilterBit, _xyMagFilterBits); }
         }
 
+        /// <summary>
+        /// Gets or sets the texture filtering on the X and Y axes when the texture is drawn smaller than the actual
+        /// texture's resolution.
+        /// </summary>
         public GX2TexXYFilterType MinFilter
         {
             get { return (GX2TexXYFilterType)Values[0].Decode(_xyMinFilterBit, _xyMinFilterBits); }
             set { Values[0] = Values[0].Encode((uint)value, _xyMinFilterBit, _xyMinFilterBits); }
         }
 
+        /// <summary>
+        /// Gets or sets the texture filtering on the Z axis.
+        /// </summary>
         public GX2TexZFilterType ZFilter
         {
             get { return (GX2TexZFilterType)Values[0].Decode(_zFilterBit, _zFilterBits); }
             set { Values[0] = Values[0].Encode((uint)value, _zFilterBit, _zFilterBits); }
         }
 
+        /// <summary>
+        /// Gets or sets the texture filtering for mipmaps.
+        /// </summary>
         public GX2TexMipFilterType MipFilter
         {
             get { return (GX2TexMipFilterType)Values[0].Decode(_mipFilterBit, _mipFilterBits); }
             set { Values[0] = Values[0].Encode((uint)value, _mipFilterBit, _mipFilterBits); }
         }
 
+        /// <summary>
+        /// Gets or sets the maximum anisotropic filtering level to use.
+        /// </summary>
         public GX2TexAnisoRatio MaxAnisotropicRatio
         {
             get { return (GX2TexAnisoRatio)Values[0].Decode(_maxAnisotropicRatioBit, _maxAnisotropicRatioBits); }
             set { Values[0] = Values[0].Encode((uint)value, _maxAnisotropicRatioBit, _maxAnisotropicRatioBits); }
         }
 
+        /// <summary>
+        /// Gets or sets what color to draw at places not reached by a texture if the clamp mode does not repeat it.
+        /// </summary>
         public GX2TexBorderType BorderType
         {
             get { return (GX2TexBorderType)Values[0].Decode(_borderTypeBit, _borderTypeBits); }
             set { Values[0] = Values[0].Encode((uint)value, _borderTypeBit, _borderTypeBits); }
         }
 
+        /// <summary>
+        /// Gets or sets the depth comparison function.
+        /// </summary>
         public GX2CompareFunction DepthCompareFunc
         {
             get { return (GX2CompareFunction)Values[0].Decode(_depthCompareFuncBit, _depthCompareFuncBits); }
             set { Values[0] = Values[0].Encode((uint)value, _depthCompareFuncBit, _depthCompareFuncBits); }
         }
         
+        /// <summary>
+        /// Gets or sets the minimum LoD level.
+        /// </summary>
         public float MinLod
         {
             get { return UInt32ToSingle(Values[1].Decode(_minLodBit, _minLodBits)); }
             set { Values[1].Encode(SingleToUInt32(value), _minLodBit, _minLodBits); }
         }
-        
+
+        /// <summary>
+        /// Gets or sets the maximum LoD level.
+        /// </summary>
         public float MaxLod
         {
             get { return UInt32ToSingle(Values[1].Decode(_maxLodBit, _maxLodBits)); }
             set { Values[1].Encode(SingleToUInt32(value), _maxLodBit, _maxLodBits); }
         }
         
+        /// <summary>
+        /// Gets or sets the LoD bias.
+        /// </summary>
         public float LodBias
         {
             get { return UInt32ToSingle(Values[1].Decode(_lodBiasBit, _lodBiasBits)); }
             set { Values[1].Encode(SingleToUInt32(value), _lodBiasBit, _lodBiasBits); }
         }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether depth comparison is enabled (never set for a real console).
+        /// </summary>
         public bool DepthCompareEnabled
         {
             get { return Values[2].GetBit(_depthCompareBit); }

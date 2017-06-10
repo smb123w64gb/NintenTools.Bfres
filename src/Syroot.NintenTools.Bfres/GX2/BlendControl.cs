@@ -34,48 +34,72 @@ namespace Syroot.NintenTools.Bfres.GX2
 
         // ---- PROPERTIES ---------------------------------------------------------------------------------------------
 
+        /// <summary>
+        /// Gets or sets the color source blend operation.
+        /// </summary>
         public GX2BlendFunction ColorSourceBlend
         {
             get { return (GX2BlendFunction)Value.Decode(_colorSourceBlendBit, _colorSourceBlendBits); }
             set { Value = Value.Encode((uint)value, _colorSourceBlendBit, _colorSourceBlendBits); }
         }
 
+        /// <summary>
+        /// Gets or sets the color combine operation.
+        /// </summary>
         public GX2BlendCombine ColorCombine
         {
             get { return (GX2BlendCombine)Value.Decode(_colorCombineBit, _colorCombineBits); }
             set { Value = Value.Encode((uint)value, _colorCombineBit, _colorCombineBits); }
         }
 
+        /// <summary>
+        /// Gets or sets the color destination blend operation.
+        /// </summary>
         public GX2BlendFunction ColorDestinationBlend
         {
             get { return (GX2BlendFunction)Value.Decode(_colorDestinationBlendBit, _colorDestinationBlendBits); }
             set { Value = Value.Encode((uint)value, _colorDestinationBlendBit, _colorDestinationBlendBits); }
         }
 
+        /// <summary>
+        /// Gets or sets the alpha source blend operation.
+        /// </summary>
         public GX2BlendFunction AlphaSourceBlend
         {
             get { return (GX2BlendFunction)Value.Decode(_alphaSourceBlendBit, _alphaSourceBlendBits); }
             set { Value = Value.Encode((uint)value, _alphaSourceBlendBit, _alphaSourceBlendBits); }
         }
 
+        /// <summary>
+        /// Gets or sets the alpha combine operation.
+        /// </summary>
         public GX2BlendCombine AlphaCombine
         {
             get { return (GX2BlendCombine)Value.Decode(_alphaCombineBit, _alphaCombineBits); }
             set { Value = Value.Encode((uint)value, _alphaCombineBit, _alphaCombineBits); }
         }
 
+        /// <summary>
+        /// Gets or sets the alpha destination blend operation.
+        /// </summary>
         public GX2BlendFunction AlphaDestinationBlend
         {
             get { return (GX2BlendFunction)Value.Decode(_alphaDestinationBlendBit, _alphaDestinationBlendBits); }
             set { Value = Value.Encode((uint)value, _alphaDestinationBlendBit, _alphaDestinationBlendBits); }
         }
         
+        /// <summary>
+        /// Gets or sets a value indicating whether alpha blending is separated from color blending.
+        /// </summary>
         public bool SeparateAlphaBlend
         {
             get { return Value.GetBit(_separateAlphaBlendBit); }
             set { Value = Value.SetBit(_separateAlphaBlendBit, value); }
         }
         
+        /// <summary>
+        /// Gets or sets the blend target index.
+        /// </summary>
         public uint Target { get; set; }
 
         internal uint Value { get; set; }
