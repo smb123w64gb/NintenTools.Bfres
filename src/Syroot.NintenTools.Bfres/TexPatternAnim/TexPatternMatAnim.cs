@@ -12,13 +12,7 @@ namespace Syroot.NintenTools.Bfres
     public class TexPatternMatAnim : IResData
     {
         // ---- PROPERTIES ---------------------------------------------------------------------------------------------
-
-        /// <summary>
-        /// Gets or sets the index of the first <see cref="AnimCurve"/> of this instance relative to all curves in the
-        /// owning <see cref="TexPatternAnim"/>.
-        /// </summary>
-        public int BeginCurve { get; set; }
-
+        
         /// <summary>
         /// Gets or sets the index of the first <see cref="PatternAnimInfo"/> of this instance relative to all pattern
         /// animation infos in the owning <see cref="TexPatternAnim"/>.
@@ -52,7 +46,6 @@ namespace Syroot.NintenTools.Bfres
             TexPatternMatAnimHead head = new TexPatternMatAnimHead(loader);
             using (loader.TemporarySeek())
             {
-                BeginCurve = head.BeginCurve;
                 BeginPatAnim = head.BeginPatAnim;
                 Name = loader.GetName(head.OfsName);
                 PatternAnimInfos = loader.LoadList<PatternAnimInfo>(head.OfsPatAnimInfoList, head.NumPatAnim);
@@ -80,7 +73,7 @@ namespace Syroot.NintenTools.Bfres
 
         internal ushort NumPatAnim;
         internal ushort NumCurve;
-        internal int BeginCurve;
+        internal int BeginCurve; // Curve index relative to all curves.
         internal int BeginPatAnim;
         internal uint OfsName;
         internal uint OfsPatAnimInfoList;

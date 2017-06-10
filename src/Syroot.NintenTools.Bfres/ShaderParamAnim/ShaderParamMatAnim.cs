@@ -11,9 +11,7 @@ namespace Syroot.NintenTools.Bfres
     public class ShaderParamMatAnim : IResData
     {
         // ---- PROPERTIES ---------------------------------------------------------------------------------------------
-
-        public int BeginCurve { get; set; }
-
+        
         public int BeginParamAnim { get; set; }
 
         public string Name { get; set; }
@@ -34,7 +32,6 @@ namespace Syroot.NintenTools.Bfres
             ShaderParamMatAnimHead head = new ShaderParamMatAnimHead(loader);
             using (loader.TemporarySeek())
             {
-                BeginCurve = head.BeginCurve;
                 BeginParamAnim = head.BeginParamAnim;
                 Name = loader.GetName(head.OfsName);
                 ParamAnimInfos = loader.LoadList<ParamAnimInfo>(head.OfsParamAnimInfoList, head.NumAnimParam);
@@ -63,7 +60,7 @@ namespace Syroot.NintenTools.Bfres
         internal ushort NumAnimParam;
         internal ushort NumCurve;
         internal ushort NumConstant;
-        internal int BeginCurve;
+        internal int BeginCurve; // Curve index relative to all curves.
         internal int BeginParamAnim;
         internal uint OfsName;
         internal uint OfsParamAnimInfoList;

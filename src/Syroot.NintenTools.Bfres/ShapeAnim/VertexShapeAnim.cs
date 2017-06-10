@@ -11,9 +11,7 @@ namespace Syroot.NintenTools.Bfres
     public class VertexShapeAnim : IResData
     {
         // ---- PROPERTIES ---------------------------------------------------------------------------------------------
-
-        public int BeginCurve { get; set; }
-
+        
         public int BeginKeyShapeAnim { get; set; }
 
         public string Name { get; set; }
@@ -34,7 +32,6 @@ namespace Syroot.NintenTools.Bfres
             VertexShapeAnimHead head = new VertexShapeAnimHead(loader);
             using (loader.TemporarySeek())
             {
-                BeginCurve = head.BeginCurve;
                 BeginKeyShapeAnim = head.BeginKeyShapeAnim;
                 Name = loader.GetName(head.OfsName);
                 KeyShapeAnimInfos = loader.LoadList<KeyShapeAnimInfo>(head.OfsKeyShapeAnimInfoList, head.NumKeyShapeAnim);
@@ -62,7 +59,7 @@ namespace Syroot.NintenTools.Bfres
 
         internal ushort NumCurve;
         internal ushort NumKeyShapeAnim;
-        internal int BeginCurve;
+        internal int BeginCurve; // Curve index relative to all curves.
         internal int BeginKeyShapeAnim;
         internal uint OfsName;
         internal uint OfsKeyShapeAnimInfoList;

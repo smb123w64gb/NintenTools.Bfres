@@ -55,12 +55,18 @@ namespace Syroot.NintenTools.Bfres
         /// </summary>
         public string Path { get; set; }
 
+        /// <summary>
+        /// Gets or sets the <see cref="SkeletalAnimFlagsScale"/> mode used to store scaling values.
+        /// </summary>
         public SkeletalAnimFlagsScale FlagsScale
         {
             get { return (SkeletalAnimFlagsScale)(_flags & _flagsMaskScale); }
             set { _flags &= ~_flagsMaskScale | (uint)value; }
         }
 
+        /// <summary>
+        /// Gets or sets the <see cref="SkeletalAnimFlagsRotate"/> mode used to store rotation values.
+        /// </summary>
         public SkeletalAnimFlagsRotate FlagsRotate
         {
             get { return (SkeletalAnimFlagsRotate)(_flags & _flagsMaskRotate); }
@@ -78,13 +84,20 @@ namespace Syroot.NintenTools.Bfres
         /// </summary>
         public uint BakedSize { get; set; }
         
+        /// <summary>
+        /// Gets the <see cref="BoneAnim"/> instances creating the animation.
+        /// </summary>
         public IList<BoneAnim> BoneAnims { get; private set; }
 
         /// <summary>
         /// Gets or sets the <see cref="Skeleton"/> instance affected by this animation.
         /// </summary>
         public Skeleton BindSkeleton { get; set; }
-
+        
+        /// <summary>
+        /// Gets the indices of the <see cref="Bone"/> instances in the <see cref="Skeleton.Bones"/> dictionary to bind
+        /// for each animation. <see cref="UInt16.MaxValue"/> specifies no binding.
+        /// </summary>
         public ushort[] BindIndices { get; private set; }
 
         /// <summary>
@@ -182,17 +195,45 @@ namespace Syroot.NintenTools.Bfres
         Looping = 1 << 2
     }
 
+    /// <summary>
+    /// Represents the data format in which scaling values are stored.
+    /// </summary>
     public enum SkeletalAnimFlagsScale : uint
     {
+        /// <summary>
+        /// No scaling.
+        /// </summary>
         None,
+
+        /// <summary>
+        /// Default scaling.
+        /// </summary>
         Standard = 1 << 8,
+
+        /// <summary>
+        /// Autodesk Maya scaling.
+        /// </summary>
         Maya = 2 << 8,
+
+        /// <summary>
+        /// Autodesk Softimage scaling.
+        /// </summary>
         Softimage = 3 << 8
     }
 
+    /// <summary>
+    /// Represents the data format in which rotation values are stored.
+    /// </summary>
     public enum SkeletalAnimFlagsRotate : uint
     {
+        /// <summary>
+        /// Quaternion, 4 components.
+        /// </summary>
         Quaternion,
+
+        /// <summary>
+        /// Euler XYZ, 3 components.
+        /// </summary>
         EulerXYZ = 1 << 12
     }
 }
