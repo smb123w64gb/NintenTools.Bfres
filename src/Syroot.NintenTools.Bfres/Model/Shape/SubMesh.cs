@@ -24,8 +24,8 @@ namespace Syroot.NintenTools.Bfres
             Offset = loader.ReadUInt32();
             Count = loader.ReadUInt32();
         }
-
-        void IResData.Reference(ResFileLoader loader)
+        
+        void IResData.Save(ResFileSaver saver)
         {
         }
     }

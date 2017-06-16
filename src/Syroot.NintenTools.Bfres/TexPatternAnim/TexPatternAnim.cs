@@ -11,10 +11,13 @@ namespace Syroot.NintenTools.Bfres
     [DebuggerDisplay(nameof(TexPatternAnim) + " {" + nameof(Name) + "}")]
     public class TexPatternAnim : INamedResData
     {
+        // ---- CONSTANTS ----------------------------------------------------------------------------------------------
+
+        private const string _signature = "FTXP";
+
         // ---- FIELDS -------------------------------------------------------------------------------------------------
 
         private string _name;
-        private uint _ofsBindModel;
 
         // ---- EVENTS -------------------------------------------------------------------------------------------------
 
@@ -95,79 +98,26 @@ namespace Syroot.NintenTools.Bfres
 
         void IResData.Load(ResFileLoader loader)
         {
-            TexPatternAnimHead head = new TexPatternAnimHead(loader);
-            Name = loader.GetName(head.OfsName);
-            Path = loader.GetName(head.OfsPath);
-            Flags = head.Flags;
-            FrameCount = head.NumFrame;
-            BakedSize = head.SizBaked;
-            _ofsBindModel = head.OfsBindModel;
-
-            if (head.OfsBindIndexList != 0)
-            {
-                loader.Position = head.OfsBindIndexList;
-                BindIndices = loader.ReadUInt16s(head.NumMatAnim);
-            }
-
-            TexPatternMatAnims = loader.LoadList<TexPatternMatAnim>(head.OfsMatAnimList, head.NumMatAnim);
-            TextureRefs = loader.LoadDictList<TextureRef>(head.OfsTextureRefDict);
-            UserData = loader.LoadDictList<UserData>(head.OfsUserDataDict);
-        }
-
-        void IResData.Reference(ResFileLoader loader)
-        {
-            BindModel = loader.GetData<Model>(_ofsBindModel);
-        }
-    }
-
-    /// <summary>
-    /// Represents the header of a <see cref="TexPatternAnim"/> instance.
-    /// </summary>
-    internal class TexPatternAnimHead
-    {
-        // ---- CONSTANTS ----------------------------------------------------------------------------------------------
-
-        private const string _signature = "FTXP";
-
-        // ---- FIELDS -------------------------------------------------------------------------------------------------
-
-        internal uint Signature;
-        internal uint OfsName;
-        internal uint OfsPath;
-        internal TexPatternAnimFlags Flags;
-        internal ushort NumUserData;
-        internal int NumFrame;
-        internal ushort NumTextureRef;
-        internal ushort NumMatAnim;
-        internal int NumPatAnim;
-        internal int NumCurve;
-        internal uint SizBaked;
-        internal uint OfsBindModel;
-        internal uint OfsBindIndexList;
-        internal uint OfsMatAnimList;
-        internal uint OfsTextureRefDict;
-        internal uint OfsUserDataDict;
-
-        // ---- CONSTRUCTORS & DESTRUCTOR ------------------------------------------------------------------------------
-
-        internal TexPatternAnimHead(ResFileLoader loader)
-        {
-            Signature = loader.ReadSignature(_signature);
-            OfsName = loader.ReadOffset();
-            OfsPath = loader.ReadOffset();
+            loader.CheckSignature(_signature);
+            Name = loader.LoadString();
+            Path = loader.LoadString();
             Flags = loader.ReadEnum<TexPatternAnimFlags>(true);
-            NumUserData = loader.ReadUInt16();
-            NumFrame = loader.ReadInt32();
-            NumTextureRef = loader.ReadUInt16();
-            NumMatAnim = loader.ReadUInt16();
-            NumPatAnim = loader.ReadInt32();
-            NumCurve = loader.ReadInt32();
-            SizBaked = loader.ReadUInt32();
-            OfsBindModel = loader.ReadOffset();
-            OfsBindIndexList = loader.ReadOffset();
-            OfsMatAnimList = loader.ReadOffset();
-            OfsTextureRefDict = loader.ReadOffset();
-            OfsUserDataDict = loader.ReadOffset();
+            ushort numUserData = loader.ReadUInt16();
+            FrameCount = loader.ReadInt32();
+            ushort numTextureRef = loader.ReadUInt16();
+            ushort numMatAnim = loader.ReadUInt16();
+            int numPatAnim = loader.ReadInt32();
+            int numCurve = loader.ReadInt32();
+            BakedSize = loader.ReadUInt32();
+            BindModel = loader.Load<Model>();
+            BindIndices = loader.LoadCustom(() => loader.ReadUInt16s(numMatAnim));
+            TexPatternMatAnims = loader.LoadList<TexPatternMatAnim>(numMatAnim);
+            TextureRefs = loader.LoadDictList<TextureRef>();
+            UserData = loader.LoadDictList<UserData>();
+        }
+        
+        void IResData.Save(ResFileSaver saver)
+        {
         }
     }
 

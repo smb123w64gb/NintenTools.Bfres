@@ -20,9 +20,16 @@ namespace Syroot.NintenTools.Bfres.Core
         // ---- FIELDS -------------------------------------------------------------------------------------------------
 
         private IDictionary<uint, IResData> _dataMap;
-        
+
         // ---- CONSTRUCTORS & DESTRUCTOR ------------------------------------------------------------------------------
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ResFileLoader"/> class loading data into the given
+        /// <paramref name="resFile"/> from the specified <paramref name="stream"/> which is optionally left open.
+        /// </summary>
+        /// <param name="resFile">The <see cref="ResFile"/> instance to load data into.</param>
+        /// <param name="stream">The <see cref="Stream"/> to read data from.</param>
+        /// <param name="leaveOpen"><c>true</c> to leave the stream open after reading, otherwise <c>false</c>.</param>
         internal ResFileLoader(ResFile resFile, Stream stream, bool leaveOpen = false)
             : base(stream, Encoding.ASCII, leaveOpen)
         {
@@ -31,6 +38,11 @@ namespace Syroot.NintenTools.Bfres.Core
             _dataMap = new Dictionary<uint, IResData>();
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ResFileLoader"/> class from the file with the given
+        /// <paramref name="fileName"/>.
+        /// </summary>
+        /// <param name="fileName">The name of the file to load the data from.</param>
         internal ResFileLoader(ResFile resFile, string fileName)
             : this(resFile, new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.Read))
         {
@@ -50,39 +62,191 @@ namespace Syroot.NintenTools.Bfres.Core
         /// </summary>
         internal void Execute()
         {
-            // Load the raw data into structures.
+            // Load the raw data into structures recursively.
             ((IResData)ResFile).Load(this);
+        }
+        
+        // ---- Data Load Methods ----
 
-            // Resolve any references.
-            foreach (KeyValuePair<uint, IResData> mapping in _dataMap)
+        /// <summary>
+        /// Reads and returns an <see cref="IResData"/> instance of type <typeparamref name="T"/> from the following
+        /// offset or returns <c>null</c> if the read offset is 0.
+        /// </summary>
+        /// <typeparam name="T">The type of the <see cref="IResData"/> to read.</typeparam>
+        /// <returns>The <see cref="IResData"/> instance or <c>null</c>.</returns>
+        [DebuggerStepThrough]
+        internal T Load<T>()
+            where T : IResData, new()
+        {
+            uint offset = ReadOffset();
+            if (offset == 0) return default(T);
+
+            // Seek to the instance data and load it.
+            using (TemporarySeek(offset, SeekOrigin.Begin))
             {
-                mapping.Value.Reference(this);
+                return ReadInstance<T>();
             }
         }
 
         /// <summary>
-        /// Gets the <see cref="IResData"/> instance at the specified <paramref name="offset"/> or <c>null</c> if the
-        /// offset is 0. Can only be used after the raw file has been loaded.
+        /// Reads and returns an instance of arbitrary type <typeparamref name="T"/> from the following offset with the
+        /// given <paramref name="callback"/> or returns <c>null</c> if the read offset is 0.
         /// </summary>
-        /// <typeparam name="T">The type of <see cref="IResData"/> to return.</typeparam>
-        /// <param name="offset">The absolute address where the data of the instance to retrieve starts.</param>
-        /// <returns>The <see cref="IResData"/> instance at the specified address or <c>null</c> if the offset is 0.
-        /// </returns>
-        internal T GetData<T>(uint offset)
-            where T : IResData
+        /// <typeparam name="T">The type of the data to read.</typeparam>
+        /// <param name="callback">The callback to read the instance data with.</param>
+        /// <param name="offset">The optional offset to use instead of reading a following one.</param>
+        /// <returns>The data instance or <c>null</c>.</returns>
+        /// <remarks>Offset required for ExtFile header (offset specified before size).</remarks>
+        [DebuggerStepThrough]
+        internal T LoadCustom<T>(Func<T> callback, uint? offset = null)
         {
-            return offset == 0 ? default(T) : (T)_dataMap[offset];
+            offset = offset ?? ReadOffset();
+            if (offset == 0) return default(T);
+
+            using (TemporarySeek(offset.Value, SeekOrigin.Begin))
+            {
+                return callback.Invoke();
+            }
         }
 
         /// <summary>
-        /// Reads and returns the <see cref="String"/> from the given offset.
+        /// Reads and returns an <see cref="IList{String}"/> instance from the following offset storing only the keys of
+        /// the dict or returns <c>null</c> if the read offset is 0.
         /// </summary>
-        /// <param name="offset">The total offset to read the <see cref="String"/> from.</param>
-        /// <param name="encoding">The <see cref="Encoding"/> to use to read the string.</param>
-        /// <returns>The read <see cref="String"/>.</returns>
+        /// <returns>The <see cref="IList{String}"/> instance or <c>null</c>.</returns>
         [DebuggerStepThrough]
-        internal string GetName(uint offset, Encoding encoding = null)
+        internal IList<string> LoadDictNames()
         {
+            List<string> list = new List<string>();
+            uint offset = ReadOffset();
+            if (offset == 0) return list;
+
+            // Read the dictionary header.
+            using (TemporarySeek(offset, SeekOrigin.Begin))
+            {
+                uint size = ReadUInt32();
+                int entryCount = ReadInt32();
+
+                // Read the dictionary nodes.
+                Seek(_dictNodeSize); // Skip the root node.
+                for (; entryCount > 0; entryCount--)
+                {
+                    uint keyBits = ReadUInt32();
+                    ushort idxLeft = ReadUInt16();
+                    ushort idxRight = ReadUInt16();
+                    uint ofsName = ReadOffset(); // Uses data offset instead.
+                    list.Add(LoadString()); // Data offset same as name offset.
+                }
+                return list;
+            }
+        }
+
+        /// <summary>
+        /// Reads and returns an <see cref="IDictionary{String, T}"/> instance with element values of type
+        /// <typeparamref name="T"/> from the following offset or returns <c>null</c> if the read offset is 0.
+        /// </summary>
+        /// <typeparam name="T">The type of the <see cref="IResData"/> element values.</typeparam>
+        /// <returns>The <see cref="IDictionary{String, T}"/> instance or <c>null</c>.</returns>
+        [DebuggerStepThrough]
+        internal IDictionary<string, T> LoadDict<T>()
+            where T : IResData, new()
+        {
+            SortedDictionary<string, T> dict = new SortedDictionary<string, T>();
+            uint offset = ReadOffset();
+            if (offset == 0) return dict;
+
+            // Read the dictionary header.
+            using (TemporarySeek(offset, SeekOrigin.Begin))
+            {
+                uint size = ReadUInt32();
+                int entryCount = ReadInt32();
+
+                // Read the dictionary nodes.
+                Seek(_dictNodeSize); // Skip the root node.
+                for (; entryCount > 0; entryCount--)
+                {
+                    uint keyBits = ReadUInt32();
+                    ushort idxLeft = ReadUInt16();
+                    ushort idxRight = ReadUInt16();
+                    dict.Add(LoadString(), Load<T>()); // Read the offset to the data and instantiate it.
+                }
+                return dict;
+            }
+        }
+
+        /// <summary>
+        /// Reads and returns an <see cref="INamedResDataList{T}"/> instance with elements of type
+        /// <typeparamref name="T"/> from the following offset or returns <c>null</c> if the read offset is 0.
+        /// </summary>
+        /// <typeparam name="T">The type of the <see cref="IResData"/> elements.</typeparam>
+        /// <returns>The <see cref="INamedResDataList{T}"/> instance or <c>null</c>.</returns>
+        [DebuggerStepThrough]
+        internal INamedResDataList<T> LoadDictList<T>()
+            where T : INamedResData, new()
+        {
+            NamedResDataList<T> list = new NamedResDataList<T>();
+            uint offset = ReadOffset();
+            if (offset == 0) return list;
+
+            // Read the dictionary header.
+            using (TemporarySeek(offset, SeekOrigin.Begin))
+            {
+                uint size = ReadUInt32();
+                int entryCount = ReadInt32();
+
+                // Read the dictionary nodes.
+                Seek(_dictNodeSize); // Skip the root node.
+                for (; entryCount > 0; entryCount--)
+                {
+                    uint keyBits = ReadUInt32();
+                    ushort idxLeft = ReadUInt16();
+                    ushort idxRight = ReadUInt16();
+                    uint ofsName = ReadOffset(); // Uses INamedResData.Name property instead.
+                    list.Add(Load<T>()); // Read the offset to the data and instantiate it.
+                }
+                return list;
+            }
+        }
+
+        /// <summary>
+        /// Reads and returns an <see cref="IList{T}"/> instance with <paramref name="count"/> elements of type
+        /// <typeparamref name="T"/> from the following offset or returns <c>null</c> if the read offset is 0.
+        /// </summary>
+        /// <typeparam name="T">The type of the <see cref="IResData"/> elements.</typeparam>
+        /// <param name="offset">The optional offset to use instead of reading a following one.</param>
+        /// <returns>The <see cref="IList{T}"/> instance or <c>null</c>.</returns>
+        /// <remarks>Offset required for FMDL FVTX lists (offset specified before count).</remarks>
+        [DebuggerStepThrough]
+        internal IList<T> LoadList<T>(int count, uint? offset = null)
+            where T : IResData, new()
+        {
+            List<T> list = new List<T>(count);
+            offset = offset ?? ReadOffset();
+            if (offset == 0 || count == 0) return list;
+
+            // Seek to the list start and read it.
+            using (TemporarySeek(offset.Value, SeekOrigin.Begin))
+            {
+                for (; count > 0; count--)
+                {
+                    list.Add(ReadInstance<T>());
+                }
+                return list;
+            }
+        }
+
+        /// <summary>
+        /// Reads and returns a <see cref="String"/> instance from the following offset or <c>null</c> if the read
+        /// offset is 0.
+        /// </summary>
+        /// <param name="encoding">The optional encoding of the text.</param>
+        /// <returns>The read text.</returns>
+        [DebuggerStepThrough]
+        internal string LoadString(Encoding encoding = null)
+        {
+            uint offset = ReadOffset();
+            if (offset == 0) return null;
+
             encoding = encoding ?? Encoding;
             using (TemporarySeek(offset, SeekOrigin.Begin))
             {
@@ -91,178 +255,33 @@ namespace Syroot.NintenTools.Bfres.Core
         }
 
         /// <summary>
-        /// Reads and returns <see cref="String"/> instances from the given <paramref name="offsets"/>.
+        /// Reads and returns <paramref name="count"/> <see cref="String"/> instances from the following offsets.
         /// </summary>
-        /// <param name="offsets">The total offsets to read the <see cref="String"/> instances from.</param>
-        /// <param name="encoding">The <see cref="Encoding"/> to use to read the string.</param>
-        /// <returns>The read <see cref="String"/> instances.</returns>
+        /// <param name="count">The number of instances to read.</param>
+        /// <param name="encoding">The optional encoding of the texts.</param>
+        /// <returns>The read texts.</returns>
         [DebuggerStepThrough]
-        internal IList<string> GetNames(uint[] offsets, Encoding encoding = null)
+        internal IList<string> LoadStrings(int count, Encoding encoding = null)
         {
+            uint[] offsets = ReadOffsets(count);
+
             encoding = encoding ?? Encoding;
-            string[] values = new string[offsets.Length];
+            string[] names = new string[offsets.Length];
             using (TemporarySeek())
             {
                 for (int i = 0; i < offsets.Length; i++)
                 {
-                    Position = offsets[i];
-                    values[i] = ReadString(BinaryStringFormat.ZeroTerminated, encoding);
+                    uint offset = offsets[i];
+                    if (offset == 0) continue;
+
+                    Position = offset;
+                    names[i] = ReadString(BinaryStringFormat.ZeroTerminated, encoding);
                 }
+                return names;
             }
-            return values;
         }
 
-        /// <summary>
-        /// Reads an <see cref="IResData"/> instance from the given <paramref name="offset"/>. If the offset is 0,
-        /// <c>null</c> is returned.
-        /// </summary>
-        /// <typeparam name="T">The type of <see cref="IResData"/> to load.</typeparam>
-        /// <param name="offset">The offset to read the content from.</param>
-        /// <returns>The new instance or <c>null</c>.</returns>
-        [DebuggerStepThrough]
-        internal T Load<T>(uint offset)
-            where T : IResData, new()
-        {
-            if (offset == 0) return default(T);
-
-            // Seek to the instance data and load it.
-            Position = offset;
-            return LoadInstance<T>();
-        }
-
-        /// <summary>
-        /// Reads an <see cref="IList{String}"/> from the BFRES dictionary at given <paramref name="offset"/>. If the
-        /// offset is 0, an empty list is returned. Names form the elements.
-        /// </summary>
-        /// <param name="offset">The offset at which to read the dictionary.</param>
-        /// <returns>The read list.</returns>
-        [DebuggerStepThrough]
-        internal IList<string> LoadDictNames(uint offset)
-        {
-            List<string> list = new List<string>();
-            if (offset == 0) return list;
-
-            // Read the dictionary header.
-            Position = offset;
-            uint size = ReadUInt32();
-            int entryCount = ReadInt32();
-
-            // Read the dictionary nodes.
-            Seek(_dictNodeSize); // Skip the root node.
-            for (; entryCount > 0; entryCount--)
-            {
-                uint keyBits = ReadUInt32();
-                ushort idxLeft = ReadUInt16();
-                ushort idxRight = ReadUInt16();
-                uint ofsName = ReadOffset();
-                uint ofsData = ReadOffset();
-                list.Add(GetName(ofsData));
-            }
-
-            return list;
-        }
-
-        /// <summary>
-        /// Reads an <see cref="IDictionary{String, T}"/> from the BFRES dictionary at given <paramref name="offset"/>.
-        /// If the offset is 0, an empty dictionary is returned.
-        /// </summary>
-        /// <typeparam name="T">The type of the elements. Must implement <see cref="IResData"/>.</typeparam>
-        /// <param name="offset">The offset at which to read the dictionary.</param>
-        /// <returns>The read dictionary.</returns>
-        [DebuggerStepThrough]
-        internal IDictionary<string, T> LoadDict<T>(uint offset)
-            where T : IResData, new()
-        {
-            SortedDictionary<string, T> dict = new SortedDictionary<string, T>();
-            if (offset == 0) return dict;
-
-            // Read the dictionary header.
-            Position = offset;
-            uint size = ReadUInt32();
-            int entryCount = ReadInt32();
-
-            // Read the dictionary nodes.
-            Seek(_dictNodeSize); // Skip the root node.
-            for (; entryCount > 0; entryCount--)
-            {
-                uint keyBits = ReadUInt32();
-                ushort idxLeft = ReadUInt16();
-                ushort idxRight = ReadUInt16();
-                uint ofsName = ReadOffset();
-                uint ofsData = ReadOffset();
-                // Seek to the data and instantiate it.
-                using (TemporarySeek())
-                {
-                    dict.Add(GetName(ofsName), Load<T>(ofsData));
-                }
-            }
-
-            return dict;
-        }
-
-        /// <summary>
-        /// Reads an <see cref="IList{T}"/> from the BFRES dictionary at given <paramref name="offset"/>. If the offset
-        /// is 0, an empty list is returned. Keys are not read as they are practically retrieved from instances upon
-        /// saving.
-        /// </summary>
-        /// <typeparam name="T">The type of the elements. Must implement <see cref="IResData"/>.</typeparam>
-        /// <param name="offset">The offset at which to read the dictionary.</param>
-        /// <returns>The read list.</returns>
-        [DebuggerStepThrough]
-        internal INamedResDataList<T> LoadDictList<T>(uint offset)
-            where T : INamedResData, new()
-        {
-            NamedResDataList<T> list = new NamedResDataList<T>();
-            if (offset == 0) return list;
-
-            // Read the dictionary header.
-            Position = offset;
-            uint size = ReadUInt32();
-            int entryCount = ReadInt32();
-
-            // Read the dictionary nodes.
-            Seek(_dictNodeSize); // Skip the root node.
-            for (; entryCount > 0; entryCount--)
-            {
-                uint keyBits = ReadUInt32();
-                ushort idxLeft = ReadUInt16();
-                ushort idxRight = ReadUInt16();
-                uint ofsName = ReadOffset();
-                uint ofsData = ReadOffset();
-                // Seek to the data and instantiate it.
-                using (TemporarySeek())
-                {
-                    list.Add(Load<T>(ofsData));
-                }
-            }
-
-            return list;
-        }
-
-        /// <summary>
-        /// Reads an <see cref="IList{T}"/> from the given <paramref name="offset"/> and element
-        /// <paramref name="count"/>. If the offset is 0, an empty list is returned.
-        /// </summary>
-        /// <typeparam name="T">The type of the elements. Must implement <see cref="IResData"/>.</typeparam>
-        /// <param name="offset">The offset at which to read the list.</param>
-        /// <param name="count">The number of elements to read.</param>
-        /// <returns>The read list.</returns>
-        [DebuggerStepThrough]
-        internal IList<T> LoadList<T>(uint offset, int count)
-            where T : IResData, new()
-        {
-            List<T> list = new List<T>(count);
-            if (offset == 0 || count == 0) return list;
-
-            // Seek to the list start and read it.
-            Position = offset;
-            for (; count > 0; count--)
-            {
-                list.Add(LoadInstance<T>());
-            }
-
-            return list;
-        }
+        // ---- Specialized Write Methods ----
 
         /// <summary>
         /// Reads a <see cref="AnimConstant"/> instance from the current stream and returns it.
@@ -318,14 +337,14 @@ namespace Syroot.NintenTools.Bfres.Core
             }
             return values;
         }
-        
+
         /// <summary>
         /// Reads a BFRES signature consisting of 4 ASCII characters encoded as an <see cref="UInt32"/> and checks for
         /// validity.
         /// </summary>
         /// <param name="validSignature">A valid signature.</param>
         /// <returns>The read signature.</returns>
-        internal uint ReadSignature(string validSignature)
+        internal void CheckSignature(string validSignature)
         {
             // Read the actual signature and compare it.
             string signature = ReadString(sizeof(uint), Encoding.ASCII);
@@ -333,7 +352,6 @@ namespace Syroot.NintenTools.Bfres.Core
             {
                 throw new ResException($"Invalid signature, expected '{validSignature}' but got '{signature}'.");
             }
-            return BitConverter.ToUInt32(Encoding.ASCII.GetBytes(signature), 0);
         }
 
         /// <summary>
@@ -535,7 +553,7 @@ namespace Syroot.NintenTools.Bfres.Core
         // ---- METHODS (PRIVATE) --------------------------------------------------------------------------------------
 
         [DebuggerStepThrough]
-        private T LoadInstance<T>()
+        private T ReadInstance<T>()
             where T : IResData, new()
         {
             uint offset = (uint)Position;

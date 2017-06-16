@@ -138,55 +138,32 @@ namespace Syroot.NintenTools.Bfres
 
         void IResData.Load(ResFileLoader loader)
         {
-            UserDataHead head = new UserDataHead(loader);
-            Name = loader.GetName(head.OfsName);
-            Type = head.Type;
-            _value = head.Value;
-        }
-
-        void IResData.Reference(ResFileLoader loader)
-        {
-        }
-    }
-
-    /// <summary>
-    /// Represents the header of a <see cref="UserData"/> instance.
-    /// </summary>
-    internal class UserDataHead
-    {
-        // ---- FIELDS -------------------------------------------------------------------------------------------------
-
-        internal uint OfsName;
-        internal ushort Count;
-        internal UserDataType Type;
-        internal object Value;
-
-        // ---- CONSTRUCTORS & DESTRUCTOR ------------------------------------------------------------------------------
-
-        internal UserDataHead(ResFileLoader loader)
-        {
-            OfsName = loader.ReadOffset();
-            Count = loader.ReadUInt16();
+            Name = loader.LoadString();
+            ushort count = loader.ReadUInt16();
             Type = loader.ReadEnum<UserDataType>(true);
             loader.Seek(1);
             switch (Type)
             {
                 case UserDataType.Int32:
-                    Value = loader.ReadInt32s(Count);
+                    _value = loader.ReadInt32s(count);
                     break;
                 case UserDataType.Single:
-                    Value = loader.ReadSingles(Count);
+                    _value = loader.ReadSingles(count);
                     break;
                 case UserDataType.String:
-                    Value = loader.GetNames(loader.ReadOffsets(Count), Encoding.ASCII);
+                    _value = loader.LoadStrings(count, Encoding.ASCII);
                     break;
                 case UserDataType.WString:
-                    Value = loader.GetNames(loader.ReadOffsets(Count), Encoding.Unicode);
+                    _value = loader.LoadStrings(count, Encoding.Unicode);
                     break;
                 case UserDataType.Byte:
-                    Value = loader.ReadBytes(Count);
+                    _value = loader.ReadBytes(count);
                     break;
             }
+        }
+        
+        void IResData.Save(ResFileSaver saver)
+        {
         }
     }
 

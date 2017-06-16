@@ -26,10 +26,10 @@ namespace Syroot.NintenTools.Bfres.GX2
         {
         }
 
-        internal BlendControl(uint value, uint target)
+        internal BlendControl(uint target, uint value)
         {
-            Value = value;
             Target = target;
+            Value = value;
         }
 
         // ---- PROPERTIES ---------------------------------------------------------------------------------------------

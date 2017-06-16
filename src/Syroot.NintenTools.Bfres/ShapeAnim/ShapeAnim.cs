@@ -12,10 +12,13 @@ namespace Syroot.NintenTools.Bfres
     [DebuggerDisplay(nameof(ShapeAnim) + " {" + nameof(Name) + "}")]
     public class ShapeAnim : INamedResData
     {
+        // ---- CONSTANTS ----------------------------------------------------------------------------------------------
+
+        private const string _signature = "FSHA";
+
         // ---- FIELDS -------------------------------------------------------------------------------------------------
 
         private string _name;
-        private uint _ofsBindModel;
 
         // ---- EVENTS -------------------------------------------------------------------------------------------------
 
@@ -90,74 +93,25 @@ namespace Syroot.NintenTools.Bfres
 
         void IResData.Load(ResFileLoader loader)
         {
-            ShapeAnimHead head = new ShapeAnimHead(loader);
-            Name = loader.GetName(head.OfsName);
-            Path = loader.GetName(head.OfsPath);
-            FrameCount = head.NumFrame;
-            BakedSize = head.SizBaked;
-            _ofsBindModel = head.OfsBindModel;
-
-            if (head.OfsBindIndexList != 0)
-            {
-                loader.Position = head.OfsBindIndexList;
-                BindIndices = loader.ReadUInt16s(head.NumVertexShapeAnim);
-            }
-
-            VertexShapeAnims = loader.LoadList<VertexShapeAnim>(head.OfsVertexShapeAnimList, head.NumVertexShapeAnim);
-            UserData = loader.LoadDictList<UserData>(head.OfsUserDataDict);
-        }
-
-        void IResData.Reference(ResFileLoader loader)
-        {
-            BindModel = loader.GetData<Model>(_ofsBindModel);
-        }
-    }
-
-    /// <summary>
-    /// Represents the header of a <see cref="ShapeAnim"/> instance.
-    /// </summary>
-    internal class ShapeAnimHead
-    {
-        // ---- CONSTANTS ----------------------------------------------------------------------------------------------
-
-        private const string _signature = "FSHA";
-
-        // ---- FIELDS -------------------------------------------------------------------------------------------------
-
-        internal uint Signature;
-        internal uint OfsName;
-        internal uint OfsPath;
-        internal ShapeAnimFlags Flags;
-        internal ushort NumUserData;
-        internal int NumFrame;
-        internal ushort NumVertexShapeAnim;
-        internal ushort NumKeyShapeAnim;
-        internal ushort NumCurve;
-        internal uint SizBaked;
-        internal uint OfsBindModel;
-        internal uint OfsBindIndexList;
-        internal uint OfsVertexShapeAnimList;
-        internal uint OfsUserDataDict;
-
-        // ---- CONSTRUCTORS & DESTRUCTOR ------------------------------------------------------------------------------
-
-        internal ShapeAnimHead(ResFileLoader loader)
-        {
-            Signature = loader.ReadSignature(_signature);
-            OfsName = loader.ReadOffset();
-            OfsPath = loader.ReadOffset();
+            loader.CheckSignature(_signature);
+            Name = loader.LoadString();
+            Path = loader.LoadString();
             Flags = loader.ReadEnum<ShapeAnimFlags>(true);
-            NumUserData = loader.ReadUInt16();
-            NumFrame = loader.ReadInt32();
-            NumVertexShapeAnim = loader.ReadUInt16();
-            NumKeyShapeAnim = loader.ReadUInt16();
-            NumCurve = loader.ReadUInt16();
+            ushort numUserData = loader.ReadUInt16();
+            FrameCount = loader.ReadInt32();
+            ushort numVertexShapeAnim = loader.ReadUInt16();
+            ushort numKeyShapeAnim = loader.ReadUInt16();
+            ushort numCurve = loader.ReadUInt16();
             loader.Seek(2);
-            SizBaked = loader.ReadUInt32();
-            OfsBindModel = loader.ReadOffset();
-            OfsBindIndexList = loader.ReadOffset();
-            OfsVertexShapeAnimList = loader.ReadOffset();
-            OfsUserDataDict = loader.ReadOffset();
+            BakedSize = loader.ReadUInt32();
+            BindModel = loader.Load<Model>();
+            BindIndices = loader.LoadCustom(() => loader.ReadUInt16s(numVertexShapeAnim));
+            VertexShapeAnims = loader.LoadList<VertexShapeAnim>(numVertexShapeAnim);
+            UserData = loader.LoadDictList<UserData>();
+        }
+        
+        void IResData.Save(ResFileSaver saver)
+        {
         }
     }
 

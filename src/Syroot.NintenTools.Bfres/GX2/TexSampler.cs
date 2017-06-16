@@ -23,7 +23,7 @@ namespace Syroot.NintenTools.Bfres.GX2
 
         private const int _minLodBit = 0, _minLodBits = 10;
         private const int _maxLodBit = 0, _maxLodBits = 10;
-        private const int _lodBiasBit = 20, _lodBiasBits = 20;
+        private const int _lodBiasBit = 20, _lodBiasBits = 12;
 
         private const int _depthCompareBit = 30;
 
@@ -140,8 +140,8 @@ namespace Syroot.NintenTools.Bfres.GX2
         /// </summary>
         public float MinLod
         {
-            get { return UInt32ToSingle(Values[1].Decode(_minLodBit, _minLodBits)); }
-            set { Values[1].Encode(SingleToUInt32(value), _minLodBit, _minLodBits); }
+            get { return UInt10ToSingle(Values[1].Decode(_minLodBit, _minLodBits)); }
+            set { Values[1].Encode(SingleToUInt10(value), _minLodBit, _minLodBits); }
         }
 
         /// <summary>
@@ -149,8 +149,8 @@ namespace Syroot.NintenTools.Bfres.GX2
         /// </summary>
         public float MaxLod
         {
-            get { return UInt32ToSingle(Values[1].Decode(_maxLodBit, _maxLodBits)); }
-            set { Values[1].Encode(SingleToUInt32(value), _maxLodBit, _maxLodBits); }
+            get { return UInt10ToSingle(Values[1].Decode(_maxLodBit, _maxLodBits)); }
+            set { Values[1].Encode(SingleToUInt10(value), _maxLodBit, _maxLodBits); }
         }
         
         /// <summary>
@@ -158,8 +158,8 @@ namespace Syroot.NintenTools.Bfres.GX2
         /// </summary>
         public float LodBias
         {
-            get { return UInt32ToSingle(Values[1].Decode(_lodBiasBit, _lodBiasBits)); }
-            set { Values[1].Encode(SingleToUInt32(value), _lodBiasBit, _lodBiasBits); }
+            get { return UInt12ToSingle(Values[1].Decode(_lodBiasBit, _lodBiasBits)); }
+            set { Values[1].Encode(SingleToUInt12(value), _lodBiasBit, _lodBiasBits); }
         }
 
         /// <summary>
@@ -174,15 +174,27 @@ namespace Syroot.NintenTools.Bfres.GX2
         internal uint[] Values { get; set; }
 
         // ---- METHODS (PRIVATE) --------------------------------------------------------------------------------------
+        
+        // TODO: Validate correctness of conversions.
 
-        private float UInt32ToSingle(uint value)
+        private float UInt10ToSingle(uint value)
         {
-            return value / 64f; // TODO: Validate correctness of conversion.
+            return value / 64f;
         }
 
-        private uint SingleToUInt32(float value)
+        private float UInt12ToSingle(uint value)
         {
-            return (uint)(Algebra.Clamp(value, 0, 13) * 64f); // TODO: Validate correctness of conversion.
+            return value / 64f;
+        }
+
+        private uint SingleToUInt10(float value)
+        {
+            return (uint)(Algebra.Clamp(value, 0, 13) * 64f);
+        }
+
+        private uint SingleToUInt12(float value)
+        {
+            return (uint)(Algebra.Clamp(value, -32, 31.984375f) * 64);
         }
     }
 }

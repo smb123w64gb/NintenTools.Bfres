@@ -11,6 +11,10 @@ namespace Syroot.NintenTools.Bfres
     [DebuggerDisplay(nameof(Shape) + " {" + nameof(Name) + "}")]
     public class Shape : INamedResData
     {
+        // ---- CONSTANTS ----------------------------------------------------------------------------------------------
+
+        private const string _signature = "FSHP";
+
         // ---- FIELDS -------------------------------------------------------------------------------------------------
 
         private string _name;
@@ -52,6 +56,8 @@ namespace Syroot.NintenTools.Bfres
 
         public float Radius { get; set; }
 
+        public VertexBuffer VertexBuffer { get; private set; }
+
         public IList<Mesh> Meshes { get; private set; }
 
         public IList<ushort> SkinBoneIndices { get; private set; }
@@ -63,110 +69,51 @@ namespace Syroot.NintenTools.Bfres
         public IList<BoundingNode> SubMeshBoundingNodes { get; private set; }
 
         public IList<ushort> SubMeshBoundingIndices { get; private set; }
-
+        
         // ---- METHODS ------------------------------------------------------------------------------------------------
 
         void IResData.Load(ResFileLoader loader)
         {
-            ShapeHead head = new ShapeHead(loader);
-            Name = loader.GetName(head.OfsName);
-            Flags = head.Flags;
-            MaterialIndex = head.IdxMaterial;
-            BoneIndex = head.IdxBone;
-            VertexBufferIndex = head.IdxVertexBuffer;
-            Radius = head.Radius;
-            Meshes = loader.LoadList<Mesh>(head.OfsMeshList, head.NumMesh);
-            loader.Position = head.OfsSkinBoneIndexList;
-            SkinBoneIndices = loader.ReadUInt16s(head.NumSkinBoneIndex);
-            KeyShapes = loader.LoadDict<KeyShape>(head.OfsKeyShapeDict);
-            loader.Position = head.OfsSubMeshBoundingList;
-            SubMeshBoundings = loader.ReadBoundings(Meshes[0].SubMeshes.Count); // TODO: Validate count.
-
-            // Normally nonexistent.
-            if (head.NumSubMeshBoundingNodes != 0)
-            {
-                SubMeshBoundingNodes = loader.LoadList<BoundingNode>(head.OfsSubMeshBoundingNodeList,
-                    head.NumSubMeshBoundingNodes);
-                loader.Position = head.OfsSubMeshBoundingIndexList;
-                SubMeshBoundingIndices = loader.ReadUInt16s(head.NumSubMeshBoundingNodes);
-            }
-        }
-
-        void IResData.Reference(ResFileLoader loader)
-        {
-        }
-    }
-
-    /// <summary>
-    /// Represents the header of a <see cref="Shape"/> instance.
-    /// </summary>
-    internal class ShapeHead
-    {
-        // ---- CONSTANTS ----------------------------------------------------------------------------------------------
-
-        private const string _signature = "FSHP";
-
-        // ---- FIELDS -------------------------------------------------------------------------------------------------
-
-        internal uint Signature;
-        internal uint OfsName;
-        internal ShapeFlags Flags;
-        internal ushort Idx;
-        internal ushort IdxMaterial;
-        internal ushort IdxBone;
-        internal ushort IdxVertexBuffer;
-        internal ushort NumSkinBoneIndex;
-        internal byte NumVertexSkin;
-        internal byte NumMesh;
-        internal byte NumKeyShape;
-        internal byte NumTargetAttrib;
-        internal ushort NumSubMeshBoundingNodes; // Normally padding
-        internal float Radius;
-        internal uint OfsVertexBuffer;
-        internal uint OfsMeshList;
-        internal uint OfsSkinBoneIndexList;
-        internal uint OfsKeyShapeDict;
-        internal uint OfsSubMeshBoundingNodeList; // Normally nonexistent
-        internal uint OfsSubMeshBoundingList;
-        internal uint OfsSubMeshBoundingIndexList; // Normally nonexistent
-        internal uint UserPointer;
-
-        // ---- CONSTRUCTORS & DESTRUCTOR ------------------------------------------------------------------------------
-
-        internal ShapeHead(ResFileLoader loader)
-        {
-            Signature = loader.ReadSignature(_signature);
-            OfsName = loader.ReadOffset();
+            loader.CheckSignature(_signature);
+            Name = loader.LoadString();
             Flags = loader.ReadEnum<ShapeFlags>(true);
-            Idx = loader.ReadUInt16();
-            IdxMaterial = loader.ReadUInt16();
-            IdxBone = loader.ReadUInt16();
-            IdxVertexBuffer = loader.ReadUInt16();
-            NumSkinBoneIndex = loader.ReadUInt16();
-            NumVertexSkin = loader.ReadByte();
-            NumMesh = loader.ReadByte();
-            NumKeyShape = loader.ReadByte();
-            NumTargetAttrib = loader.ReadByte();
-            NumSubMeshBoundingNodes = loader.ReadUInt16(); // Normally padding
+            ushort idx = loader.ReadUInt16();
+            MaterialIndex = loader.ReadUInt16();
+            BoneIndex = loader.ReadUInt16();
+            VertexBufferIndex = loader.ReadUInt16();
+            ushort numSkinBoneIndex = loader.ReadUInt16();
+            byte numVertexSkin = loader.ReadByte();
+            byte numMesh = loader.ReadByte();
+            byte numKeyShape = loader.ReadByte();
+            byte numTargetAttrib = loader.ReadByte();
+            ushort numSubMeshBoundingNodes = loader.ReadUInt16(); // Normally padding
             Radius = loader.ReadSingle();
-            OfsVertexBuffer = loader.ReadOffset();
-            OfsMeshList = loader.ReadOffset();
-            OfsSkinBoneIndexList = loader.ReadOffset();
-            OfsKeyShapeDict = loader.ReadOffset();
-            if (NumSubMeshBoundingNodes == 0)
+            VertexBuffer = loader.Load<VertexBuffer>();
+            Meshes = loader.LoadList<Mesh>(numMesh);
+            SkinBoneIndices = loader.LoadCustom(() => loader.ReadUInt16s(numSkinBoneIndex));
+            KeyShapes = loader.LoadDict<KeyShape>();
+            if (numSubMeshBoundingNodes == 0)
             {
-                OfsSubMeshBoundingList = loader.ReadOffset();
+                // TODO: Validate count.
+                SubMeshBoundings = loader.LoadCustom(() => loader.ReadBoundings(Meshes[0].SubMeshes.Count)); 
             }
             else
             {
-                OfsSubMeshBoundingNodeList = loader.ReadOffset(); // Normally nonexistent
-                OfsSubMeshBoundingList = loader.ReadOffset();
-                OfsSubMeshBoundingIndexList = loader.ReadOffset(); // Normally nonexistent
+                // Normally nonexistent
+                SubMeshBoundingNodes = loader.LoadList<BoundingNode>(numSubMeshBoundingNodes);
+                // TODO: Validate count.
+                SubMeshBoundings = loader.LoadCustom(() => loader.ReadBoundings(Meshes[0].SubMeshes.Count));
+                // Normally nonexistent
+                SubMeshBoundingIndices = loader.LoadCustom(() => loader.ReadUInt16s(numSubMeshBoundingNodes));
             }
-            UserPointer = loader.ReadUInt32();
+            uint userPointer = loader.ReadUInt32();
+        }
+        
+        void IResData.Save(ResFileSaver saver)
+        {
         }
     }
-
+    
     public enum ShapeFlags : uint
     {
         HasVertexBuffer = 1 << 1

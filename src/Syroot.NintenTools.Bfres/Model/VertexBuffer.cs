@@ -8,6 +8,10 @@ namespace Syroot.NintenTools.Bfres
     /// </summary>
     public class VertexBuffer : IResData
     {
+        // ---- CONSTANTS ----------------------------------------------------------------------------------------------
+
+        private const string _signature = "FVTX";
+
         // ---- PROPERTIES ---------------------------------------------------------------------------------------------
 
         public byte VertexSkinCount { get; set; }
@@ -22,57 +26,21 @@ namespace Syroot.NintenTools.Bfres
 
         void IResData.Load(ResFileLoader loader)
         {
-            VertexBufferHead head = new VertexBufferHead(loader);
-            using (loader.TemporarySeek())
-            {
-                VertexSkinCount = head.NumVertexSkin;
-                Attributes = loader.LoadDictList<VertexAttrib>(head.OfsVertexAttribDict);
-                Buffers = loader.LoadList<Buffer>(head.OfsBufferList, head.NumBuffer);
-            }
-        }
-
-        void IResData.Reference(ResFileLoader loader)
-        {
-        }
-    }
-
-    /// <summary>
-    /// Represents the header of a <see cref="VertexBuffer"/> instance.
-    /// </summary>
-    internal class VertexBufferHead
-    {
-        // ---- CONSTANTS ----------------------------------------------------------------------------------------------
-
-        private const string _signature = "FVTX";
-
-        // ---- FIELDS -------------------------------------------------------------------------------------------------
-
-        internal uint Signature;
-        internal byte NumVertexAttrib;
-        internal byte NumBuffer;
-        internal ushort Idx;
-        internal uint NumVertex;
-        internal byte NumVertexSkin;
-        internal uint OfsVertexAttribList;
-        internal uint OfsVertexAttribDict;
-        internal uint OfsBufferList;
-        internal uint UserPointer;
-
-        // ---- CONSTRUCTORS & DESTRUCTOR ------------------------------------------------------------------------------
-
-        internal VertexBufferHead(ResFileLoader loader)
-        {
-            Signature = loader.ReadSignature(_signature);
-            NumVertexAttrib = loader.ReadByte();
-            NumBuffer = loader.ReadByte();
-            Idx = loader.ReadUInt16();
-            NumVertex = loader.ReadUInt32();
-            NumVertexSkin = loader.ReadByte();
+            loader.CheckSignature(_signature);
+            byte numVertexAttrib = loader.ReadByte();
+            byte numBuffer = loader.ReadByte();
+            ushort idx = loader.ReadUInt16();
+            uint numVertex = loader.ReadUInt32();
+            VertexSkinCount = loader.ReadByte();
             loader.Seek(3);
-            OfsVertexAttribList = loader.ReadOffset();
-            OfsVertexAttribDict = loader.ReadOffset();
-            OfsBufferList = loader.ReadOffset();
-            UserPointer = loader.ReadUInt32();
+            uint ofsVertexAttribList = loader.ReadOffset(); // Only load dict.
+            Attributes = loader.LoadDictList<VertexAttrib>();
+            Buffers = loader.LoadList<Buffer>(numBuffer);
+            uint userPointer = loader.ReadUInt32();
+        }
+        
+        void IResData.Save(ResFileSaver saver)
+        {
         }
     }
 }

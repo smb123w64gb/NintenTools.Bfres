@@ -28,49 +28,18 @@ namespace Syroot.NintenTools.Bfres
 
         void IResData.Load(ResFileLoader loader)
         {
-            MeshHead head = new MeshHead(loader);
-            using (loader.TemporarySeek())
-            {
-                PrimitiveType = head.PrimitiveType;
-                Format = head.Format;
-                SubMeshes = loader.LoadList<SubMesh>(head.OfsSubMeshList, head.NumSubMesh);
-                IndexBuffer = loader.Load<Buffer>(head.OfsIndexBuffer);
-                Offset = head.Offset;
-            }
-        }
-
-        void IResData.Reference(ResFileLoader loader)
-        {
-        }
-    }
-
-    /// <summary>
-    /// Represents the header of a <see cref="Mesh"/> instance.
-    /// </summary>
-    internal class MeshHead
-    {
-        // ---- FIELDS -------------------------------------------------------------------------------------------------
-
-        internal GX2PrimitiveType PrimitiveType;
-        internal GX2IndexFormat Format;
-        internal uint Count;
-        internal ushort NumSubMesh;
-        internal uint OfsSubMeshList;
-        internal uint OfsIndexBuffer;
-        internal uint Offset;
-
-        // ---- CONSTRUCTORS & DESTRUCTOR ------------------------------------------------------------------------------
-
-        internal MeshHead(ResFileLoader loader)
-        {
             PrimitiveType = loader.ReadEnum<GX2PrimitiveType>(true);
             Format = loader.ReadEnum<GX2IndexFormat>(true);
-            Count = loader.ReadUInt32();
-            NumSubMesh = loader.ReadUInt16();
+            uint count = loader.ReadUInt32();
+            ushort numSubMesh = loader.ReadUInt16();
             loader.Seek(2);
-            OfsSubMeshList = loader.ReadOffset();
-            OfsIndexBuffer = loader.ReadOffset();
-            Offset = loader.ReadOffset();
+            SubMeshes = loader.LoadList<SubMesh>(numSubMesh);
+            IndexBuffer = loader.Load<Buffer>();
+            Offset = loader.ReadUInt32();
+        }
+        
+        void IResData.Save(ResFileSaver saver)
+        {
         }
     }
 }

@@ -15,7 +15,6 @@ namespace Syroot.NintenTools.Bfres
         // ---- FIELDS -------------------------------------------------------------------------------------------------
 
         private string _name;
-        private uint _ofsTexture;
 
         // ---- EVENTS -------------------------------------------------------------------------------------------------
 
@@ -53,33 +52,12 @@ namespace Syroot.NintenTools.Bfres
 
         void IResData.Load(ResFileLoader loader)
         {
-            TextureRefHead head = new TextureRefHead(loader);
-            Name = loader.GetName(head.OfsName);
-            _ofsTexture = head.OfsTexture;
+            Name = loader.LoadString();
+            Texture = loader.Load<Texture>();
         }
-
-        void IResData.Reference(ResFileLoader loader)
-        {
-            Texture = loader.GetData<Texture>(_ofsTexture);
-        }
-    }
-
-    /// <summary>
-    /// Represents the header of a <see cref="TextureRef"/> instance.
-    /// </summary>
-    internal class TextureRefHead
-    {
-        // ---- FIELDS -------------------------------------------------------------------------------------------------
         
-        internal uint OfsName;
-        internal uint OfsTexture;
-
-        // ---- CONSTRUCTORS & DESTRUCTOR ------------------------------------------------------------------------------
-
-        internal TextureRefHead(ResFileLoader loader)
+        void IResData.Save(ResFileSaver saver)
         {
-            OfsName = loader.ReadOffset();
-            OfsTexture = loader.ReadOffset();
         }
     }
 }

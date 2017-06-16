@@ -12,11 +12,11 @@
         /// </summary>
         /// <param name="loader">The <see cref="ResFileLoader"/> to load data with.</param>
         void Load(ResFileLoader loader);
-
+        
         /// <summary>
-        /// Resolves any references between <see cref="IResData"/> instances.
+        /// Saves header data of the instance and queues referenced data in the given <paramref name="saver"/>.
         /// </summary>
-        /// <param name="loader">The <see cref="ResFileLoader"/> to query reference instances with.</param>
-        void Reference(ResFileLoader loader);
+        /// <param name="saver">The <see cref="ResFileSaver"/> to save headers and queue data with.</param>
+        void Save(ResFileSaver saver);
     }
 }

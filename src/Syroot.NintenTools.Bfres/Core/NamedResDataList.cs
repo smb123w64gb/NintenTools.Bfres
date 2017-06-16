@@ -301,6 +301,24 @@ namespace Syroot.NintenTools.Bfres.Core
             return false;
         }
 
+        // ---- METHODS (INTERNAL) -------------------------------------------------------------------------------------
+
+        /// <summary>
+        /// Required for <see cref="ResFileSaver"/> to work down queues of <see cref="NamedResDataList{T}"/> instances
+        /// with unknown generic type.
+        /// </summary>
+        /// <returns>The sorted list holding only <see cref="INamedResData"/> instances.</returns>
+        internal IList<INamedResData> AsSortedList()
+        {
+            List<INamedResData> list = new List<INamedResData>();
+            foreach (INamedResData namedResData in this)
+            {
+                list.Add(namedResData);
+            }
+            list.Sort((x, y) => String.CompareOrdinal(x.Name, y.Name));
+            return list;
+        }
+
         // ---- METHODS (PRIVATE) --------------------------------------------------------------------------------------
 
         private bool CheckNameExists(string name, int ignoredIndex = -1)
@@ -325,7 +343,7 @@ namespace Syroot.NintenTools.Bfres.Core
         }
 
         // ---- METHODS ------------------------------------------------------------------------------------------------
-        
+
         IEnumerator IEnumerable.GetEnumerator()
         {
             return _list.GetEnumerator();

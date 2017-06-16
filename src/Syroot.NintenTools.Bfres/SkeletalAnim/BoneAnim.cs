@@ -76,57 +76,19 @@ namespace Syroot.NintenTools.Bfres
 
         void IResData.Load(ResFileLoader loader)
         {
-            BoneAnimHead head = new BoneAnimHead(loader);
-            using (loader.TemporarySeek())
-            {
-                _flags = head.Flags;
-                Name = loader.GetName(head.OfsName);
-                BeginBaseTranslate = head.BeginBaseTranslate;
-                Curves = loader.LoadList<AnimCurve>(head.OfsCurveList, head.NumCurve);
-
-                if (head.OfsBaseData != 0)
-                {
-                    loader.Position = head.OfsBaseData;
-                    BaseData = new BoneAnimData(loader, FlagsBase);
-                }
-            }
-        }
-
-        void IResData.Reference(ResFileLoader loader)
-        {
-        }
-    }
-
-    /// <summary>
-    /// Represents the header of a <see cref="BoneAnim"/> instance.
-    /// </summary>
-    internal class BoneAnimHead
-    {
-        // ---- FIELDS -------------------------------------------------------------------------------------------------
-
-        internal uint Flags;
-        internal uint OfsName;
-        internal byte BeginRotate; // Apparently unused.
-        internal byte BeginTranslate; // Apparently unused.
-        internal byte NumCurve;
-        internal byte BeginBaseTranslate;
-        internal int BeginCurve; // First curve index relative to all.
-        internal uint OfsCurveList;
-        internal uint OfsBaseData;
-
-        // ---- CONSTRUCTORS & DESTRUCTOR ------------------------------------------------------------------------------
-
-        internal BoneAnimHead(ResFileLoader loader)
-        {
-            Flags = loader.ReadUInt32();
-            OfsName = loader.ReadOffset();
-            BeginRotate = loader.ReadByte();
-            BeginTranslate = loader.ReadByte();
-            NumCurve = loader.ReadByte();
+            _flags = loader.ReadUInt32();
+            Name = loader.LoadString();
+            byte beginRotate = loader.ReadByte();
+            byte beginTranslate = loader.ReadByte();
+            byte numCurve = loader.ReadByte();
             BeginBaseTranslate = loader.ReadByte();
-            BeginCurve = loader.ReadInt32();
-            OfsCurveList = loader.ReadOffset();
-            OfsBaseData = loader.ReadOffset();
+            int beginCurve = loader.ReadInt32();
+            Curves = loader.LoadList<AnimCurve>(numCurve);
+            BaseData = loader.LoadCustom(() => new BoneAnimData(loader, FlagsBase));
+        }
+        
+        void IResData.Save(ResFileSaver saver)
+        {
         }
     }
 

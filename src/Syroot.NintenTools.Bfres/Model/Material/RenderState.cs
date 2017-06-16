@@ -46,54 +46,20 @@ namespace Syroot.NintenTools.Bfres
 
         void IResData.Load(ResFileLoader loader)
         {
-            RenderStateHead head = new RenderStateHead(loader);
-            _flags = head.Flags;
-            PolygonControl = new PolygonControl(head.PolygonControl);
-            DepthControl = new DepthControl(head.DepthControl);
-            AlphaControl = new AlphaControl(head.AlphaControl, head.AlphaControlRefValue);
-            ColorControl = new ColorControl(head.ColorControl);
-            BlendControl = new BlendControl(head.BlendControl, head.BlendControlTarget);
-            BlendColor = head.BlendColor;
-        }
-
-        void IResData.Reference(ResFileLoader loader)
-        {
-        }
-    }
-
-    /// <summary>
-    /// Represents the header of a <see cref="RenderState"/> instance.
-    /// </summary>
-    internal class RenderStateHead
-    {
-        // ---- FIELDS -------------------------------------------------------------------------------------------------
-
-        internal uint Flags;
-        internal uint PolygonControl;
-        internal uint DepthControl;
-        internal uint AlphaControl;
-        internal float AlphaControlRefValue;
-        internal uint ColorControl;
-        internal uint BlendControlTarget;
-        internal uint BlendControl;
-        internal Vector4F BlendColor;
-
-        // ---- CONSTRUCTORS & DESTRUCTOR ------------------------------------------------------------------------------
-
-        internal RenderStateHead(ResFileLoader loader)
-        {
-            Flags = loader.ReadUInt32();
-            PolygonControl = loader.ReadUInt32();
-            DepthControl = loader.ReadUInt32();
-            AlphaControl = loader.ReadUInt32();
-            AlphaControlRefValue = loader.ReadSingle();
-            ColorControl = loader.ReadUInt32();
-            BlendControlTarget = loader.ReadUInt32();
-            BlendControl = loader.ReadUInt32();
+            _flags = loader.ReadUInt32();
+            PolygonControl = new PolygonControl(loader.ReadUInt32());
+            DepthControl = new DepthControl(loader.ReadUInt32());
+            AlphaControl = new AlphaControl(loader.ReadUInt32(), loader.ReadSingle());
+            ColorControl = new ColorControl(loader.ReadUInt32());
+            BlendControl = new BlendControl(loader.ReadUInt32(), loader.ReadUInt32());
             BlendColor = loader.ReadVector4F();
         }
+        
+        void IResData.Save(ResFileSaver saver)
+        {
+        }
     }
-
+    
     public enum RenderStateFlagsMode : uint
     {
         Custom,

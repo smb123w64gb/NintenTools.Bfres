@@ -53,59 +53,30 @@ namespace Syroot.NintenTools.Bfres
 
         void IResData.Load(ResFileLoader loader)
         {
-            ShaderParamHead head = new ShaderParamHead(loader);
-            Type = head.Type;
-            DataOffset = head.OfsData;
-            DependedIndex = head.IdxDepended;
-            DependIndex = head.IdxDepend;
-            Name = loader.GetName(head.OfsName);
-        }
-
-        void IResData.Reference(ResFileLoader loader)
-        {
-        }
-    }
-
-    /// <summary>
-    /// Represents the header of a <see cref="ShaderParam"/> instance.
-    /// </summary>
-    internal class ShaderParamHead
-    {
-        // ---- FIELDS -------------------------------------------------------------------------------------------------
-
-        internal ShaderParamType Type;
-        internal byte SizData;
-        internal ushort OfsData;
-        internal int Offset;
-        internal uint CallbackPointer;
-        internal ushort IdxDepended;
-        internal ushort IdxDepend;
-        internal uint OfsName;
-
-        // ---- CONSTRUCTORS & DESTRUCTOR ------------------------------------------------------------------------------
-
-        internal ShaderParamHead(ResFileLoader loader)
-        {
             if (loader.ResFile.Version >= 0x03030000)
             {
                 Type = loader.ReadEnum<ShaderParamType>(true);
-                SizData = loader.ReadByte();
-                OfsData = loader.ReadUInt16();
-                Offset = loader.ReadInt32();
-                CallbackPointer = loader.ReadUInt32();
-                IdxDepended = loader.ReadUInt16();
-                IdxDepend = loader.ReadUInt16();
-                OfsName = loader.ReadOffset();
+                byte sizData = loader.ReadByte();
+                DataOffset = loader.ReadUInt16();
+                int offset = loader.ReadInt32(); // Uniform variable offset.
+                uint callbackPointer = loader.ReadUInt32();
+                DependedIndex = loader.ReadUInt16();
+                DependIndex = loader.ReadUInt16();
+                Name = loader.LoadString();
             }
             else
             {
                 // GUESS
                 Type = loader.ReadEnum<ShaderParamType>(true);
                 loader.Seek(1);
-                OfsData = loader.ReadUInt16();
-                Offset = loader.ReadInt32();
-                OfsName = loader.ReadOffset();
+                DataOffset = loader.ReadUInt16();
+                int offset = loader.ReadInt32(); // Uniform variable offset.
+                Name = loader.LoadString();
             }
+        }
+        
+        void IResData.Save(ResFileSaver saver)
+        {
         }
     }
 

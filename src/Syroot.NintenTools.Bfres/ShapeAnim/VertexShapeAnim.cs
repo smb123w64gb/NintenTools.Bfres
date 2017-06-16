@@ -36,54 +36,18 @@ namespace Syroot.NintenTools.Bfres
 
         void IResData.Load(ResFileLoader loader)
         {
-            VertexShapeAnimHead head = new VertexShapeAnimHead(loader);
-            using (loader.TemporarySeek())
-            {
-                Name = loader.GetName(head.OfsName);
-                KeyShapeAnimInfos = loader.LoadList<KeyShapeAnimInfo>(head.OfsKeyShapeAnimInfoList, head.NumKeyShapeAnim);
-                Curves = loader.LoadList<AnimCurve>(head.OfsCurveList, head.NumCurve);
-
-                if (head.OfsBaseDataList != 0)
-                {
-                    loader.Position = head.OfsBaseDataList;
-                    BaseDataList = loader.ReadSingles(head.NumKeyShapeAnim - 1); // Does not store base shape values.
-                }
-            }
+            ushort numCurve = loader.ReadUInt16();
+            ushort numKeyShapeAnim = loader.ReadUInt16();
+            int beginCurve = loader.ReadInt32();
+            int beginKeyShapeAnim = loader.ReadInt32();
+            Name = loader.LoadString();
+            KeyShapeAnimInfos = loader.LoadList<KeyShapeAnimInfo>(numKeyShapeAnim);
+            Curves = loader.LoadList<AnimCurve>(numCurve);
+            BaseDataList = loader.LoadCustom(() => loader.ReadSingles(numKeyShapeAnim - 1)); // Without base shape.
         }
-
-        void IResData.Reference(ResFileLoader loader)
+        
+        void IResData.Save(ResFileSaver saver)
         {
-        }
-    }
-
-    /// <summary>
-    /// Represents the header of a <see cref="VertexShapeAnim"/> instance.
-    /// </summary>
-    internal class VertexShapeAnimHead
-    {
-        // ---- FIELDS -------------------------------------------------------------------------------------------------
-
-        internal ushort NumCurve;
-        internal ushort NumKeyShapeAnim;
-        internal int BeginCurve; // First curve index relative to all.
-        internal int BeginKeyShapeAnim; // First KeyShapeAnim index relative to all.
-        internal uint OfsName;
-        internal uint OfsKeyShapeAnimInfoList;
-        internal uint OfsCurveList;
-        internal uint OfsBaseDataList;
-
-        // ---- CONSTRUCTORS & DESTRUCTOR ------------------------------------------------------------------------------
-
-        internal VertexShapeAnimHead(ResFileLoader loader)
-        {
-            NumCurve = loader.ReadUInt16();
-            NumKeyShapeAnim = loader.ReadUInt16();
-            BeginCurve = loader.ReadInt32();
-            BeginKeyShapeAnim = loader.ReadInt32();
-            OfsName = loader.ReadOffset();
-            OfsKeyShapeAnimInfoList = loader.ReadOffset();
-            OfsCurveList = loader.ReadOffset();
-            OfsBaseDataList = loader.ReadOffset();
         }
     }
 }

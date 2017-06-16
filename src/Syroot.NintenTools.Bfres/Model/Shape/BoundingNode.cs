@@ -31,8 +31,8 @@ namespace Syroot.NintenTools.Bfres
             SubMeshIndex = loader.ReadUInt16();
             SubMeshCount = loader.ReadUInt16();
         }
-
-        void IResData.Reference(ResFileLoader loader)
+        
+        void IResData.Save(ResFileSaver saver)
         {
         }
     }

@@ -48,7 +48,7 @@ namespace Syroot.NintenTools.Bfres
         }
 
         /// <summary>
-        /// Converts the given <paramref name="value"/> value to a <see cref="Int32"/> instance.
+        /// Converts the given <paramref name="value"/> value to an <see cref="Int32"/> instance.
         /// </summary>
         /// <param name="value">The <see cref="DWord"/> value to represent in the new <see cref="Int32"/> instance.
         /// </param>

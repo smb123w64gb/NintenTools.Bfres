@@ -33,10 +33,10 @@ namespace Syroot.NintenTools.Bfres
             CurveIndex = loader.ReadSByte();
             SubBindIndex = loader.ReadSByte();
             loader.Seek(2);
-            Name = loader.GetName(loader.ReadOffset());
+            Name = loader.LoadString();
         }
-
-        void IResData.Reference(ResFileLoader loader)
+        
+        void IResData.Save(ResFileSaver saver)
         {
         }
     }

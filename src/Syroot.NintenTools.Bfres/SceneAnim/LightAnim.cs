@@ -11,6 +11,10 @@ namespace Syroot.NintenTools.Bfres
     [DebuggerDisplay(nameof(LightAnim) + " {" + nameof(Name) + "}")]
     public class LightAnim : INamedResData
     {
+        // ---- CONSTANTS ----------------------------------------------------------------------------------------------
+
+        private const string _signature = "FLIT";
+
         // ---- FIELDS -------------------------------------------------------------------------------------------------
 
         private string _name;
@@ -63,6 +67,9 @@ namespace Syroot.NintenTools.Bfres
             }
         }
 
+        /// <summary>
+        /// Gets or sets the name of the light type.
+        /// </summary>
         public string LightTypeName { get; set; }
 
         public string DistanceAttnFuncName { get; set; }
@@ -85,84 +92,29 @@ namespace Syroot.NintenTools.Bfres
 
         void IResData.Load(ResFileLoader loader)
         {
-            LightAnimHead head = new LightAnimHead(loader);
-            Flags = head.Flags;
-            FrameCount = head.NumFrame;
-            LightTypeIndex = head.IdxLightType;
-            DistanceAttnFuncIndex = head.IdxDistanceAttnFunc;
-            AngleAttnFuncIndex = head.IdxAngleAttnFunc;
-            BakedSize = head.SizBaked;
-            Name = loader.GetName(head.OfsName);
-            LightTypeName = loader.GetName(head.OfsLightTypeName);
-            DistanceAttnFuncName = loader.GetName(head.OfsDistAttnFuncName);
-            AngleAttnFuncName = loader.GetName(head.OfsAngleAttnFuncName);
-            Curves = loader.LoadList<AnimCurve>(head.OfsCurveList, head.NumCurve);
-
-            if (head.OfsResult != 0)
-            {
-                loader.Position = head.OfsResult;
-                BaseData = new LightAnimData(loader, Flags);
-            }
-
-            UserData = loader.LoadDictList<UserData>(head.OfsUserDataDict);
-        }
-
-        void IResData.Reference(ResFileLoader loader)
-        {
-        }
-    }
-
-    /// <summary>
-    /// Represents the header of a <see cref="LightAnim"/> instance.
-    /// </summary>
-    internal class LightAnimHead
-    {
-        // ---- CONSTANTS ----------------------------------------------------------------------------------------------
-
-        private const string _signature = "FLIT";
-
-        // ---- FIELDS -------------------------------------------------------------------------------------------------
-
-        internal uint Signature;
-        internal LightAnimFlags Flags;
-        internal ushort NumUserData;
-        internal int NumFrame;
-        internal byte NumCurve;
-        internal sbyte IdxLightType;
-        internal sbyte IdxDistanceAttnFunc;
-        internal sbyte IdxAngleAttnFunc;
-        internal uint SizBaked;
-        internal uint OfsName;
-        internal uint OfsLightTypeName;
-        internal uint OfsDistAttnFuncName;
-        internal uint OfsAngleAttnFuncName;
-        internal uint OfsCurveList;
-        internal uint OfsResult;
-        internal uint OfsUserDataDict;
-
-        // ---- CONSTRUCTORS & DESTRUCTOR ------------------------------------------------------------------------------
-
-        public LightAnimHead(ResFileLoader loader)
-        {
-            Signature = loader.ReadSignature(_signature);
+            loader.CheckSignature(_signature);
             Flags = loader.ReadEnum<LightAnimFlags>(true);
-            NumUserData = loader.ReadUInt16();
-            NumFrame = loader.ReadInt32();
-            NumCurve = loader.ReadByte();
-            IdxLightType = loader.ReadSByte();
-            IdxDistanceAttnFunc = loader.ReadSByte();
-            IdxAngleAttnFunc = loader.ReadSByte();
-            SizBaked = loader.ReadUInt32();
-            OfsName = loader.ReadOffset();
-            OfsLightTypeName = loader.ReadOffset();
-            OfsDistAttnFuncName = loader.ReadOffset();
-            OfsAngleAttnFuncName = loader.ReadOffset();
-            OfsCurveList = loader.ReadOffset();
-            OfsResult = loader.ReadOffset();
-            OfsUserDataDict = loader.ReadOffset();
+            ushort numUserData = loader.ReadUInt16();
+            FrameCount = loader.ReadInt32();
+            byte numCurve = loader.ReadByte();
+            LightTypeIndex = loader.ReadSByte();
+            DistanceAttnFuncIndex = loader.ReadSByte();
+            AngleAttnFuncIndex = loader.ReadSByte();
+            BakedSize = loader.ReadUInt32();
+            Name = loader.LoadString();
+            LightTypeName = loader.LoadString();
+            DistanceAttnFuncName = loader.LoadString();
+            AngleAttnFuncName = loader.LoadString();
+            Curves = loader.LoadList<AnimCurve>(numCurve);
+            BaseData = loader.LoadCustom(() => new LightAnimData(loader, Flags));
+            UserData = loader.LoadDictList<UserData>();
+        }
+        
+        void IResData.Save(ResFileSaver saver)
+        {
         }
     }
-
+    
     /// <summary>
     /// Represents flags specifying how animation data is stored or should be played.
     /// </summary>

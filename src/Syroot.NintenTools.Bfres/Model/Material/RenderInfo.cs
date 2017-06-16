@@ -84,49 +84,26 @@ namespace Syroot.NintenTools.Bfres
 
         void IResData.Load(ResFileLoader loader)
         {
-            RenderInfoHead head = new RenderInfoHead(loader);
-            Type = head.Type;
-            Name = loader.GetName(head.OfsName);
-            _value = head.Value;
-        }
-
-        void IResData.Reference(ResFileLoader loader)
-        {
-        }
-    }
-
-    /// <summary>
-    /// Represents the header of a <see cref="RenderInfo"/> instance.
-    /// </summary>
-    internal class RenderInfoHead
-    {
-        // ---- FIELDS -------------------------------------------------------------------------------------------------
-
-        internal ushort SizArray;
-        internal RenderInfoType Type;
-        internal uint OfsName;
-        internal object Value;
-
-        // ---- CONSTRUCTORS & DESTRUCTOR ------------------------------------------------------------------------------
-
-        internal RenderInfoHead(ResFileLoader loader)
-        {
-            SizArray = loader.ReadUInt16();
+            ushort sizArray = loader.ReadUInt16();
             Type = loader.ReadEnum<RenderInfoType>(true);
             loader.Seek(1);
-            OfsName = loader.ReadOffset();
+            Name = loader.LoadString();
             switch (Type)
             {
                 case RenderInfoType.Int32:
-                    Value = loader.ReadInt32s(SizArray);
+                    _value = loader.ReadInt32s(sizArray);
                     break;
                 case RenderInfoType.Single:
-                    Value = loader.ReadSingles(SizArray);
+                    _value = loader.ReadSingles(sizArray);
                     break;
                 case RenderInfoType.String:
-                    Value = loader.ReadUInt32s(SizArray);
+                    _value = loader.ReadUInt32s(sizArray);
                     break;
             }
+        }
+        
+        void IResData.Save(ResFileSaver saver)
+        {
         }
     }
 

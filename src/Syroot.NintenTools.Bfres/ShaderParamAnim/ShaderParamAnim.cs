@@ -12,10 +12,13 @@ namespace Syroot.NintenTools.Bfres
     [DebuggerDisplay(nameof(ShaderParamAnim) + " {" + nameof(Name) + "}")]
     public class ShaderParamAnim : INamedResData
     {
+        // ---- CONSTANTS ----------------------------------------------------------------------------------------------
+
+        private const string _signature = "FSHU";
+
         // ---- FIELDS -------------------------------------------------------------------------------------------------
 
         private string _name;
-        private uint _ofsBindModel;
 
         // ---- EVENTS -------------------------------------------------------------------------------------------------
 
@@ -90,77 +93,27 @@ namespace Syroot.NintenTools.Bfres
 
         void IResData.Load(ResFileLoader loader)
         {
-            ShaderParamAnimHead head = new ShaderParamAnimHead(loader);
-            Name = loader.GetName(head.OfsName);
-            Path = loader.GetName(head.OfsPath);
-            Flags = head.Flags;
-            FrameCount = head.NumFrame;
-            BakedSize = head.SizBaked;
-            _ofsBindModel = head.OfsBindModel;
-
-            if (head.OfsBindIndexList != 0)
-            {
-                loader.Position = head.OfsBindIndexList;
-                BindIndices = loader.ReadUInt16s(head.NumMatAnim);
-            }
-
-            ShaderParamMatAnims = loader.LoadList<ShaderParamMatAnim>(head.OfsMatAnimList, head.NumMatAnim);
-            UserData = loader.LoadDictList<UserData>(head.OfsUserDataDict);
+            loader.CheckSignature(_signature);
+            Name = loader.LoadString();
+            Path = loader.LoadString();
+            Flags = loader.ReadEnum<ShaderParamAnimFlags>(true);
+            FrameCount = loader.ReadInt32();
+            ushort numMatAnim = loader.ReadUInt16();
+            ushort numUserData = loader.ReadUInt16();
+            int numParamAnim = loader.ReadInt32();
+            int numCurve = loader.ReadInt32();
+            BakedSize = loader.ReadUInt32();
+            BindModel = loader.Load<Model>();
+            BindIndices = loader.LoadCustom(() => loader.ReadUInt16s(numMatAnim));
+            ShaderParamMatAnims = loader.LoadList<ShaderParamMatAnim>(numMatAnim);
+            UserData = loader.LoadDictList<UserData>();
         }
-
-        void IResData.Reference(ResFileLoader loader)
+        
+        void IResData.Save(ResFileSaver saver)
         {
-            BindModel = loader.GetData<Model>(_ofsBindModel);
         }
     }
     
-    /// <summary>
-    /// Represents the header of a <see cref="ShaderParamAnim"/> instance.
-    /// </summary>
-    internal class ShaderParamAnimHead
-    {
-        // ---- CONSTANTS ----------------------------------------------------------------------------------------------
-
-        private const string _signature = "FSHU";
-
-        // ---- FIELDS -------------------------------------------------------------------------------------------------
-
-        internal uint Signature;
-        internal uint OfsName;
-        internal uint OfsPath;
-        internal ShaderParamAnimFlags Flags;
-        internal int NumFrame;
-        internal ushort NumMatAnim;
-        internal ushort NumUserData;
-        internal int NumParamAnim;
-        internal int NumCurve;
-        internal uint SizBaked;
-        internal uint OfsBindModel;
-        internal uint OfsBindIndexList;
-        internal uint OfsMatAnimList;
-        internal uint OfsUserDataDict;
-
-        // ---- CONSTRUCTORS & DESTRUCTOR ------------------------------------------------------------------------------
-
-        internal ShaderParamAnimHead(ResFileLoader loader)
-        {
-            Signature = loader.ReadSignature(_signature);
-            OfsName = loader.ReadOffset();
-            OfsPath = loader.ReadOffset();
-            Flags = loader.ReadEnum<ShaderParamAnimFlags>(true);
-            NumFrame = loader.ReadInt32();
-            NumMatAnim = loader.ReadUInt16();
-            NumUserData = loader.ReadUInt16();
-            NumParamAnim = loader.ReadInt32();
-            NumCurve = loader.ReadInt32();
-            SizBaked = loader.ReadUInt32();
-            OfsBindModel = loader.ReadOffset();
-            OfsBindIndexList = loader.ReadOffset();
-            OfsMatAnimList = loader.ReadOffset();
-            OfsUserDataDict = loader.ReadOffset();
-        }
-    }
-
     /// <summary>
     /// Represents flags specifying how animation data is stored or should be played.
     /// </summary>

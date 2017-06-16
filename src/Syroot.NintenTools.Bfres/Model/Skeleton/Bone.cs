@@ -60,7 +60,7 @@ namespace Syroot.NintenTools.Bfres
 
         public short RigidMatrixIndex { get; set; }
 
-        public short BillboardIndex { get; set; }
+        public ushort BillboardIndex { get; set; }
 
         public BoneFlags Flags
         {
@@ -107,63 +107,25 @@ namespace Syroot.NintenTools.Bfres
 
         void IResData.Load(ResFileLoader loader)
         {
-            BoneHead head = new BoneHead(loader);
-            Name = loader.GetName(head.OfsName);
-            ParentIndex = head.IdxParent;
-            SmoothMatrixIndex = head.IdxSmoothMatrix;
-            RigidMatrixIndex = head.IdxRigidMatrix;
-            BillboardIndex = head.IdxRigidMatrix;
-            _flags = head.Flags;
-            Scale = head.Scale;
-            Rotation = head.Rotation;
-            Position = head.Position;
-            UserData = loader.LoadDictList<UserData>(head.OfsUserDataDict);
-        }
-
-        void IResData.Reference(ResFileLoader loader)
-        {
-        }
-    }
-    
-    /// <summary>
-    /// Represents the header of a <see cref="Bone"/> instance.
-    /// </summary>
-    internal class BoneHead
-    {
-        // ---- FIELDS -------------------------------------------------------------------------------------------------
-
-        internal uint OfsName;
-        internal ushort Idx;
-        internal ushort IdxParent;
-        internal short IdxSmoothMatrix;
-        internal short IdxRigidMatrix;
-        internal ushort IdxBillboard;
-        internal ushort NumUserData;
-        internal uint Flags;
-        internal Vector3F Scale;
-        internal Vector4F Rotation;
-        internal Vector3F Position;
-        internal uint OfsUserDataDict;
-
-        // ---- CONSTRUCTORS & DESTRUCTOR ------------------------------------------------------------------------------
-
-        internal BoneHead(ResFileLoader loader)
-        {
-            OfsName = loader.ReadOffset();
-            Idx = loader.ReadUInt16();
-            IdxParent = loader.ReadUInt16();
-            IdxSmoothMatrix = loader.ReadInt16();
-            IdxRigidMatrix = loader.ReadInt16();
-            IdxBillboard = loader.ReadUInt16();
-            NumUserData = loader.ReadUInt16();
-            Flags = loader.ReadUInt32();
+            Name = loader.LoadString();
+            ushort idx = loader.ReadUInt16();
+            ParentIndex = loader.ReadUInt16();
+            SmoothMatrixIndex = loader.ReadInt16();
+            RigidMatrixIndex = loader.ReadInt16();
+            BillboardIndex = loader.ReadUInt16();
+            ushort numUserData = loader.ReadUInt16();
+            _flags = loader.ReadUInt32();
             Scale = loader.ReadVector3F();
             Rotation = loader.ReadVector4F();
             Position = loader.ReadVector3F();
-            OfsUserDataDict = loader.ReadOffset();
+            UserData = loader.LoadDictList<UserData>();
+        }
+        
+        void IResData.Save(ResFileSaver saver)
+        {
         }
     }
-    
+
     public enum BoneFlags : uint
     {
         Visible = 1 << 0   

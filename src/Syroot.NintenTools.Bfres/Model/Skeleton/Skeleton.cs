@@ -13,6 +13,8 @@ namespace Syroot.NintenTools.Bfres
     {
         // ---- CONSTANTS ----------------------------------------------------------------------------------------------
 
+        private const string _signature = "FSKL";
+
         private const uint _flagsScalingMask = 0b00000000_00000000_00000011_00000000;
         private const uint _flagsRotationMask = 0b00000000_00000000_01110000_00000000;
 
@@ -44,68 +46,35 @@ namespace Syroot.NintenTools.Bfres
 
         void IResData.Load(ResFileLoader loader)
         {
-            SkeletonHead head = new SkeletonHead(loader);
-            _flags = head.Flags;
-            Bones = loader.LoadDictList<Bone>(head.OfsBoneDict);
-
-            if (head.OfsMatrixToBoneTable != 0)
-            {
-                loader.Position = head.OfsMatrixToBoneTable;
-                MatrixToBoneTable = loader.ReadUInt16s((int)(head.NumSmoothMatrix + head.NumRigidMatrix));
-            }
-
-            if (head.OfsInverseModelMatrixList != 0)
-            {
-                loader.Position = head.OfsInverseModelMatrixList;
-                InverseModelMatrices = loader.ReadMatrix3x4s((int)head.NumSmoothMatrix);
-            }
-        }
-
-        void IResData.Reference(ResFileLoader loader)
-        {
-        }
-    }
-
-    /// <summary>
-    /// Represents the header of a <see cref="Skeleton"/> instance.
-    /// </summary>
-    internal class SkeletonHead
-    {
-        // ---- CONSTANTS ----------------------------------------------------------------------------------------------
-
-        private const string _signature = "FSKL";
-
-        // ---- FIELDS -------------------------------------------------------------------------------------------------
-
-        internal uint Signature;
-        internal uint Flags;
-        internal uint NumBone;
-        internal uint NumSmoothMatrix;
-        internal uint NumRigidMatrix;
-        internal uint OfsBoneDict;
-        internal uint OfsBoneList;
-        internal uint OfsMatrixToBoneTable;
-        internal uint OfsInverseModelMatrixList;
-        internal uint UserPointer;
-
-        // ---- CONSTRUCTORS & DESTRUCTOR ------------------------------------------------------------------------------
-
-        internal SkeletonHead(ResFileLoader loader)
-        {
-            Signature = loader.ReadSignature(_signature);
-            Flags = loader.ReadUInt32();
-            NumBone = loader.ReadUInt16();
-            NumSmoothMatrix = loader.ReadUInt16();
-            NumRigidMatrix = loader.ReadUInt16();
+            loader.CheckSignature(_signature);
+            _flags = loader.ReadUInt32();
+            ushort numBone = loader.ReadUInt16();
+            ushort numSmoothMatrix = loader.ReadUInt16();
+            ushort numRigidMatrix = loader.ReadUInt16();
             loader.Seek(2);
-            OfsBoneDict = loader.ReadOffset();
-            OfsBoneList = loader.ReadOffset();
-            OfsMatrixToBoneTable = loader.ReadOffset();
-            OfsInverseModelMatrixList = loader.ReadOffset();
-            UserPointer = loader.ReadUInt32();
+            Bones = loader.LoadDictList<Bone>();
+            uint ofsBoneList = loader.ReadOffset(); // Only load dict.
+            MatrixToBoneTable = loader.LoadCustom(() => loader.ReadUInt16s((numSmoothMatrix + numRigidMatrix)));
+            InverseModelMatrices = loader.LoadCustom(() => loader.ReadMatrix3x4s(numSmoothMatrix));
+            uint userPointer = loader.ReadUInt32();
+        }
+        
+        void IResData.Save(ResFileSaver saver)
+        {
+            saver.WriteSignature(_signature);
+            saver.Write(_flags);
+            saver.Write((ushort)Bones.Count);
+            saver.Write((ushort)InverseModelMatrices.Count); // NumSmoothMatrix
+            saver.Write((ushort)(MatrixToBoneTable.Count - InverseModelMatrices.Count)); // NumRigidMatrix
+            saver.Seek(2);
+            saver.SaveDictList(Bones);
+            saver.SaveList(Bones);
+            saver.SaveData(MatrixToBoneTable, () => saver.Write(MatrixToBoneTable));
+            saver.SaveData(InverseModelMatrices, () => saver.Write(InverseModelMatrices));
+            saver.Write(0); // UserPointer
         }
     }
-
+    
     public enum SkeletonFlagsScaling : uint
     {
         None,

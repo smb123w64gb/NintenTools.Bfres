@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
-using Syroot.NintenTools.Bfres.GX2;
 
 namespace Syroot.NintenTools.Bfres.Test
 {
@@ -21,10 +20,11 @@ namespace Syroot.NintenTools.Bfres.Test
         private static void Main(string[] args)
         {
             ResFile resFile = new ResFile(@"D:\Pictures\zBFRES\Koopa.bfres");
-            LoadResFiles();
-            
-            Console.WriteLine("Done.");
-            Console.ReadLine();
+            resFile.Save(@"D:\Pictures\test.bfres");
+
+            //LoadResFiles();
+            //Console.WriteLine("Done.");
+            //Console.ReadLine();
         }
 
         private static void LoadResFiles(Action<ResFile> fileAction = null)

@@ -53,10 +53,10 @@ namespace Syroot.NintenTools.Bfres
             BeginConstant = loader.ReadUInt16();
             ConstantCount = loader.ReadUInt16();
             SubBindIndex = loader.ReadUInt16();
-            Name = loader.GetName(loader.ReadOffset());
+            Name = loader.LoadString();
         }
-
-        void IResData.Reference(ResFileLoader loader)
+        
+        void IResData.Save(ResFileSaver saver)
         {
         }
     }

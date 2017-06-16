@@ -14,6 +14,8 @@ namespace Syroot.NintenTools.Bfres
     {
         // ---- CONSTANTS ----------------------------------------------------------------------------------------------
 
+        private const string _signature = "FVIS";
+
         private const ushort _flagsMask = 0b00000000_00000111;
         private const ushort _flagsMaskType = 0b00000001_00000000;
 
@@ -21,7 +23,6 @@ namespace Syroot.NintenTools.Bfres
 
         private string _name;
         private ushort _flags;
-        private uint _ofsBindModel;
 
         // ---- EVENTS -------------------------------------------------------------------------------------------------
 
@@ -119,92 +120,28 @@ namespace Syroot.NintenTools.Bfres
 
         void IResData.Load(ResFileLoader loader)
         {
-            VisibilityAnimHead head = new VisibilityAnimHead(loader);
-            Name = loader.GetName(head.OfsName);
-            Path = loader.GetName(head.OfsPath);
-            _flags = head.Flags;
-            FrameCount = head.NumFrame;
-            BakedSize = head.SizBaked;
-            _ofsBindModel = head.OfsBindModel;
-
-            if (head.OfsBindIndexList != 0)
-            {
-                loader.Position = head.OfsBindIndexList;
-                BindIndices = loader.ReadUInt16s(head.NumAnim);
-            }
-
-            if (head.OfsNameList != 0)
-            {
-                loader.Position = head.OfsNameList;
-                Names = loader.GetNames(loader.ReadOffsets(head.NumAnim));
-            }
-
-            Curves = loader.LoadList<AnimCurve>(head.OfsCurveList, head.NumCurve);
-
-            if (head.OfsBaseValueList != 0)
-            {
-                loader.Position = head.OfsBaseValueList;
-                BaseDataList = loader.ReadBytes((int)Math.Ceiling(head.NumAnim / 8f));
-            }
-
-            UserData = loader.LoadDictList<UserData>(head.OfsUserDataDict);
+            loader.CheckSignature(_signature);
+            Name = loader.LoadString();
+            Path = loader.LoadString();
+            _flags = loader.ReadUInt16();
+            ushort numUserData = loader.ReadUInt16();
+            FrameCount = loader.ReadInt32();
+            ushort numAnim = loader.ReadUInt16();
+            ushort numCurve = loader.ReadUInt16();
+            BakedSize = loader.ReadUInt32();
+            BindModel = loader.Load<Model>();
+            BindIndices = loader.LoadCustom(() => loader.ReadUInt16s(numAnim));
+            Names = loader.LoadCustom(() => loader.LoadStrings(numAnim)); // Offset to name list.
+            Curves = loader.LoadList<AnimCurve>(numCurve);
+            BaseDataList = loader.LoadCustom(() => loader.ReadBytes((int)Math.Ceiling(numAnim / 8f)));
+            UserData = loader.LoadDictList<UserData>();
         }
-
-        void IResData.Reference(ResFileLoader loader)
+        
+        void IResData.Save(ResFileSaver saver)
         {
-            BindModel = loader.GetData<Model>(_ofsBindModel);
         }
     }
-
-    /// <summary>
-    /// Represents the header of a <see cref="VisibilityAnim"/> instance.
-    /// </summary>
-    internal class VisibilityAnimHead
-    {
-        // ---- CONSTANTS ----------------------------------------------------------------------------------------------
-
-        private const string _signature = "FVIS";
-
-        // ---- FIELDS -------------------------------------------------------------------------------------------------
-
-        internal uint Signature;
-        internal uint OfsName;
-        internal uint OfsPath;
-        internal ushort Flags;
-        internal ushort NumUserData;
-        internal int NumFrame;
-        internal ushort NumAnim;
-        internal ushort NumCurve;
-        internal uint SizBaked;
-        internal uint OfsBindModel;
-        internal uint OfsBindIndexList;
-        internal uint OfsNameList;
-        internal uint OfsCurveList;
-        internal uint OfsBaseValueList;
-        internal uint OfsUserDataDict;
-
-        // ---- CONSTRUCTORS & DESTRUCTOR ------------------------------------------------------------------------------
-
-        internal VisibilityAnimHead(ResFileLoader loader)
-        {
-            Signature = loader.ReadSignature(_signature);
-            OfsName = loader.ReadOffset();
-            OfsPath = loader.ReadOffset();
-            Flags = loader.ReadUInt16();
-            NumUserData = loader.ReadUInt16();
-            NumFrame = loader.ReadInt32();
-            NumAnim = loader.ReadUInt16();
-            NumCurve = loader.ReadUInt16();
-            SizBaked = loader.ReadUInt32();
-            OfsBindModel = loader.ReadOffset();
-            OfsBindIndexList = loader.ReadOffset();
-            OfsNameList = loader.ReadOffset();
-            OfsCurveList = loader.ReadOffset();
-            OfsBaseValueList = loader.ReadOffset();
-            OfsUserDataDict = loader.ReadOffset();
-        }
-    }
-
+    
     /// <summary>
     /// Represents flags specifying how animation data is stored or should be played.
     /// </summary>

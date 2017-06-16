@@ -14,6 +14,8 @@ namespace Syroot.NintenTools.Bfres
     {
         // ---- CONSTANTS ----------------------------------------------------------------------------------------------
 
+        private const string _signature = "FSKA";
+
         private const uint _flagsMaskScale = 0b00000000_00000000_00000011_00000000;
         private const uint _flagsMaskRotate = 0b00000000_00000000_01110000_00000000;
 
@@ -21,7 +23,6 @@ namespace Syroot.NintenTools.Bfres
 
         private string _name;
         private uint _flags;
-        private uint _ofsBindSkeleton;
 
         // ---- EVENTS -------------------------------------------------------------------------------------------------
 
@@ -109,75 +110,26 @@ namespace Syroot.NintenTools.Bfres
 
         void IResData.Load(ResFileLoader loader)
         {
-            SkeletalAnimHead head = new SkeletalAnimHead(loader);
-            Name = loader.GetName(head.OfsName);
-            Path = loader.GetName(head.OfsPath);
-            _flags = head.Flags;
-            FrameCount = head.NumFrame;
-            BakedSize = head.SizBaked;
-            BoneAnims = loader.LoadList<BoneAnim>(head.OfsBoneAnimList, head.NumBoneAnim);
-            _ofsBindSkeleton = head.OfsBindSkeleton;
-
-            if (head.OfsBindIndexList != 0)
-            {
-                loader.Position = head.OfsBindIndexList;
-                BindIndices = loader.ReadUInt16s(head.NumBoneAnim);
-            }
-
-            UserData = loader.LoadDictList<UserData>(head.OfsUserDataDict);
+            loader.CheckSignature(_signature);
+            Name = loader.LoadString();
+            Path = loader.LoadString();
+            _flags = loader.ReadUInt32();
+            FrameCount = loader.ReadInt32();
+            ushort numBoneAnim = loader.ReadUInt16();
+            ushort numUserData = loader.ReadUInt16();
+            int numCurve = loader.ReadInt32();
+            BakedSize = loader.ReadUInt32();
+            BoneAnims = loader.LoadList<BoneAnim>(numBoneAnim);
+            BindSkeleton = loader.Load<Skeleton>();
+            BindIndices = loader.LoadCustom(() => loader.ReadUInt16s(numBoneAnim));
+            UserData = loader.LoadDictList<UserData>();
         }
-
-        void IResData.Reference(ResFileLoader loader)
+        
+        void IResData.Save(ResFileSaver saver)
         {
-            BindSkeleton = loader.GetData<Skeleton>(_ofsBindSkeleton);
         }
     }
-
-    /// <summary>
-    /// Represents the header of a <see cref="SkeletalAnim"/> instance.
-    /// </summary>
-    internal class SkeletalAnimHead
-    {
-        // ---- CONSTANTS ----------------------------------------------------------------------------------------------
-
-        private const string _signature = "FSKA";
-
-        // ---- FIELDS -------------------------------------------------------------------------------------------------
-
-        internal uint Signature;
-        internal uint OfsName;
-        internal uint OfsPath;
-        internal uint Flags;
-        internal int NumFrame;
-        internal ushort NumBoneAnim;
-        internal ushort NumUserData;
-        internal int NumCurve;
-        internal uint SizBaked;
-        internal uint OfsBoneAnimList;
-        internal uint OfsBindSkeleton;
-        internal uint OfsBindIndexList;
-        internal uint OfsUserDataDict;
-
-        // ---- CONSTRUCTORS & DESTRUCTOR ------------------------------------------------------------------------------
-
-        internal SkeletalAnimHead(ResFileLoader loader)
-        {
-            Signature = loader.ReadSignature(_signature);
-            OfsName = loader.ReadOffset();
-            OfsPath = loader.ReadOffset();
-            Flags = loader.ReadUInt32();
-            NumFrame = loader.ReadInt32();
-            NumBoneAnim = loader.ReadUInt16();
-            NumUserData = loader.ReadUInt16();
-            NumCurve = loader.ReadInt32();
-            SizBaked = loader.ReadUInt32();
-            OfsBoneAnimList = loader.ReadOffset();
-            OfsBindSkeleton = loader.ReadOffset();
-            OfsBindIndexList = loader.ReadOffset();
-            OfsUserDataDict = loader.ReadOffset();
-        }
-    }
-
+    
     /// <summary>
     /// Represents flags specifying how animation data is stored or should be played.
     /// </summary>

@@ -49,37 +49,15 @@ namespace Syroot.NintenTools.Bfres
 
         void IResData.Load(ResFileLoader loader)
         {
-            SamplerHead head = new SamplerHead(loader);
-            TexSampler = new TexSampler(head.GX2Sampler);
-            Name = loader.GetName(head.OfsName);
-        }
-
-        void IResData.Reference(ResFileLoader loader)
-        {
-        }
-    }
-
-    /// <summary>
-    /// Represents the header of a <see cref="Sampler"/> instance.
-    /// </summary>
-    internal class SamplerHead
-    {
-        // ---- FIELDS -------------------------------------------------------------------------------------------------
-
-        public uint[] GX2Sampler;
-        public uint Handle;
-        public uint OfsName;
-        public byte Idx;
-
-        // ---- CONSTRUCTORS & DESTRUCTOR ------------------------------------------------------------------------------
-
-        internal SamplerHead(ResFileLoader loader)
-        {
-            GX2Sampler = loader.ReadUInt32s(3);
-            Handle = loader.ReadUInt32();
-            OfsName = loader.ReadOffset();
-            Idx = loader.ReadByte();
+            TexSampler = new TexSampler(loader.ReadUInt32s(3));
+            uint handle = loader.ReadUInt32();
+            Name = loader.LoadString();
+            byte idx = loader.ReadByte();
             loader.Seek(3);
+        }
+        
+        void IResData.Save(ResFileSaver saver)
+        {
         }
     }
 }

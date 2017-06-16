@@ -11,6 +11,10 @@ namespace Syroot.NintenTools.Bfres
     [DebuggerDisplay(nameof(CameraAnim) + " {" + nameof(Name) + "}")]
     public class CameraAnim : INamedResData
     {
+        // ---- CONSTANTS ----------------------------------------------------------------------------------------------
+
+        private const string _signature = "FCAM";
+
         // ---- FIELDS -------------------------------------------------------------------------------------------------
 
         private string _name;
@@ -73,65 +77,22 @@ namespace Syroot.NintenTools.Bfres
 
         void IResData.Load(ResFileLoader loader)
         {
-            CameraAnimHead head = new CameraAnimHead(loader);
-            Flags = head.Flags;
-            FrameCount = head.NumFrame;
-            BakedSize = head.SizBaked;
-            Name = loader.GetName(head.OfsName);
-            Curves = loader.LoadList<AnimCurve>(head.OfsCurveList, head.NumCurve);
-
-            if (head.OfsBaseData != 0)
-            {
-                loader.Position = head.OfsBaseData;
-                BaseData = new CameraAnimData(loader);
-            }
-
-            UserData = loader.LoadDictList<UserData>(head.OfsUserDataDict);
-        }
-
-        void IResData.Reference(ResFileLoader loader)
-        {
-        }
-    }
-
-    /// <summary>
-    /// Represents the header of a <see cref="CameraAnim"/> instance.
-    /// </summary>
-    internal class CameraAnimHead
-    {
-        // ---- CONSTANTS ----------------------------------------------------------------------------------------------
-
-        private const string _signature = "FCAM";
-
-        // ---- FIELDS -------------------------------------------------------------------------------------------------
-
-        internal uint Signature;
-        internal CameraAnimFlags Flags;
-        internal int NumFrame;
-        internal byte NumCurve;
-        internal ushort NumUserData;
-        internal uint SizBaked;
-        internal uint OfsName;
-        internal uint OfsCurveList;
-        internal uint OfsBaseData;
-        internal uint OfsUserDataDict;
-
-        // ---- CONSTRUCTORS & DESTRUCTOR ------------------------------------------------------------------------------
-
-        public CameraAnimHead(ResFileLoader loader)
-        {
-            Signature = loader.ReadSignature(_signature);
+            loader.CheckSignature(_signature);
             Flags = loader.ReadEnum<CameraAnimFlags>(true);
             loader.Seek(2);
-            NumFrame = loader.ReadInt32();
-            NumCurve = loader.ReadByte();
+            FrameCount = loader.ReadInt32();
+            byte numCurve = loader.ReadByte();
             loader.Seek(1);
-            NumUserData = loader.ReadUInt16();
-            SizBaked = loader.ReadUInt32();
-            OfsName = loader.ReadOffset();
-            OfsCurveList = loader.ReadOffset();
-            OfsBaseData = loader.ReadOffset();
-            OfsUserDataDict = loader.ReadOffset();
+            ushort numUserData = loader.ReadUInt16();
+            uint sizBaked = loader.ReadUInt32();
+            Name = loader.LoadString();
+            Curves = loader.LoadList<AnimCurve>(numCurve);
+            BaseData = loader.LoadCustom(() => new CameraAnimData(loader));
+            UserData = loader.LoadDictList<UserData>();
+        }
+        
+        void IResData.Save(ResFileSaver saver)
+        {
         }
     }
     
@@ -151,7 +112,14 @@ namespace Syroot.NintenTools.Bfres
         /// </summary>
         Looping = 1 << 2,
         
+        /// <summary>
+        /// The rotation mode stores ZXY angles rather than look-at points in combination with a twist.
+        /// </summary>
         EulerZXY = 1 << 8,
+
+        /// <summary>
+        /// The projection mode is perspective rather than ortographic.
+        /// </summary>
         Perspective = 1 << 10
     }
 }

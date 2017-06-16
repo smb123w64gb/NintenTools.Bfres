@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
 using Syroot.NintenTools.Bfres.Core;
 
@@ -37,54 +36,18 @@ namespace Syroot.NintenTools.Bfres
 
         void IResData.Load(ResFileLoader loader)
         {
-            TexPatternMatAnimHead head = new TexPatternMatAnimHead(loader);
-            using (loader.TemporarySeek())
-            {
-                Name = loader.GetName(head.OfsName);
-                PatternAnimInfos = loader.LoadList<PatternAnimInfo>(head.OfsPatAnimInfoList, head.NumPatAnim);
-                Curves = loader.LoadList<AnimCurve>(head.OfsCurveList, head.NumCurve);
-
-                if (head.OfsBaseDataList != 0)
-                {
-                    loader.Position = head.OfsBaseDataList;
-                    BaseDataList = loader.ReadUInt16s(head.NumPatAnim);
-                }
-            }
+            ushort numPatAnim = loader.ReadUInt16();
+            ushort numCurve = loader.ReadUInt16();
+            int beginCurve = loader.ReadInt32();
+            int beginPatAnim = loader.ReadInt32();
+            Name = loader.LoadString();
+            PatternAnimInfos = loader.LoadList<PatternAnimInfo>(numPatAnim);
+            Curves = loader.LoadList<AnimCurve>(numCurve);
+            BaseDataList = loader.LoadCustom(() => loader.ReadUInt16s(numPatAnim));
         }
-
-        void IResData.Reference(ResFileLoader loader)
+        
+        void IResData.Save(ResFileSaver saver)
         {
-        }
-    }
-
-    /// <summary>
-    /// Represents the header of a <see cref="TexPatternMatAnim"/> instance.
-    /// </summary>
-    internal class TexPatternMatAnimHead
-    {
-        // ---- FIELDS -------------------------------------------------------------------------------------------------
-
-        internal ushort NumPatAnim;
-        internal ushort NumCurve;
-        internal int BeginCurve; // First curve index relative to all.
-        internal int BeginPatAnim; // First PatternAnimInfo index relative to all.
-        internal uint OfsName;
-        internal uint OfsPatAnimInfoList;
-        internal uint OfsCurveList;
-        internal uint OfsBaseDataList;
-
-        // ---- CONSTRUCTORS & DESTRUCTOR ------------------------------------------------------------------------------
-
-        internal TexPatternMatAnimHead(ResFileLoader loader)
-        {
-            NumPatAnim = loader.ReadUInt16();
-            NumCurve = loader.ReadUInt16();
-            BeginCurve = loader.ReadInt32();
-            BeginPatAnim = loader.ReadInt32();
-            OfsName = loader.ReadOffset();
-            OfsPatAnimInfoList = loader.ReadOffset();
-            OfsCurveList = loader.ReadOffset();
-            OfsBaseDataList = loader.ReadOffset();
         }
     }
 }

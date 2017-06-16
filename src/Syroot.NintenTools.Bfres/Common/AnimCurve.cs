@@ -109,107 +109,73 @@ namespace Syroot.NintenTools.Bfres
 
         void IResData.Load(ResFileLoader loader)
         {
-            AnimCurveHead head = new AnimCurveHead(loader);
-            using (loader.TemporarySeek())
-            {
-                _flags = head.Flags;
-                AnimDataOffset = head.AnimDataOffset;
-                StartFrame = head.FrameStart;
-                EndFrame = head.FrameEnd;
-                Scale = head.Scale;
-                Offset = head.Offset;
-                Delta = head.Delta;
-
-                loader.Position = head.OfsFrameList;
-                switch (FrameType)
-                {
-                    case AnimCurveFrameType.Single:
-                        Frames = loader.ReadSingles(head.NumKey);
-                        break;
-                    case AnimCurveFrameType.Int16:
-                        Frames = new float[head.NumKey];
-                        for (int i = 0; i < head.NumKey; i++)
-                        {
-                            Frames[i] = loader.ReadInt16();
-                        }
-                        break;
-                    case AnimCurveFrameType.Byte:
-                        Frames = new float[head.NumKey];
-                        for (int i = 0; i < head.NumKey; i++)
-                        {
-                            Frames[i] = loader.ReadByte();
-                        }
-                        break;
-                }
-
-                loader.Position = head.OfsKeyList;
-                int keyElementCount = head.NumKey * GetElementsPerKey();
-                switch (KeyType)
-                {
-                    case AnimCurveKeyType.Single:
-                        Keys = loader.ReadSingles(keyElementCount);
-                        break;
-                    case AnimCurveKeyType.Int16:
-                        Keys = new float[keyElementCount];
-                        for (int i = 0; i < head.NumKey; i++)
-                        {
-                            Keys[i] = loader.ReadInt16();
-                        }
-                        break;
-                    case AnimCurveKeyType.Byte:
-                        Keys = new float[keyElementCount];
-                        for (int i = 0; i < head.NumKey; i++)
-                        {
-                            Keys[i] = loader.ReadByte();
-                        }
-                        break;
-                }
-            }
-        }
-
-        void IResData.Reference(ResFileLoader loader)
-        {
-        }
-    }
-
-    /// <summary>
-    /// Represents the header of a <see cref="AnimCurve"/> instance.
-    /// </summary>
-    internal class AnimCurveHead
-    {
-        // ---- FIELDS -------------------------------------------------------------------------------------------------
-
-        internal ushort Flags;
-        internal ushort NumKey;
-        internal uint AnimDataOffset;
-        internal float FrameStart;
-        internal float FrameEnd;
-        internal float Scale;
-        internal DWord Offset;
-        internal float Delta; // 3.4.0.0+
-        internal uint OfsFrameList;
-        internal uint OfsKeyList;
-
-        // ---- CONSTRUCTORS & DESTRUCTOR ------------------------------------------------------------------------------
-
-        internal AnimCurveHead(ResFileLoader loader)
-        {
-            Flags = loader.ReadUInt16();
-            NumKey = loader.ReadUInt16();
+            _flags = loader.ReadUInt16();
+            ushort numKey = loader.ReadUInt16();
             AnimDataOffset = loader.ReadUInt32();
-            FrameStart = loader.ReadSingle();
-            FrameEnd = loader.ReadSingle();
+            StartFrame = loader.ReadSingle();
+            EndFrame = loader.ReadSingle();
             Scale = loader.ReadSingle();
             Offset = loader.ReadSingle();
             if (loader.ResFile.Version >= 0x03040000)
             {
                 Delta = loader.ReadSingle();
             }
-            OfsFrameList = loader.ReadOffset();
-            OfsKeyList = loader.ReadOffset();
+            Frames = loader.LoadCustom(() =>
+            {
+                switch (FrameType)
+                {
+                    case AnimCurveFrameType.Single:
+                        return loader.ReadSingles(numKey);
+                    case AnimCurveFrameType.Int16:
+                        float[] singleFrames = new float[numKey];
+                        for (int i = 0; i < numKey; i++)
+                        {
+                            singleFrames[i] = loader.ReadInt16();
+                        }
+                        return singleFrames;
+                    case AnimCurveFrameType.Byte:
+                        float[] byteFrames = new float[numKey];
+                        for (int i = 0; i < numKey; i++)
+                        {
+                            byteFrames[i] = loader.ReadByte();
+                        }
+                        return byteFrames;
+                    default:
+                        throw new ResException($"Invalid {nameof(FrameType)}.");
+                }
+            });
+            Keys = loader.LoadCustom(() =>
+            {
+                int keyElementCount = numKey * GetElementsPerKey();
+                switch (KeyType)
+                {
+                    case AnimCurveKeyType.Single:
+                        return loader.ReadSingles(keyElementCount);
+                    case AnimCurveKeyType.Int16:
+                        float[] singleKeys = new float[keyElementCount];
+                        for (int i = 0; i < numKey; i++)
+                        {
+                            singleKeys[i] = loader.ReadInt16();
+                        }
+                        return singleKeys;
+                    case AnimCurveKeyType.Byte:
+                        float[] byteKeys = new float[keyElementCount];
+                        for (int i = 0; i < numKey; i++)
+                        {
+                            byteKeys[i] = loader.ReadByte();
+                        }
+                        return byteKeys;
+                    default:
+                        throw new ResException($"Invalid {nameof(KeyType)}.");
+                }
+            });
+        }
+        
+        void IResData.Save(ResFileSaver saver)
+        {
         }
     }
-
+    
     /// <summary>
     /// Represents the possible data types in which <see cref="AnimCurve.Frames"/> are stored. For simple library use,
     /// they are always converted them to and from <see cref="Single"/> instances.

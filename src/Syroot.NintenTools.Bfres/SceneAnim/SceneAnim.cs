@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using Syroot.NintenTools.Bfres.Core;
 
@@ -12,6 +11,10 @@ namespace Syroot.NintenTools.Bfres
     [DebuggerDisplay(nameof(SceneAnim) + " {" + nameof(Name) + "}")]
     public class SceneAnim : INamedResData
     {
+        // ---- CONSTANTS ----------------------------------------------------------------------------------------------
+
+        private const string _signature = "FSCN";
+
         // ---- FIELDS -------------------------------------------------------------------------------------------------
 
         private string _name;
@@ -72,58 +75,21 @@ namespace Syroot.NintenTools.Bfres
 
         void IResData.Load(ResFileLoader loader)
         {
-            SceneAnimHead head = new SceneAnimHead(loader);
-            Name = loader.GetName(head.OfsName);
-            Path = loader.GetName(head.OfsPath);
-            CameraAnims = loader.LoadDictList<CameraAnim>(head.OfsCameraAnimDict);
-            LightAnims = loader.LoadDictList<LightAnim>(head.OfsLightAnimDict);
-            FogAnims = loader.LoadDictList<FogAnim>(head.OfsFogAnimDict);
-            UserData = loader.LoadDictList<UserData>(head.OfsUserDataDict);
+            loader.CheckSignature(_signature);
+            Name = loader.LoadString();
+            Path = loader.LoadString();
+            ushort numUserData = loader.ReadUInt16();
+            ushort numCameraAnim = loader.ReadUInt16();
+            ushort numLightAnim = loader.ReadUInt16();
+            ushort numFogAnim = loader.ReadUInt16();
+            CameraAnims = loader.LoadDictList<CameraAnim>();
+            LightAnims = loader.LoadDictList<LightAnim>();
+            FogAnims = loader.LoadDictList<FogAnim>();
+            UserData = loader.LoadDictList<UserData>();
         }
-
-        void IResData.Reference(ResFileLoader loader)
+        
+        void IResData.Save(ResFileSaver saver)
         {
-        }
-    }
-
-    /// <summary>
-    /// Represents the header of a <see cref="SceneAnim"/> instance.
-    /// </summary>
-    internal class SceneAnimHead
-    {
-        // ---- CONSTANTS ----------------------------------------------------------------------------------------------
-
-        private const string _signature = "FSCN";
-
-        // ---- FIELDS -------------------------------------------------------------------------------------------------
-
-        internal uint Signature;
-        internal uint OfsName;
-        internal uint OfsPath;
-        internal ushort NumUserData;
-        internal ushort NumCameraAnim;
-        internal ushort NumLightAnim;
-        internal ushort NumFogAnim;
-        internal uint OfsCameraAnimDict;
-        internal uint OfsLightAnimDict;
-        internal uint OfsFogAnimDict;
-        internal uint OfsUserDataDict;
-
-        // ---- CONSTRUCTORS & DESTRUCTOR ------------------------------------------------------------------------------
-
-        internal SceneAnimHead(ResFileLoader loader)
-        {
-            Signature = loader.ReadSignature(_signature);
-            OfsName = loader.ReadOffset();
-            OfsPath = loader.ReadOffset();
-            NumUserData = loader.ReadUInt16();
-            NumCameraAnim = loader.ReadUInt16();
-            NumLightAnim = loader.ReadUInt16();
-            NumFogAnim = loader.ReadUInt16();
-            OfsCameraAnimDict = loader.ReadOffset();
-            OfsLightAnimDict = loader.ReadOffset();
-            OfsFogAnimDict = loader.ReadOffset();
-            OfsUserDataDict = loader.ReadOffset();
         }
     }
 }

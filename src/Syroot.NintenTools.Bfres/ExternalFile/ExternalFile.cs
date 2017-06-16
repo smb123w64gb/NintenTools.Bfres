@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using Syroot.NintenTools.Bfres.Core;
 
 namespace Syroot.NintenTools.Bfres
@@ -33,35 +32,13 @@ namespace Syroot.NintenTools.Bfres
 
         void IResData.Load(ResFileLoader loader)
         {
-            ExternalFileHead head = new ExternalFileHead(loader);
-            if (head.OfsData != 0)
-            {
-                loader.Seek(head.OfsData);
-                Data = loader.ReadBytes((int)head.SizData);
-            }
+            uint ofsData = loader.ReadOffset();
+            uint sizData = loader.ReadUInt32();
+            Data = loader.LoadCustom(() => loader.ReadBytes((int)sizData), ofsData);
         }
-
-        void IResData.Reference(ResFileLoader loader)
+        
+        void IResData.Save(ResFileSaver saver)
         {
-        }
-    }
-
-    /// <summary>
-    /// Represents the header of a <see cref="ExternalFile"/> instance.
-    /// </summary>
-    internal class ExternalFileHead
-    {
-        // ---- FIELDS -------------------------------------------------------------------------------------------------
-
-        internal uint OfsData;
-        internal uint SizData;
-
-        // ---- CONSTRUCTORS & DESTRUCTOR ------------------------------------------------------------------------------
-
-        internal ExternalFileHead(ResFileLoader loader)
-        {
-            OfsData = loader.ReadOffset();
-            SizData = loader.ReadUInt32();
         }
     }
 }

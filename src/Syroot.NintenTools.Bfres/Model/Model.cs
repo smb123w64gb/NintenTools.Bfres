@@ -11,6 +11,10 @@ namespace Syroot.NintenTools.Bfres
     [DebuggerDisplay(nameof(Model) + " {" + nameof(Name) + "}")]
     public class Model : INamedResData
     {
+        // ---- CONSTANTS ----------------------------------------------------------------------------------------------
+
+        private const string _signature = "FMDL";
+
         // ---- FIELDS -------------------------------------------------------------------------------------------------
 
         private string _name;
@@ -47,12 +51,24 @@ namespace Syroot.NintenTools.Bfres
         /// </summary>
         public string Path { get; set; }
 
+        /// <summary>
+        /// Gets the <see cref="Skeleton"/> instance to deform the model with animations.
+        /// </summary>
         public Skeleton Skeleton { get; set; }
 
+        /// <summary>
+        /// Gets the <see cref="VertexBuffer"/> instances storing the vertex data used by the <see cref="Shapes"/>.
+        /// </summary>
         public IList<VertexBuffer> VertexBuffers { get; private set; }
 
+        /// <summary>
+        /// Gets the <see cref="Shape"/> instances forming the surface of the model.
+        /// </summary>
         public INamedResDataList<Shape> Shapes { get; private set; }
 
+        /// <summary>
+        /// Gets the <see cref="Material"/> instance applied on the <see cref="Shapes"/> to color their surface.
+        /// </summary>
         public INamedResDataList<Material> Materials { get; private set; }
 
         /// <summary>
@@ -60,69 +76,49 @@ namespace Syroot.NintenTools.Bfres
         /// </summary>
         public INamedResDataList<UserData> UserData { get; private set; }
 
+        public uint TotalVertices
+        {
+            get { return 0x1234567; } // TODO: Compute total vertices.
+        }
+
         // ---- METHODS ------------------------------------------------------------------------------------------------
 
         void IResData.Load(ResFileLoader loader)
         {
-            ModelHead head = new ModelHead(loader);
-            Name = loader.GetName(head.OfsName);
-            Path = loader.GetName(head.OfsPath);
-            Skeleton = loader.Load<Skeleton>(head.OfsSkeleton);
-            VertexBuffers = loader.LoadList<VertexBuffer>(head.OfsVertexBufferList, head.NumVertexBuffer);
-            Shapes = loader.LoadDictList<Shape>(head.OfsShapeDict);
-            Materials = loader.LoadDictList<Material>(head.OfsMaterialDict);
-            UserData = loader.LoadDictList<UserData>(head.OfsUserDataDict);
+            loader.CheckSignature(_signature);
+            Name = loader.LoadString();
+            Path = loader.LoadString();
+            Skeleton = loader.Load<Skeleton>();
+            uint ofsVertexBuffers = loader.ReadOffset();
+            Shapes = loader.LoadDictList<Shape>();
+            Materials = loader.LoadDictList<Material>();
+            UserData = loader.LoadDictList<UserData>();
+            ushort numVertexBuffer = loader.ReadUInt16();
+            ushort numShape = loader.ReadUInt16();
+            ushort numMaterial = loader.ReadUInt16();
+            ushort numUserData = loader.ReadUInt16();
+            uint totalVertices = loader.ReadUInt32();
+            uint userPointer = loader.ReadUInt32();
+
+            VertexBuffers = loader.LoadList<VertexBuffer>(numVertexBuffer, ofsVertexBuffers);
         }
-
-        void IResData.Reference(ResFileLoader loader)
+        
+        void IResData.Save(ResFileSaver saver)
         {
-        }
-    }
-
-    /// <summary>
-    /// Represents the header of a <see cref="Model"/> instance.
-    /// </summary>
-    internal class ModelHead
-    {
-        // ---- CONSTANTS ----------------------------------------------------------------------------------------------
-
-        private const string _signature = "FMDL";
-
-        // ---- FIELDS -------------------------------------------------------------------------------------------------
-
-        internal uint Signature;
-        internal uint OfsName;
-        internal uint OfsPath;
-        internal uint OfsSkeleton;
-        internal uint OfsVertexBufferList;
-        internal uint OfsShapeDict;
-        internal uint OfsMaterialDict;
-        internal uint OfsUserDataDict;
-        internal ushort NumVertexBuffer;
-        internal ushort NumShape;
-        internal ushort NumMaterial;
-        internal ushort NumUserData;
-        internal uint TotalVertices;
-        internal uint UserPointer;
-
-        // ---- CONSTRUCTORS & DESTRUCTOR ------------------------------------------------------------------------------
-
-        internal ModelHead(ResFileLoader loader)
-        {
-            Signature = loader.ReadSignature(_signature);
-            OfsName = loader.ReadOffset();
-            OfsPath = loader.ReadOffset();
-            OfsSkeleton = loader.ReadOffset();
-            OfsVertexBufferList = loader.ReadOffset();
-            OfsShapeDict = loader.ReadOffset();
-            OfsMaterialDict = loader.ReadOffset();
-            OfsUserDataDict = loader.ReadOffset();
-            NumVertexBuffer = loader.ReadUInt16();
-            NumShape = loader.ReadUInt16();
-            NumMaterial = loader.ReadUInt16();
-            NumUserData = loader.ReadUInt16();
-            TotalVertices = loader.ReadUInt32();
-            UserPointer = loader.ReadUInt32();
+            saver.WriteSignature(_signature);
+            saver.SaveString(Name);
+            saver.SaveString(Path);
+            saver.SaveResData(Skeleton);
+            saver.SaveList(VertexBuffers);
+            saver.SaveDictList(Shapes);
+            saver.SaveDictList(Materials);
+            saver.SaveDictList(UserData);
+            saver.Write((ushort)VertexBuffers.Count);
+            saver.Write((ushort)Shapes.Count);
+            saver.Write((ushort)Materials.Count);
+            saver.Write((ushort)UserData.Count);
+            saver.Write(TotalVertices);
+            saver.Write(0); // UserPointer
         }
     }
 }

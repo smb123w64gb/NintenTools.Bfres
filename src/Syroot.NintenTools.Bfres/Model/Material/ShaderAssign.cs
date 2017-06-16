@@ -23,50 +23,19 @@ namespace Syroot.NintenTools.Bfres
 
         void IResData.Load(ResFileLoader loader)
         {
-            ShaderAssignHead head = new ShaderAssignHead(loader);
-            ShaderArchiveName = loader.GetName(head.OfsShaderArchiveName);
-            ShadingModelName = loader.GetName(head.OfsShadingModelName);
-            Revision = head.Revision;
-            AttribAssigns = loader.LoadDictNames(head.OfsAttribAssignDict);
-            SamplerAssigns = loader.LoadDictNames(head.OfsSamplerAssignDict);
-            ShaderOptions = loader.LoadDictNames(head.OfsShaderOptionDict);
-        }
-
-        void IResData.Reference(ResFileLoader loader)
-        {
-        }
-    }
-
-    /// <summary>
-    /// Represents the header of a <see cref="ShaderAssign"/> instance.
-    /// </summary>
-    internal class ShaderAssignHead
-    {
-        // ---- FIELDS -------------------------------------------------------------------------------------------------
-
-        internal uint OfsShaderArchiveName;
-        internal uint OfsShadingModelName;
-        internal uint Revision;
-        internal byte NumAttribAssign;
-        internal byte NumSamplerAssign;
-        internal ushort NumShaderOption;
-        internal uint OfsAttribAssignDict;
-        internal uint OfsSamplerAssignDict;
-        internal uint OfsShaderOptionDict;
-
-        // ---- CONSTRUCTORS & DESTRUCTOR ------------------------------------------------------------------------------
-
-        internal ShaderAssignHead(ResFileLoader loader)
-        {
-            OfsShaderArchiveName = loader.ReadOffset();
-            OfsShadingModelName = loader.ReadOffset();
+            ShaderArchiveName = loader.LoadString();
+            ShadingModelName = loader.LoadString();
             Revision = loader.ReadUInt32();
-            NumAttribAssign = loader.ReadByte();
-            NumSamplerAssign = loader.ReadByte();
-            NumShaderOption = loader.ReadUInt16();
-            OfsAttribAssignDict = loader.ReadOffset();
-            OfsSamplerAssignDict = loader.ReadOffset();
-            OfsShaderOptionDict = loader.ReadOffset();
+            byte numAttribAssign = loader.ReadByte();
+            byte numSamplerAssign = loader.ReadByte();
+            ushort numShaderOption = loader.ReadUInt16();
+            AttribAssigns = loader.LoadDictNames();
+            SamplerAssigns = loader.LoadDictNames();
+            ShaderOptions = loader.LoadDictNames();
+        }
+        
+        void IResData.Save(ResFileSaver saver)
+        {
         }
     }
 }
