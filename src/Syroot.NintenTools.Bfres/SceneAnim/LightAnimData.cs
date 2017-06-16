@@ -59,6 +59,17 @@ namespace Syroot.NintenTools.Bfres
             Color0 = flags.HasFlag(LightAnimFlags.ResultColor0) ? loader.ReadVector3F() : Vector3F.Zero;
             Color1 = flags.HasFlag(LightAnimFlags.ResultColor1) ? loader.ReadVector3F() : Vector3F.Zero;
         }
+
+        internal void Save(ResFileSaver saver, LightAnimFlags flags)
+        {
+            if (flags.HasFlag(LightAnimFlags.ResultEnable)) saver.Write(Enable);
+            if (flags.HasFlag(LightAnimFlags.ResultPosition)) saver.Write(Position);
+            if (flags.HasFlag(LightAnimFlags.ResultRotation)) saver.Write(Rotation);
+            if (flags.HasFlag(LightAnimFlags.ResultDistanceAttn)) saver.Write(DistanceAttn);
+            if (flags.HasFlag(LightAnimFlags.ResultAngleAttn)) saver.Write(AngleAttn);
+            if (flags.HasFlag(LightAnimFlags.ResultColor0)) saver.Write(Color0);
+            if (flags.HasFlag(LightAnimFlags.ResultColor1)) saver.Write(Color1);
+        }
     }
 
     /// <summary>

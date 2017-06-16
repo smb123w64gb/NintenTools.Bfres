@@ -123,6 +123,18 @@ namespace Syroot.NintenTools.Bfres
         
         void IResData.Save(ResFileSaver saver)
         {
+            saver.SaveString(Name);
+            saver.Write((ushort)saver.CurrentIndex);
+            saver.Write(ParentIndex);
+            saver.Write(SmoothMatrixIndex);
+            saver.Write(RigidMatrixIndex);
+            saver.Write(BillboardIndex);
+            saver.Write((ushort)UserData.Count);
+            saver.Write(_flags);
+            saver.Write(Scale);
+            saver.Write(Rotation);
+            saver.Write(Position);
+            saver.SaveDictList(UserData);
         }
     }
 

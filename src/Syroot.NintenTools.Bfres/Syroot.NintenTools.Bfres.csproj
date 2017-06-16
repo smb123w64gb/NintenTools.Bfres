@@ -1,12 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<Description>.NET library for loading the Nintendo BFRES graphics archive format.</Description>
+		<Description>.NET library for loading and saving the Nintendo BFRES graphics archive format.</Description>
 		<Copyright>(c) Syroot, licensed under MIT</Copyright>
 		<AssemblyName>Syroot.NintenTools.Bfres</AssemblyName>
 		<AssemblyTitle>NintenTools.Bfres</AssemblyTitle>
 		<Authors>Syroot</Authors>
-		<VersionPrefix>0.9.0</VersionPrefix>
+		<VersionPrefix>1.0.0</VersionPrefix>
 
 		<PackageId>Syroot.NintenTools.Bfres</PackageId>
 		<PackageTags>bfres;cafe;nintendo;nw4f;wiiu</PackageTags>

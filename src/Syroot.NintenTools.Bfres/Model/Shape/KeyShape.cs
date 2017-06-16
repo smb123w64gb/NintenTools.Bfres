@@ -1,5 +1,4 @@
-﻿using System;
-using Syroot.NintenTools.Bfres.Core;
+﻿using Syroot.NintenTools.Bfres.Core;
 
 namespace Syroot.NintenTools.Bfres
 {
@@ -21,6 +20,8 @@ namespace Syroot.NintenTools.Bfres
         
         void IResData.Save(ResFileSaver saver)
         {
+            saver.SaveCustom(TargetAttribIndices, () => saver.Write(TargetAttribIndices));
+            saver.SaveCustom(TargetAttribIndexOffsets, () => saver.Write(TargetAttribIndexOffsets));
         }
     }
 }

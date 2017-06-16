@@ -58,6 +58,8 @@ namespace Syroot.NintenTools.Bfres
         
         void IResData.Save(ResFileSaver saver)
         {
+            saver.SaveString(Name);
+            saver.Save(Texture);
         }
     }
 }

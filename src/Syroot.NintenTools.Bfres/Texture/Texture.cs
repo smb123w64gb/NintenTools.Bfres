@@ -109,6 +109,8 @@ namespace Syroot.NintenTools.Bfres
         
         public uint[] Regs { get; set; }
 
+        public uint ArrayLength { get; set; }
+
         /// <summary>
         /// Gets or sets the name with which the instance can be referenced uniquely in
         /// <see cref="INamedResDataList{Texture}"/> instances.
@@ -169,14 +171,14 @@ namespace Syroot.NintenTools.Bfres
             Alignment = loader.ReadUInt32();
             Pitch = loader.ReadUInt32();
             MipOffsets = loader.ReadUInt32s(13);
-            uint viewFirstMip = loader.ReadUInt32();
-            uint viewNumMips = loader.ReadUInt32();
-            uint viewFirstSlice = loader.ReadUInt32();
-            uint viewNumSlices = loader.ReadUInt32();
+            ViewMipFirst = loader.ReadUInt32();
+            ViewMipCount = loader.ReadUInt32();
+            ViewSliceFirst = loader.ReadUInt32();
+            ViewSliceCount = loader.ReadUInt32();
             CompSel = loader.ReadUInt32();
             Regs = loader.ReadUInt32s(5);
             uint handle = loader.ReadUInt32();
-            uint arrayLength = loader.ReadUInt32(); // Possibly just a byte.
+            ArrayLength = loader.ReadUInt32(); // Possibly just a byte.
             Name = loader.LoadString();
             Path = loader.LoadString();
             Data = loader.LoadCustom(() => loader.ReadBytes((int)sizData));
@@ -185,9 +187,42 @@ namespace Syroot.NintenTools.Bfres
             ushort numUserData = loader.ReadUInt16();
             loader.Seek(2);
         }
-        
+
         void IResData.Save(ResFileSaver saver)
         {
+            saver.WriteSignature(_signature);
+            saver.Write(Dim, true);
+            saver.Write(Width);
+            saver.Write(Height);
+            saver.Write(Depth);
+            saver.Write(MipCount);
+            saver.Write(Format, true);
+            saver.Write(AAMode, true);
+            saver.Write(Use, true);
+            saver.Write(Data.Length);
+            saver.Write(0); // ImagePointer
+            saver.Write(MipData.Length);
+            saver.Write(0); // MipPointer
+            saver.Write(TileMode, true);
+            saver.Write(Swizzle);
+            saver.Write(Alignment);
+            saver.Write(Pitch);
+            saver.Write(MipOffsets);
+            saver.Write(ViewMipFirst);
+            saver.Write(ViewMipCount);
+            saver.Write(ViewSliceFirst);
+            saver.Write(ViewSliceCount);
+            saver.Write(CompSel);
+            saver.Write(Regs);
+            saver.Write(0); // Handle
+            saver.Write(ArrayLength);
+            saver.SaveString(Name);
+            saver.SaveString(Path);
+            saver.SaveCustom(Data, () => saver.Write(Data));
+            saver.SaveCustom(MipData, () => saver.Write(MipData));
+            saver.SaveDictList(UserData);
+            saver.Write((ushort)UserData.Count);
+            saver.Seek(2);
         }
     }
 }

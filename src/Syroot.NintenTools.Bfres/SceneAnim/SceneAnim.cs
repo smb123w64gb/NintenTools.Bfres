@@ -90,6 +90,17 @@ namespace Syroot.NintenTools.Bfres
         
         void IResData.Save(ResFileSaver saver)
         {
+            saver.WriteSignature(_signature);
+            saver.SaveString(Name);
+            saver.SaveString(Path);
+            saver.Write((ushort)UserData.Count);
+            saver.Write((ushort)CameraAnims.Count);
+            saver.Write((ushort)LightAnims.Count);
+            saver.Write((ushort)FogAnims.Count);
+            saver.SaveDictList(CameraAnims);
+            saver.SaveDictList(LightAnims);
+            saver.SaveDictList(FogAnims);
+            saver.SaveDictList(UserData);
         }
     }
 }

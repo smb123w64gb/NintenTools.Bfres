@@ -36,6 +36,15 @@ namespace Syroot.NintenTools.Bfres
         
         void IResData.Save(ResFileSaver saver)
         {
+            saver.SaveString(ShaderArchiveName);
+            saver.SaveString(ShadingModelName);
+            saver.Write(Revision);
+            saver.Write((byte)AttribAssigns.Count);
+            saver.Write((byte)SamplerAssigns.Count);
+            saver.Write((ushort)ShaderOptions.Count);
+            saver.SaveDictNames(AttribAssigns);
+            saver.SaveDictNames(SamplerAssigns);
+            saver.SaveDictNames(ShaderOptions);
         }
     }
 }

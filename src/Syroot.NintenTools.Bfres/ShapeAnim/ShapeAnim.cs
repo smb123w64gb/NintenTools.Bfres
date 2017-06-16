@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using Syroot.NintenTools.Bfres.Core;
 
 namespace Syroot.NintenTools.Bfres
@@ -61,7 +62,7 @@ namespace Syroot.NintenTools.Bfres
         /// Gets or sets the total number of frames this animation plays.
         /// </summary>
         public int FrameCount { get; set; }
-
+        
         /// <summary>
         /// Gets or sets the number of bytes required to bake all <see cref="AnimCurve"/> instances of all
         /// <see cref="VertexShapeAnims"/>.
@@ -112,6 +113,21 @@ namespace Syroot.NintenTools.Bfres
         
         void IResData.Save(ResFileSaver saver)
         {
+            saver.WriteSignature(_signature);
+            saver.SaveString(Name);
+            saver.SaveString(Path);
+            saver.Write(Flags, true);
+            saver.Write((ushort)UserData.Count);
+            saver.Write(FrameCount);
+            saver.Write((ushort)VertexShapeAnims.Count);
+            saver.Write((ushort)VertexShapeAnims.Sum((x) => x.KeyShapeAnimInfos.Count));
+            saver.Write((ushort)VertexShapeAnims.Sum((x) => x.Curves.Count));
+            saver.Seek(2);
+            saver.Write(BakedSize);
+            saver.Save(BindModel);
+            saver.SaveCustom(BindIndices, () => saver.Write(BindIndices));
+            saver.SaveList(VertexShapeAnims);
+            saver.SaveDictList(UserData);
         }
     }
 

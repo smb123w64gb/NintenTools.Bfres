@@ -27,6 +27,8 @@ namespace Syroot.NintenTools.Bfres
         
         void IResData.Save(ResFileSaver saver)
         {
+            saver.Write(Offset);
+            saver.Write(Count);
         }
     }
 }

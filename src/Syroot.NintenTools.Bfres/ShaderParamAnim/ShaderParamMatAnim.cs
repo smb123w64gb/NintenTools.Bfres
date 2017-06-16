@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using Syroot.NintenTools.Bfres.Core;
 
@@ -29,6 +30,18 @@ namespace Syroot.NintenTools.Bfres
 
         public IList<AnimConstant> Constants { get; private set; }
 
+        /// <summary>
+        /// Gets the index of the first <see cref="Curve"/> relative to all curves of the parent
+        /// <see cref="ShaderParamAnim.ShaderParamMatAnims"/> instances.
+        /// </summary>
+        internal int BeginCurve { get; set; }
+
+        /// <summary>
+        /// Gets the index of the first <see cref="ParamAnimInfo"/> relative to all param anim infos of the parent
+        /// <see cref="ShaderParamAnim.ShaderParamMatAnims"/> instances.
+        /// </summary>
+        internal int BeginParamAnim { get; set; }
+
         // ---- METHODS ------------------------------------------------------------------------------------------------
 
         void IResData.Load(ResFileLoader loader)
@@ -37,8 +50,8 @@ namespace Syroot.NintenTools.Bfres
             ushort numCurve = loader.ReadUInt16();
             ushort numConstant = loader.ReadUInt16();
             loader.Seek(2);
-            int beginCurve = loader.ReadInt32();
-            int beginParamAnim = loader.ReadInt32();
+            BeginCurve = loader.ReadInt32();
+            BeginParamAnim = loader.ReadInt32();
             Name = loader.LoadString();
             ParamAnimInfos = loader.LoadList<ParamAnimInfo>(numAnimParam);
             Curves = loader.LoadList<AnimCurve>(numCurve);
@@ -47,6 +60,16 @@ namespace Syroot.NintenTools.Bfres
         
         void IResData.Save(ResFileSaver saver)
         {
+            saver.Write((ushort)ParamAnimInfos.Count);
+            saver.Write((ushort)Curves.Count);
+            saver.Write((ushort)Constants.Count);
+            saver.Seek(2);
+            saver.Write(BeginCurve);
+            saver.Write(BeginParamAnim);
+            saver.SaveString(Name);
+            saver.SaveList(ParamAnimInfos);
+            saver.SaveList(Curves);
+            saver.SaveCustom(Constants, () => saver.Write(Constants));
         }
     }
 }

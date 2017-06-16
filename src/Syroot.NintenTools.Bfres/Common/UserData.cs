@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections;
 using System.Diagnostics;
 using System.Text;
 using Syroot.NintenTools.Bfres.Core;
+using System.Linq;
 
 namespace Syroot.NintenTools.Bfres
 {
@@ -164,6 +166,28 @@ namespace Syroot.NintenTools.Bfres
         
         void IResData.Save(ResFileSaver saver)
         {
+            saver.SaveString(Name);
+            saver.Write((ushort)((Array)_value).Length); // TODO: Unsafe cast, but _value should always be Array.
+            saver.Write(Type, true);
+            saver.Seek(1);
+            switch (Type)
+            {
+                case UserDataType.Int32:
+                    saver.Write((int[])_value);
+                    break;
+                case UserDataType.Single:
+                    saver.Write((float[])_value);
+                    break;
+                case UserDataType.String:
+                    saver.SaveStrings((string[])_value, Encoding.ASCII);
+                    break;
+                case UserDataType.WString:
+                    saver.SaveStrings((string[])_value, Encoding.Unicode);
+                    break;
+                case UserDataType.Byte:
+                    saver.Write((byte[])_value);
+                    break;
+            }
         }
     }
 

@@ -58,6 +58,13 @@ namespace Syroot.NintenTools.Bfres
 
         public VertexBuffer VertexBuffer { get; private set; }
 
+        public byte VertexSkinCount { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value with unknown purpose.
+        /// </summary>
+        public byte TargetAttribCount { get; set; }
+
         public IList<Mesh> Meshes { get; private set; }
 
         public IList<ushort> SkinBoneIndices { get; private set; }
@@ -82,11 +89,11 @@ namespace Syroot.NintenTools.Bfres
             BoneIndex = loader.ReadUInt16();
             VertexBufferIndex = loader.ReadUInt16();
             ushort numSkinBoneIndex = loader.ReadUInt16();
-            byte numVertexSkin = loader.ReadByte();
+            VertexSkinCount = loader.ReadByte();
             byte numMesh = loader.ReadByte();
             byte numKeyShape = loader.ReadByte();
-            byte numTargetAttrib = loader.ReadByte();
-            ushort numSubMeshBoundingNodes = loader.ReadUInt16(); // Normally padding
+            TargetAttribCount = loader.ReadByte();
+            ushort numSubMeshBoundingNodes = loader.ReadUInt16(); // Normally padding.
             Radius = loader.ReadSingle();
             VertexBuffer = loader.Load<VertexBuffer>();
             Meshes = loader.LoadList<Mesh>(numMesh);
@@ -94,16 +101,14 @@ namespace Syroot.NintenTools.Bfres
             KeyShapes = loader.LoadDict<KeyShape>();
             if (numSubMeshBoundingNodes == 0)
             {
-                // TODO: Validate count.
-                SubMeshBoundings = loader.LoadCustom(() => loader.ReadBoundings(Meshes[0].SubMeshes.Count)); 
+                SubMeshBoundings = loader.LoadCustom(() => loader.ReadBoundings(Meshes[0].SubMeshes.Count + 1)); 
             }
             else
             {
-                // Normally nonexistent
+                // Normally nonexistent.
                 SubMeshBoundingNodes = loader.LoadList<BoundingNode>(numSubMeshBoundingNodes);
-                // TODO: Validate count.
-                SubMeshBoundings = loader.LoadCustom(() => loader.ReadBoundings(Meshes[0].SubMeshes.Count));
-                // Normally nonexistent
+                SubMeshBoundings = loader.LoadCustom(() => loader.ReadBoundings(Meshes[0].SubMeshes.Count + 1));
+                // Normally nonexistent.
                 SubMeshBoundingIndices = loader.LoadCustom(() => loader.ReadUInt16s(numSubMeshBoundingNodes));
             }
             uint userPointer = loader.ReadUInt32();
@@ -111,6 +116,35 @@ namespace Syroot.NintenTools.Bfres
         
         void IResData.Save(ResFileSaver saver)
         {
+            saver.WriteSignature(_signature);
+            saver.SaveString(Name);
+            saver.Write(Flags, true);
+            saver.Write((ushort)saver.CurrentIndex);
+            saver.Write(MaterialIndex);
+            saver.Write(BoneIndex);
+            saver.Write(VertexBufferIndex);
+            saver.Write((ushort)SkinBoneIndices.Count);
+            saver.Write(VertexSkinCount);
+            saver.Write((byte)Meshes.Count);
+            saver.Write((byte)KeyShapes.Count);
+            saver.Write(TargetAttribCount);
+            saver.Write((ushort)SubMeshBoundingNodes?.Count);
+            saver.Write(Radius);
+            saver.Save(VertexBuffer);
+            saver.SaveList(Meshes);
+            saver.SaveCustom(SkinBoneIndices, () => saver.Write(SkinBoneIndices));
+            saver.SaveDict(KeyShapes);
+            if (SubMeshBoundingNodes == null)
+            {
+                saver.SaveCustom(SubMeshBoundings, () => saver.Write(SubMeshBoundings));
+            }
+            else
+            {
+                saver.SaveList(SubMeshBoundingNodes);
+                saver.SaveCustom(SubMeshBoundings, () => saver.Write(SubMeshBoundings));
+                saver.SaveCustom(SubMeshBoundingIndices, () => saver.Write(SubMeshBoundingIndices));
+            }
+            saver.Write(0); // UserPointer
         }
     }
     

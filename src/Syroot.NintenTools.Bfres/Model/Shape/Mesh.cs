@@ -18,6 +18,8 @@ namespace Syroot.NintenTools.Bfres
 
         public GX2IndexFormat Format { get; set; }
 
+        public uint ElementCount { get; set; }
+
         public IList<SubMesh> SubMeshes { get; private set; }
 
         public Buffer IndexBuffer { get; set;  }
@@ -30,7 +32,7 @@ namespace Syroot.NintenTools.Bfres
         {
             PrimitiveType = loader.ReadEnum<GX2PrimitiveType>(true);
             Format = loader.ReadEnum<GX2IndexFormat>(true);
-            uint count = loader.ReadUInt32();
+            ElementCount = loader.ReadUInt32();
             ushort numSubMesh = loader.ReadUInt16();
             loader.Seek(2);
             SubMeshes = loader.LoadList<SubMesh>(numSubMesh);
@@ -40,6 +42,14 @@ namespace Syroot.NintenTools.Bfres
         
         void IResData.Save(ResFileSaver saver)
         {
+            saver.Write(PrimitiveType, true);
+            saver.Write(Format, true);
+            saver.Write(ElementCount);
+            saver.Write((ushort)SubMeshes.Count);
+            saver.Seek(2);
+            saver.SaveList(SubMeshes);
+            saver.Save(IndexBuffer);
+            saver.Write(Offset);
         }
     }
 }

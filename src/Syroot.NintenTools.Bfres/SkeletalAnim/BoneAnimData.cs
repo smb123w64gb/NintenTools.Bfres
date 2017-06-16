@@ -44,6 +44,13 @@ namespace Syroot.NintenTools.Bfres
             Padding = 0; // Never in files.
             Rotate = flags.HasFlag(BoneAnimFlagsBase.Rotate) ? loader.ReadVector4F() : Vector4F.Zero;
         }
+
+        internal void Save(ResFileSaver saver, BoneAnimFlagsBase flags)
+        {
+            if (flags.HasFlag(BoneAnimFlagsBase.Scale)) saver.Write(Scale);
+            if (flags.HasFlag(BoneAnimFlagsBase.Translate)) saver.Write(Translate);
+            if (flags.HasFlag(BoneAnimFlagsBase.Rotate)) saver.Write(Rotate);
+        }
     }
 
     /// <summary>

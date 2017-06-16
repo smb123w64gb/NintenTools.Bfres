@@ -13,11 +13,11 @@ namespace Syroot.NintenTools.Bfres
         /// The size of a full vertex in bytes.
         /// </summary>
         public ushort Stride { get; set; }
-        
+
         /// <summary>
-        /// The raw bytes stored.
+        /// The raw bytes stored for each buffering.
         /// </summary>
-        public byte[] Data { get; set; }
+        public byte[][] Data { get; set; }
 
         // ---- METHODS ------------------------------------------------------------------------------------------------
 
@@ -29,11 +29,32 @@ namespace Syroot.NintenTools.Bfres
             Stride = loader.ReadUInt16();
             ushort numBuffering = loader.ReadUInt16();
             uint contextPointer = loader.ReadUInt32();
-            Data = loader.LoadCustom(() => loader.ReadBytes((int)size * numBuffering));
+            Data = loader.LoadCustom(() =>
+            {
+                byte[][] data = new byte[numBuffering][];
+                for (int i = 0; i < numBuffering; i++)
+                {
+                    data[i] = loader.ReadBytes((int)size);
+                }
+                return data;
+            });
         }
-        
+
         void IResData.Save(ResFileSaver saver)
         {
+            saver.Write(0); // DataPointer
+            saver.Write(Data[0].Length); // Size
+            saver.Write(0); // Handle
+            saver.Write(Stride);
+            saver.Write(Data.Length); // NumBuffering
+            saver.Write(0); // ContextPointer
+            saver.SaveBlock(Data, ResFileSaver.AlignmentSmall, () =>
+            {
+                for (int i = 0; i < Data.Length; i++)
+                {
+                    saver.Write(Data[i]);
+                }
+            });
         }
     }
 }

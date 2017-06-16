@@ -31,15 +31,27 @@ namespace Syroot.NintenTools.Bfres
         /// Gets the initial <see cref="PatternAnimInfo"/> indices.
         /// </summary>
         public IList<ushort> BaseDataList { get; private set; }
-        
+
+        /// <summary>
+        /// Gets the index of the first <see cref="Curve"/> relative to all curves of the parent
+        /// <see cref="TexPatternAnim.TexPatternMatAnims"/> instances.
+        /// </summary>
+        internal int BeginCurve { get; set; }
+
+        /// <summary>
+        /// Gets the index of the first <see cref="PatternAnimInfo"/> relative to all param anim infos of the parent
+        /// <see cref="TexPatternAnim.TexPatternMatAnims"/> instances.
+        /// </summary>
+        internal int BeginPatAnim { get; set; }
+
         // ---- METHODS ------------------------------------------------------------------------------------------------
 
         void IResData.Load(ResFileLoader loader)
         {
             ushort numPatAnim = loader.ReadUInt16();
             ushort numCurve = loader.ReadUInt16();
-            int beginCurve = loader.ReadInt32();
-            int beginPatAnim = loader.ReadInt32();
+            BeginCurve = loader.ReadInt32();
+            BeginPatAnim = loader.ReadInt32();
             Name = loader.LoadString();
             PatternAnimInfos = loader.LoadList<PatternAnimInfo>(numPatAnim);
             Curves = loader.LoadList<AnimCurve>(numCurve);
@@ -48,6 +60,14 @@ namespace Syroot.NintenTools.Bfres
         
         void IResData.Save(ResFileSaver saver)
         {
+            saver.Write((ushort)PatternAnimInfos.Count);
+            saver.Write((ushort)Curves.Count);
+            saver.Write(BeginCurve);
+            saver.Write(BeginPatAnim);
+            saver.SaveString(Name);
+            saver.SaveList(PatternAnimInfos);
+            saver.SaveList(Curves);
+            saver.SaveCustom(BaseDataList, () => saver.Write(BaseDataList));
         }
     }
 }

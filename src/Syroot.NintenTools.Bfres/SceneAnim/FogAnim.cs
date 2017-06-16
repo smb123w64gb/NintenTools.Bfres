@@ -97,6 +97,18 @@ namespace Syroot.NintenTools.Bfres
         
         void IResData.Save(ResFileSaver saver)
         {
+            saver.WriteSignature(_signature);
+            saver.Write(Flags, true);
+            saver.Write(FrameCount);
+            saver.Write((byte)Curves.Count);
+            saver.Write(DistanceAttnFuncIndex);
+            saver.Write((ushort)UserData.Count);
+            saver.Write(BakedSize);
+            saver.SaveString(Name);
+            saver.SaveString(DistanceAttnFuncName);
+            saver.SaveList(Curves);
+            saver.SaveCustom(BaseData, () => BaseData.Save(saver));
+            saver.SaveDictList(UserData);
         }
     }
     

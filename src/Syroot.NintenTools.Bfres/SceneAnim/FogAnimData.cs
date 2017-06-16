@@ -29,6 +29,12 @@ namespace Syroot.NintenTools.Bfres
             DistanceAttn = loader.ReadVector2F();
             Color = loader.ReadVector3F();
         }
+
+        internal void Save(ResFileSaver saver)
+        {
+            saver.Write(DistanceAttn);
+            saver.Write(Color);
+        }
     }
 
     /// <summary>

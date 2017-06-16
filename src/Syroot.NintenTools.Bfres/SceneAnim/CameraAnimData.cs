@@ -59,6 +59,17 @@ namespace Syroot.NintenTools.Bfres
             Rotation = loader.ReadVector3F();
             Twist = loader.ReadSingle();
         }
+
+        internal void Save(ResFileSaver saver)
+        {
+            saver.Write(ClipNear);
+            saver.Write(ClipFar);
+            saver.Write(AspectRatio);
+            saver.Write(FieldOfView);
+            saver.Write(Position);
+            saver.Write(Rotation);
+            saver.Write(Twist);
+        }
     }
 
     /// <summary>

@@ -58,6 +58,13 @@ namespace Syroot.NintenTools.Bfres
         
         void IResData.Save(ResFileSaver saver)
         {
+            saver.Write(BeginCurve);
+            saver.Write(FloatCurveCount);
+            saver.Write(IntCurveCount);
+            saver.Write(BeginConstant);
+            saver.Write(ConstantCount);
+            saver.Write(SubBindIndex);
+            saver.SaveString(Name);
         }
     }
 }

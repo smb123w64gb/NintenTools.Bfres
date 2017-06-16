@@ -32,14 +32,26 @@ namespace Syroot.NintenTools.Bfres
         /// </summary>
         public float[] BaseDataList { get; private set; }
 
+        /// <summary>
+        /// Gets the index of the first <see cref="Curve"/> relative to all curves of the parent
+        /// <see cref="ShapeAnim.VertexShapeAnims"/> instances.
+        /// </summary>
+        internal int BeginCurve { get; set; }
+
+        /// <summary>
+        /// Gets the index of the first <see cref="KeyShapeAnimInfo"/> relative to all key shape anim infos of the
+        /// parent <see cref="ShapeAnim.VertexShapeAnims"/> instances.
+        /// </summary>
+        internal int BeginKeyShapeAnim { get; set; }
+
         // ---- METHODS ------------------------------------------------------------------------------------------------
 
         void IResData.Load(ResFileLoader loader)
         {
             ushort numCurve = loader.ReadUInt16();
             ushort numKeyShapeAnim = loader.ReadUInt16();
-            int beginCurve = loader.ReadInt32();
-            int beginKeyShapeAnim = loader.ReadInt32();
+            BeginCurve = loader.ReadInt32();
+            BeginKeyShapeAnim = loader.ReadInt32();
             Name = loader.LoadString();
             KeyShapeAnimInfos = loader.LoadList<KeyShapeAnimInfo>(numKeyShapeAnim);
             Curves = loader.LoadList<AnimCurve>(numCurve);
@@ -48,6 +60,14 @@ namespace Syroot.NintenTools.Bfres
         
         void IResData.Save(ResFileSaver saver)
         {
+            saver.Write((ushort)Curves.Count);
+            saver.Write((ushort)KeyShapeAnimInfos.Count);
+            saver.Write(BeginCurve);
+            saver.Write(BeginKeyShapeAnim);
+            saver.SaveString(Name);
+            saver.SaveList(KeyShapeAnimInfos);
+            saver.SaveList(Curves);
+            saver.SaveCustom(BaseDataList, () => saver.Write(BaseDataList));
         }
     }
 }

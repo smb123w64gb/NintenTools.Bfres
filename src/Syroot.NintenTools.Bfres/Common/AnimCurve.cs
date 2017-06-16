@@ -173,6 +173,59 @@ namespace Syroot.NintenTools.Bfres
         
         void IResData.Save(ResFileSaver saver)
         {
+            saver.Write(_flags);
+            saver.Write((ushort)Frames.Length);
+            saver.Write(AnimDataOffset);
+            saver.Write(StartFrame);
+            saver.Write(EndFrame);
+            saver.Write(Scale);
+            saver.Write(Offset);
+            if (saver.ResFile.Version >= 0x03040000)
+            {
+                saver.Write(Delta);
+            }
+            saver.SaveCustom(Frames, () =>
+            {
+                switch (FrameType)
+                {
+                    case AnimCurveFrameType.Single:
+                        saver.Write(Frames);
+                        break;
+                    case AnimCurveFrameType.Int16:
+                        foreach (float frame in Frames)
+                        {
+                            saver.Write((short)frame);
+                        }
+                        break;
+                    case AnimCurveFrameType.Byte:
+                        foreach (float frame in Frames)
+                        {
+                            saver.Write((byte)frame);
+                        }
+                        break;
+                }
+            });
+            saver.SaveCustom(Keys, () =>
+            {
+                switch (KeyType)
+                {
+                    case AnimCurveKeyType.Single:
+                        saver.Write(Keys);
+                        break;
+                    case AnimCurveKeyType.Int16:
+                        foreach (float key in Keys)
+                        {
+                            saver.Write((short)key);
+                        }
+                        break;
+                    case AnimCurveKeyType.Byte:
+                        foreach (float key in Keys)
+                        {
+                            saver.Write((byte)key);
+                        }
+                        break;
+                }
+            });
         }
     }
     

@@ -1,10 +1,10 @@
-using System.IO;
-using Syroot.BinaryData;
-using Syroot.Maths;
-using System.Text;
-using System.Collections.Generic;
 using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.IO;
+using System.Text;
+using Syroot.BinaryData;
+using Syroot.Maths;
 
 namespace Syroot.NintenTools.Bfres.Core
 {
@@ -15,7 +15,10 @@ namespace Syroot.NintenTools.Bfres.Core
     {
         // ---- CONSTANTS ----------------------------------------------------------------------------------------------
 
-        internal const int AlignmentSmall = 0x40; // Prominently seen with FVTX buffer data.
+        /// <summary>
+        /// Gets or sets a data block alignment typically seen with <see cref="Buffer.Data"/>.
+        /// </summary>
+        internal const uint AlignmentSmall = 0x40;
 
         private const int _dictNodeSize = 16;
 
@@ -25,7 +28,7 @@ namespace Syroot.NintenTools.Bfres.Core
         private uint _ofsStringPool;
         private IDictionary<object, ItemEntry> _savedItems;
         private IList<KeyValuePair<object, ItemEntry>> _frameItems; // Iterate via index as modified in save loop.
-        private IDictionary<string, List<uint>> _savedStrings;
+        private IDictionary<string, StringEntry> _savedStrings;
         private IDictionary<object, BlockEntry> _savedBlocks;
 
         // ---- CONSTRUCTORS & DESTRUCTOR ------------------------------------------------------------------------------
@@ -76,7 +79,7 @@ namespace Syroot.NintenTools.Bfres.Core
             // Create queues fetching the names for the string pool and data blocks to store behind the headers.
             _savedItems = new Dictionary<object, ItemEntry>();
             _frameItems = new List<KeyValuePair<object, ItemEntry>>();
-            _savedStrings = new Dictionary<string, List<uint>>();
+            _savedStrings = new Dictionary<string, StringEntry>();
             _savedBlocks = new Dictionary<object, BlockEntry>();
 
             // Store the headers recursively and satisfy offsets to them, then the string pool and data blocks.
@@ -92,18 +95,39 @@ namespace Syroot.NintenTools.Bfres.Core
 
         // ---- Data Save Methods ----
 
+        /// <summary>
+        /// Reserves space for an offset to the <paramref name="resData"/> written later.
+        /// </summary>
+        /// <param name="resData">The <see cref="IResData"/> to save.</param>
+        internal void Save(IResData resData)
+        {
+            Save(resData);
+        }
+
+        /// <summary>
+        /// Reserves space for the <see cref="ResFile"/> file size field which is automatically filled later.
+        /// </summary>
         internal void SaveFieldFileSize()
         {
             _ofsFileSize = (uint)Position;
             Write(0);
         }
 
+        /// <summary>
+        /// Reserves space for the <see cref="ResFile"/> string pool size and offset fields which are automatically
+        /// filled later.
+        /// </summary>
         internal void SaveFieldStringPool()
         {
             _ofsStringPool = (uint)Position;
             Write(0L);
         }
 
+        /// <summary>
+        /// Reserves space for an offset to the <paramref name="list"/> written later.
+        /// </summary>
+        /// <typeparam name="T">The type of the <see cref="IResData"/> elements.</typeparam>
+        /// <param name="list">The <see cref="IList{T}"/> to save.</param>
         internal void SaveList<T>(IList<T> list)
             where T : IResData
         {
@@ -114,7 +138,7 @@ namespace Syroot.NintenTools.Bfres.Core
             }
 
             // Also recognize lists by their first item (they should be written earlier than references to it).
-            if (_savedItems.TryGetValue(list, out ItemEntry entry) || _savedItems.TryGetValue(list[0], out entry))
+            if (_savedItems.TryGetValue(list[0], out ItemEntry entry) || _savedItems.TryGetValue(list, out entry))
             {
                 entry.Offsets.Add((uint)Position);
             }
@@ -127,6 +151,11 @@ namespace Syroot.NintenTools.Bfres.Core
             Write(entry.Target);
         }
 
+        /// <summary>
+        /// Reserves space for an offset to the <paramref name="dict"/> written later.
+        /// </summary>
+        /// <typeparam name="T">The type of the <see cref="IResData"/> element values.</typeparam>
+        /// <param name="list">The <see cref="IDictionary{String, T}"/> to save.</param>
         internal void SaveDict<T>(IDictionary<string, T> dict)
             where T : IResData
         {
@@ -149,6 +178,11 @@ namespace Syroot.NintenTools.Bfres.Core
             Write(entry.Target);
         }
 
+        /// <summary>
+        /// Reserves space for an offset to the <paramref name="dictList"/> written later.
+        /// </summary>
+        /// <typeparam name="T">The type of the <see cref="INamedResData"/> element values.</typeparam>
+        /// <param name="list">The <see cref="INamedResDataList{T}"/> to save.</param>
         internal void SaveDictList<T>(INamedResDataList<T> dictList)
             where T : INamedResData
         {
@@ -167,26 +201,46 @@ namespace Syroot.NintenTools.Bfres.Core
                 entry = new ItemEntry((uint)Position, ItemEntryType.DictList);
                 _savedItems.Add(dictList, entry);
                 _frameItems.Add(new KeyValuePair<object, ItemEntry>(dictList, entry));
+                // Also remember the first item to make it an offset for lists referencing the dict elements.
+                entry = new ItemEntry(ItemEntryType.ResData);
+                _savedItems.Add(dictList[0], entry);
+                _frameItems.Add(new KeyValuePair<object, ItemEntry>(dictList[0], entry));
             }
             Write(entry.Target);
         }
 
-        internal void SaveResData(IResData resData)
+        /// <summary>
+        /// Reserves space for an offset to the <paramref name="dictNames"/> written later.
+        /// </summary>
+        /// <param name="list">The <see cref="IList{String}"/> to save.</param>
+        internal void SaveDictNames(IList<string> dictNames)
         {
-            if (_savedItems.TryGetValue(resData, out ItemEntry entry))
+            if (dictNames.Count == 0)
+            {
+                Write(0);
+                return;
+            }
+
+            if (_savedItems.TryGetValue(dictNames, out ItemEntry entry))
             {
                 entry.Offsets.Add((uint)Position);
             }
             else
             {
-                entry = new ItemEntry((uint)Position, ItemEntryType.ResData);
-                _savedItems.Add(resData, entry);
-                _frameItems.Add(new KeyValuePair<object, ItemEntry>(resData, entry));
+                entry = new ItemEntry((uint)Position, ItemEntryType.DictNames);
+                _savedItems.Add(dictNames, entry);
+                _frameItems.Add(new KeyValuePair<object, ItemEntry>(dictNames, entry));
             }
             Write(entry.Target);
         }
 
-        internal void SaveData(object data, Action callback)
+        /// <summary>
+        /// Reserves space for an offset to the <paramref name="data"/> written later with the
+        /// <paramref name="callback"/>.
+        /// </summary>
+        /// <param name="data">The data to save.</param>
+        /// <param name="callback">The <see cref="Action"/> to invoke to write the data.</param>
+        internal void SaveCustom(object data, Action callback)
         {
             if (_savedItems.TryGetValue(data, out ItemEntry entry))
             {
@@ -194,27 +248,53 @@ namespace Syroot.NintenTools.Bfres.Core
             }
             else
             {
-                entry = new ItemEntry((uint)Position, ItemEntryType.Data, callback);
+                entry = new ItemEntry((uint)Position, ItemEntryType.Data, -1, callback);
                 _savedItems.Add(data, entry);
                 _frameItems.Add(new KeyValuePair<object, ItemEntry>(data, entry));
             }
             Write(entry.Target);
         }
 
-        internal void SaveString(string str)
+        /// <summary>
+        /// Reserves space for an offset to the <paramref name="str"/> written later in the string pool with the
+        /// specified <paramref name="encoding"/>.
+        /// </summary>
+        /// <param name="str">The name to save.</param>
+        /// <param name="encoding">The <see cref="Encoding"/> in which the name will be stored.</param>
+        internal void SaveString(string str, Encoding encoding = null)
         {
-            if (_savedStrings.TryGetValue(str, out List<uint> entryOffsets))
+            if (_savedStrings.TryGetValue(str, out StringEntry entry))
             {
-                entryOffsets.Add((uint)Position);
+                entry.Offsets.Add((uint)Position);
             }
             else
             {
-                _savedStrings.Add(str, new List<uint>(new uint[] { (uint)Position }));
+                _savedStrings.Add(str, new StringEntry((uint)Position, encoding));
             }
             Write(UInt32.MaxValue);
         }
 
-        internal void SaveDataBlock(object data, int alignment, Action callback)
+        /// <summary>
+        /// Reserves space for offsets to the <paramref name="strings"/> written later in the string pool with the
+        /// specified <paramref name="encoding"/>
+        /// </summary>
+        /// <param name="strings">The names to save.</param>
+        /// <param name="encoding">The <see cref="Encoding"/> in which the names will be stored.</param>
+        internal void SaveStrings(IEnumerable<string> strings, Encoding encoding = null)
+        {
+            foreach (string str in strings)
+            {
+                SaveString(str, encoding);
+            }
+        }
+
+        /// <summary>
+        /// Reserves space for an offset to the <paramref name="data"/> written later in the data block pool.
+        /// </summary>
+        /// <param name="data">The data to save.</param>
+        /// <param name="alignment">The alignment to seek to before invoking the callback.</param>
+        /// <param name="callback">The <see cref="Action"/> to invoke to write the data.</param>
+        internal void SaveBlock(object data, uint alignment, Action callback)
         {
             if (_savedBlocks.TryGetValue(data, out BlockEntry entry))
             {
@@ -226,8 +306,61 @@ namespace Syroot.NintenTools.Bfres.Core
             }
             Write(UInt32.MaxValue);
         }
-        
+
         // ---- Specialized Write Methods ----
+
+        /// <summary>
+        /// Writes a BFRES signature consisting of 4 ASCII characters encoded as an <see cref="UInt32"/>.
+        /// </summary>
+        /// <param name="value">A valid signature.</param>
+        internal void WriteSignature(string value)
+        {
+            Write(Encoding.ASCII.GetBytes(value));
+        }
+
+        /// <summary>
+        /// Writes a <see cref="AnimConstant"/> instance into the current stream.
+        /// </summary>
+        /// <param name="value">The <see cref="AnimConstant"/> instance.</param>
+        internal void Write(AnimConstant value)
+        {
+            Write(value.AnimDataOffset);
+            Write(value.Value);
+        }
+
+        /// <summary>
+        /// Writes <see cref="AnimConstant"/> instances into the current stream.
+        /// </summary>
+        /// <param name="values">The <see cref="AnimConstant"/> instances.</param>
+        internal void Write(IEnumerable<AnimConstant> values)
+        {
+            foreach (AnimConstant value in values)
+            {
+                Write(value);
+            }
+        }
+
+        /// <summary>
+        /// Writes a <see cref="Bounding"/> instance into the current stream.
+        /// </summary>
+        /// <param name="value">The <see cref="Bounding"/> instance.</param>
+        internal void Write(Bounding value)
+        {
+            Write(value.Center);
+            Write(value.Extent);
+        }
+
+        /// <summary>
+        /// Writes <see cref="Bounding"/> instances into the current stream.
+        /// </summary>
+        /// <param name="values">The <see cref="Bounding"/> instances.</param>
+        internal void Write(IEnumerable<Bounding> values)
+        {
+            foreach (Bounding value in values)
+            {
+                Write(value);
+            }
+        }
 
         /// <summary>
         /// Writes a <see cref="Matrix3x4"/> instance into the current stream.
@@ -247,6 +380,28 @@ namespace Syroot.NintenTools.Bfres.Core
         internal void Write(IEnumerable<Matrix3x4> values)
         {
             foreach (Matrix3x4 value in values)
+            {
+                Write(value);
+            }
+        }
+
+        /// <summary>
+        /// Writes a <see cref="Vector2F"/> instance into the current stream.
+        /// </summary>
+        /// <param name="value">The <see cref="Vector2F"/> instance.</param>
+        internal void Write(Vector2F value)
+        {
+            Write(value.X);
+            Write(value.Y);
+        }
+
+        /// <summary>
+        /// Writes <see cref="Vector2F"/> instances into the current stream.
+        /// </summary>
+        /// <param name="values">The <see cref="Vector2F"/> instances.</param>
+        internal void Write(IEnumerable<Vector2F> values)
+        {
+            foreach (Vector2F value in values)
             {
                 Write(value);
             }
@@ -322,23 +477,28 @@ namespace Syroot.NintenTools.Bfres.Core
             }
         }
 
-        /// <summary>
-        /// Writes a BFRES signature consisting of 4 ASCII characters encoded as an <see cref="UInt32"/>.
-        /// </summary>
-        /// <param name="value">A valid signature.</param>
-        internal void WriteSignature(string value)
-        {
-            Write(Encoding.ASCII.GetBytes(value));
-        }
-
         // ---- METHODS (PRIVATE) --------------------------------------------------------------------------------------
+
+        private void Save(IResData resData, int index)
+        {
+            if (_savedItems.TryGetValue(resData, out ItemEntry entry))
+            {
+                entry.Offsets.Add((uint)Position);
+            }
+            else
+            {
+                entry = new ItemEntry((uint)Position, ItemEntryType.ResData, index);
+                _savedItems.Add(resData, entry);
+                _frameItems.Add(new KeyValuePair<object, ItemEntry>(resData, entry));
+            }
+            Write(entry.Target);
+        }
 
         private void WriteResData(IResData resData)
         {
             // Initiate a new frame for writing the instance.
             IList<KeyValuePair<object, ItemEntry>> previousItems = _frameItems;
             _frameItems = new List<KeyValuePair<object, ItemEntry>>();
-            int previousIndex = CurrentIndex;
 
             // Store the header and let it queue items to follow it.
             resData.Save(this);
@@ -348,24 +508,24 @@ namespace Syroot.NintenTools.Bfres.Core
             for (int i = 0; i < _frameItems.Count; i++)
             {
                 KeyValuePair<object, ItemEntry> entry = _frameItems[i];
+                CurrentIndex = entry.Value.Index;
 
-                // Remember the address at which this instance will be saved and start enumerables at index 0.
+                // Remember the address at which this instance will be saved.
                 entry.Value.Target = (uint)Position;
-                CurrentIndex = 0;
                 switch (entry.Value.Type)
                 {
                     case ItemEntryType.List:
+                        int index = 0;
                         foreach (IResData element in (IList)entry.Key)
                         {
-                            _savedItems.Add(element, new ItemEntry((uint)Position, ItemEntryType.ResData));
+                            _savedItems.Add(element, new ItemEntry((uint)Position, ItemEntryType.ResData, index++));
                             WriteResData(element);
-                            CurrentIndex++;
                         }
                         break;
 
                     case ItemEntryType.Dict:
                         // Sort the dict ordinally.
-                        sorted = new SortedList<string, IResData>(StringComparer.Ordinal);
+                        sorted = new SortedList<string, IResData>(ResStringComparer.Instance);
                         foreach (DictionaryEntry element in (IDictionary)entry.Key)
                         {
                             sorted.Add((string)element.Key, (IResData)element.Value);
@@ -375,12 +535,16 @@ namespace Syroot.NintenTools.Bfres.Core
 
                     case ItemEntryType.DictList:
                         // Sort the dict ordinally.
-                        sorted = new SortedList<string, IResData>(StringComparer.Ordinal);
+                        sorted = new SortedList<string, IResData>(ResStringComparer.Instance);
                         foreach (INamedResData element in (IEnumerable)entry.Key)
                         {
                             sorted.Add(element.Name, element);
                         }
                         WriteDict(sorted);
+                        break;
+
+                    case ItemEntryType.DictNames:
+                        WriteDictNames((List<string>)entry.Key);
                         break;
 
                     case ItemEntryType.ResData:
@@ -395,7 +559,6 @@ namespace Syroot.NintenTools.Bfres.Core
             
             // Restore the previous frame.
             _frameItems = previousItems;
-            CurrentIndex = previousIndex;
         }
 
         private void WriteDict(SortedList<string, IResData> dict)
@@ -406,27 +569,54 @@ namespace Syroot.NintenTools.Bfres.Core
 
             // Write nodes.
             WriteDictNode(UInt32.MaxValue, 1, 0, null, null); // Root node.
+            int i = 0;
             foreach (KeyValuePair<string, IResData> entry in dict)
             {
-                WriteDictNode(0x55555555, 0x6666, 0x7777, entry.Key, entry.Value); // TODO: Compute node values.
-                CurrentIndex++;
+                WriteDictNode(0x55555555, 0x6666, 0x7777, entry.Key, entry.Value, i++); // TODO: Compute node values.
             }
         }
 
-        private void WriteDictNode(uint reference, ushort idxLeft, ushort idxRight, string name, IResData data)
+        private void WriteDictNode(uint reference, ushort idxLeft, ushort idxRight, string name, IResData data,
+            int index = -1)
         {
             Write(reference);
             Write(idxLeft);
             Write(idxRight);
             if (name == null) Write(0); else SaveString(name);
-            if (data == null) Write(0); else SaveResData(data);
+            if (data == null) Write(0); else Save(data, index);
+        }
+
+        private void WriteDictNames(List<string> dictNames)
+        {
+            // Sort the dict ordinally.
+            dictNames.Sort(ResStringComparer.Instance);
+
+            // Write header.
+            Write(sizeof(uint) * 2 + (dictNames.Count + 1) * _dictNodeSize);
+            Write(dictNames.Count);
+
+            // Write nodes.
+            WriteDictNamesNode(UInt32.MaxValue, 1, 0, null); // Root node.
+            foreach (string entry in dictNames)
+            {
+                WriteDictNamesNode(0x55555555, 0x6666, 0x7777, entry); // TODO: Compute node values.
+            }
+        }
+
+        private void WriteDictNamesNode(uint reference, ushort idxLeft, ushort idxRight, string name)
+        {
+            Write(reference);
+            Write(idxLeft);
+            Write(idxRight);
+            SaveString(name);
+            SaveString(name);
         }
 
         private void WriteStrings()
         {
             // Sort the strings ordinally.
-            SortedList<string, List<uint>> sorted = new SortedList<string, List<uint>>(StringComparer.Ordinal);
-            foreach (KeyValuePair<string, List<uint>> entry in _savedStrings)
+            SortedList<string, StringEntry> sorted = new SortedList<string, StringEntry>(ResStringComparer.Instance);
+            foreach (KeyValuePair<string, StringEntry> entry in _savedStrings)
             {
                 sorted.Add(entry.Key, entry.Value);
             }
@@ -434,14 +624,14 @@ namespace Syroot.NintenTools.Bfres.Core
             Align(4);
             uint stringPoolOffset = (uint)Position;
 
-            foreach (KeyValuePair<string, List<uint>> entry in _savedStrings)
+            foreach (KeyValuePair<string, StringEntry> entry in _savedStrings)
             {
                 // Align and satisfy offsets.
                 Write(entry.Key.Length);
-                SatisfyOffsets(entry.Value);
+                SatisfyOffsets(entry.Value.Offsets);
 
                 // Write the name.
-                Write(entry.Key, BinaryStringFormat.ZeroTerminated, Encoding.UTF8);
+                Write(entry.Key, BinaryStringFormat.ZeroTerminated, entry.Value.Encoding ?? Encoding);
                 Align(4);
             }
             BaseStream.SetLength(Position); // Workaround to make last alignment expand the file if nothing follows.
@@ -460,7 +650,7 @@ namespace Syroot.NintenTools.Bfres.Core
             foreach (KeyValuePair<object, BlockEntry> entry in _savedBlocks)
             {
                 // Align and satisfy offsets.
-                if (entry.Value.Alignment != 0) Align(entry.Value.Alignment);
+                if (entry.Value.Alignment != 0) Align((int)entry.Value.Alignment);
                 SatisfyOffsets(entry.Value.Offsets);
 
                 // Write the data.
@@ -489,38 +679,55 @@ namespace Syroot.NintenTools.Bfres.Core
 
         // ---- STRUCTURES ---------------------------------------------------------------------------------------------
 
-        internal enum ItemEntryType
+        private enum ItemEntryType
         {
-            List,
-            Dict,
-            DictList,
-            ResData,
-            Data
+            List, Dict, DictList, DictNames, ResData, Data
         }
 
-        internal class ItemEntry
+        private class ItemEntry
+        {
+            internal ItemEntryType Type;
+            internal List<uint> Offsets;
+            internal int Index;
+            internal Action Callback;
+            internal uint Target;
+
+            internal ItemEntry(ItemEntryType type)
+            {
+                Type = type;
+                Offsets = new List<uint>();
+                Index = -1;
+                Target = UInt32.MaxValue; // Recognize unsatisfied offsets easier.
+            }
+            
+            internal ItemEntry(uint offset, ItemEntryType type, int index = -1, Action callback = null)
+                : this(type)
+            {
+                Offsets.Add(offset);
+                Index = index; // Remember for some element classes storing it.
+                Callback = callback;
+            }
+        }
+
+        private class StringEntry
         {
             internal List<uint> Offsets;
-            internal uint Target;
-            internal ItemEntryType Type;
-            internal Action Callback;
+            internal Encoding Encoding;
 
-            internal ItemEntry(uint offset, ItemEntryType type, Action callback = null)
+            internal StringEntry(uint offset, Encoding encoding = null)
             {
                 Offsets = new List<uint>(new uint[] { offset });
-                Target = UInt32.MaxValue; // Recognize unsatisfied offsets easier.
-                Type = type;
-                Callback = callback;
+                Encoding = encoding;
             }
         }
 
         private class BlockEntry
         {
             internal List<uint> Offsets;
-            internal int Alignment;
+            internal uint Alignment;
             internal Action Callback;
 
-            internal BlockEntry(uint offset, int alignment, Action callback)
+            internal BlockEntry(uint offset, uint alignment, Action callback)
             {
                 Offsets = new List<uint>(new uint[] { offset });
                 Alignment = alignment;

@@ -69,8 +69,8 @@ namespace Syroot.NintenTools.Bfres
             saver.Seek(2);
             saver.SaveDictList(Bones);
             saver.SaveList(Bones);
-            saver.SaveData(MatrixToBoneTable, () => saver.Write(MatrixToBoneTable));
-            saver.SaveData(InverseModelMatrices, () => saver.Write(InverseModelMatrices));
+            saver.SaveCustom(MatrixToBoneTable, () => saver.Write(MatrixToBoneTable));
+            saver.SaveCustom(InverseModelMatrices, () => saver.Write(InverseModelMatrices));
             saver.Write(0); // UserPointer
         }
     }

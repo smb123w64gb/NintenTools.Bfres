@@ -55,7 +55,17 @@ namespace Syroot.NintenTools.Bfres
         /// Gets or sets the name of the animated <see cref="Bone"/>.
         /// </summary>
         public string Name { get; set; }
-        
+
+        /// <summary>
+        /// Gets or sets a field with unknown purpose.
+        /// </summary>
+        public byte BeginRotate { get; set; }
+
+        /// <summary>
+        /// Gets or sets a field with unknown purpose.
+        /// </summary>
+        public byte BeginTranslate { get; set; }
+
         /// <summary>
         /// Gets or sets the element offset in the <see cref="BaseData"/> to an initial translation.
         /// </summary>
@@ -72,23 +82,38 @@ namespace Syroot.NintenTools.Bfres
         /// </summary>
         public BoneAnimData BaseData { get; set; }
 
+        /// <summary>
+        /// Gets the index of the first <see cref="Curve"/> relative to all curves of the parent
+        /// <see cref="SkeletalAnim.BoneAnims"/> instances.
+        /// </summary>
+        internal int BeginCurve { get; set; }
+
         // ---- METHODS ------------------------------------------------------------------------------------------------
 
         void IResData.Load(ResFileLoader loader)
         {
             _flags = loader.ReadUInt32();
             Name = loader.LoadString();
-            byte beginRotate = loader.ReadByte();
-            byte beginTranslate = loader.ReadByte();
+            BeginRotate = loader.ReadByte();
+            BeginTranslate = loader.ReadByte();
             byte numCurve = loader.ReadByte();
             BeginBaseTranslate = loader.ReadByte();
-            int beginCurve = loader.ReadInt32();
+            BeginCurve = loader.ReadInt32();
             Curves = loader.LoadList<AnimCurve>(numCurve);
             BaseData = loader.LoadCustom(() => new BoneAnimData(loader, FlagsBase));
         }
         
         void IResData.Save(ResFileSaver saver)
         {
+            saver.Write(_flags);
+            saver.SaveString(Name);
+            saver.Write(BeginRotate);
+            saver.Write(BeginTranslate);
+            saver.Write((byte)Curves.Count);
+            saver.Write(BeginBaseTranslate);
+            saver.Write(BeginCurve);
+            saver.SaveList(Curves);
+            saver.SaveCustom(BaseData, () => BaseData.Save(saver, FlagsBase));
         }
     }
 

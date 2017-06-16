@@ -84,7 +84,7 @@ namespace Syroot.NintenTools.Bfres.Core
             // Seek to the instance data and load it.
             using (TemporarySeek(offset, SeekOrigin.Begin))
             {
-                return ReadInstance<T>();
+                return ReadResData<T>();
             }
         }
 
@@ -229,7 +229,7 @@ namespace Syroot.NintenTools.Bfres.Core
             {
                 for (; count > 0; count--)
                 {
-                    list.Add(ReadInstance<T>());
+                    list.Add(ReadResData<T>());
                 }
                 return list;
             }
@@ -284,6 +284,22 @@ namespace Syroot.NintenTools.Bfres.Core
         // ---- Specialized Write Methods ----
 
         /// <summary>
+        /// Reads a BFRES signature consisting of 4 ASCII characters encoded as an <see cref="UInt32"/> and checks for
+        /// validity.
+        /// </summary>
+        /// <param name="validSignature">A valid signature.</param>
+        /// <returns>The read signature.</returns>
+        internal void CheckSignature(string validSignature)
+        {
+            // Read the actual signature and compare it.
+            string signature = ReadString(sizeof(uint), Encoding.ASCII);
+            if (signature != validSignature)
+            {
+                throw new ResException($"Invalid signature, expected '{validSignature}' but got '{signature}'.");
+            }
+        }
+
+        /// <summary>
         /// Reads a <see cref="AnimConstant"/> instance from the current stream and returns it.
         /// </summary>
         /// <returns>The <see cref="AnimConstant"/> instance.</returns>
@@ -336,22 +352,6 @@ namespace Syroot.NintenTools.Bfres.Core
                 values[i] = ReadBounding();
             }
             return values;
-        }
-
-        /// <summary>
-        /// Reads a BFRES signature consisting of 4 ASCII characters encoded as an <see cref="UInt32"/> and checks for
-        /// validity.
-        /// </summary>
-        /// <param name="validSignature">A valid signature.</param>
-        /// <returns>The read signature.</returns>
-        internal void CheckSignature(string validSignature)
-        {
-            // Read the actual signature and compare it.
-            string signature = ReadString(sizeof(uint), Encoding.ASCII);
-            if (signature != validSignature)
-            {
-                throw new ResException($"Invalid signature, expected '{validSignature}' but got '{signature}'.");
-            }
         }
 
         /// <summary>
@@ -553,7 +553,7 @@ namespace Syroot.NintenTools.Bfres.Core
         // ---- METHODS (PRIVATE) --------------------------------------------------------------------------------------
 
         [DebuggerStepThrough]
-        private T ReadInstance<T>()
+        private T ReadResData<T>()
             where T : IResData, new()
         {
             uint offset = (uint)Position;

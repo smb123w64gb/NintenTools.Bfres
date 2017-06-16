@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using Syroot.NintenTools.Bfres.Core;
 
 namespace Syroot.NintenTools.Bfres
@@ -127,6 +128,19 @@ namespace Syroot.NintenTools.Bfres
         
         void IResData.Save(ResFileSaver saver)
         {
+            saver.WriteSignature(_signature);
+            saver.SaveString(Name);
+            saver.SaveString(Path);
+            saver.Write(_flags);
+            saver.Write(FrameCount);
+            saver.Write((ushort)BoneAnims.Count);
+            saver.Write((ushort)UserData.Count);
+            saver.Write(BoneAnims.Sum((x) => x.Curves.Count));
+            saver.Write(BakedSize);
+            saver.SaveList(BoneAnims);
+            saver.Save(BindSkeleton);
+            saver.SaveCustom(BindIndices, () => saver.Write(BindIndices));
+            saver.SaveDictList(UserData);
         }
     }
     

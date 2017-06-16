@@ -84,7 +84,7 @@ namespace Syroot.NintenTools.Bfres
             byte numCurve = loader.ReadByte();
             loader.Seek(1);
             ushort numUserData = loader.ReadUInt16();
-            uint sizBaked = loader.ReadUInt32();
+            BakedSize = loader.ReadUInt32();
             Name = loader.LoadString();
             Curves = loader.LoadList<AnimCurve>(numCurve);
             BaseData = loader.LoadCustom(() => new CameraAnimData(loader));
@@ -93,6 +93,18 @@ namespace Syroot.NintenTools.Bfres
         
         void IResData.Save(ResFileSaver saver)
         {
+            saver.WriteSignature(_signature);
+            saver.Write(Flags, true);
+            saver.Seek(2);
+            saver.Write(FrameCount);
+            saver.Write((byte)Curves.Count);
+            saver.Seek(1);
+            saver.Write((ushort)UserData.Count);
+            saver.Write(BakedSize);
+            saver.SaveString(Name);
+            saver.SaveList(Curves);
+            saver.SaveCustom(BaseData, () => BaseData.Save(saver));
+            saver.SaveDictList(UserData);
         }
     }
     

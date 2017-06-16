@@ -71,7 +71,7 @@ namespace Syroot.NintenTools.Bfres
         /// </summary>
         public INamedResDataList<UserData> UserData { get; private set; }
 
-        public byte[] VolatileFlags { get; private set; }
+        public bool[] VolatileFlags { get; private set; }
 
         // TODO: Methods to access ShaderParam variable values.
 
@@ -101,13 +101,61 @@ namespace Syroot.NintenTools.Bfres
             ShaderParams = loader.LoadDictList<ShaderParam>();
             ParamData = loader.LoadCustom(() => loader.ReadBytes(sizParamSource));
             UserData = loader.LoadDictList<UserData>();
-            VolatileFlags = loader.LoadCustom(
-                () => loader.ReadBytes((int)Math.Ceiling((float)numShaderParamVolatile / sizeof(byte))));
+            VolatileFlags = loader.LoadCustom(() =>
+            {
+                bool[] volatileFlags = new bool[numShaderParamVolatile];
+                int i = 0;
+                while (i < numShaderParamVolatile)
+                {
+                    byte b = loader.ReadByte();
+                    for (int j = 0; j < 8 && i < numShaderParamVolatile; j++)
+                    {
+                        volatileFlags[i++] = b.GetBit(j);
+                    }
+                }
+                return volatileFlags;
+            });
             uint userPointer = loader.ReadUInt32();
         }
         
         void IResData.Save(ResFileSaver saver)
         {
+            saver.WriteSignature(_signature);
+            saver.SaveString(Name);
+            saver.Write(Flags, true);
+            saver.Write((ushort)saver.CurrentIndex);
+            saver.Write((ushort)RenderInfos.Count);
+            saver.Write((byte)Samplers.Count);
+            saver.Write((byte)TextureRefs.Count);
+            saver.Write((ushort)ShaderParams.Count);
+            saver.Write((ushort)VolatileFlags.Length);
+            saver.Write((ushort)ParamData.Length);
+            saver.Write((ushort)0); // SizParamRaw
+            saver.Write((ushort)UserData.Count);
+            saver.SaveDictList(RenderInfos);
+            saver.Save(RenderState);
+            saver.Save(ShaderAssign);
+            saver.SaveList(TextureRefs);
+            saver.SaveList(Samplers);
+            saver.SaveDictList(Samplers);
+            saver.SaveList(ShaderParams);
+            saver.SaveDictList(ShaderParams);
+            saver.SaveCustom(ParamData, () => saver.Write(ParamData));
+            saver.SaveDictList(UserData);
+            saver.SaveCustom(VolatileFlags, () =>
+            {
+                int i = 0;
+                while (i < VolatileFlags.Length)
+                {
+                    byte b = 0;
+                    for (int j = 0; j < 8 && i < VolatileFlags.Length; j++)
+                    {
+                        b.SetBit(j, VolatileFlags[i++]);
+                    }
+                    saver.Write(b);
+                }
+            });
+            saver.Write(0); // UserPointer
         }
     }
 

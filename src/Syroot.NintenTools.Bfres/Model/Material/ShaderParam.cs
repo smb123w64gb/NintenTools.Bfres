@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using Syroot.Maths;
 using Syroot.NintenTools.Bfres.Core;
 
 namespace Syroot.NintenTools.Bfres
@@ -23,8 +24,14 @@ namespace Syroot.NintenTools.Bfres
 
         // ---- PROPERTIES ---------------------------------------------------------------------------------------------
 
+        /// <summary>
+        /// Gets the type of the value.
+        /// </summary>
         public ShaderParamType Type { get; set; }
 
+        /// <summary>
+        /// Gets the offset in the <see cref="Material.ParamData"/> byte array in bytes.
+        /// </summary>
         public ushort DataOffset { get; set; }
 
         public ushort DependedIndex { get; set; }
@@ -49,13 +56,41 @@ namespace Syroot.NintenTools.Bfres
             }
         }
 
+        /// <summary>
+        /// Gets the size of the value in bytes.
+        /// </summary>
+        public uint DataSize
+        {
+            get
+            {
+                if (Type <= ShaderParamType.Float4)
+                {
+                    return sizeof(float) * (((uint)Type & 0x03) + 1);
+                }
+                if (Type <= ShaderParamType.Float4x4)
+                {
+                    return sizeof(float) * 4 * ((((uint)Type - (uint)ShaderParamType.Reserved2) >> 2) + 2);
+                }
+                switch (Type)
+                {
+                    case ShaderParamType.Srt2D:
+                    case ShaderParamType.TexSrt:
+                        return Matrix2x3.SizeInBytes;
+                    case ShaderParamType.Srt3D:
+                    case ShaderParamType.Matrix3x2:
+                        return Matrix3x4.SizeInBytes;
+                }
+                throw new ResException($"Cannot retrieve size of unknown {nameof(ShaderParamType)} {Type}.");
+            }
+        }
+
         // ---- METHODS ------------------------------------------------------------------------------------------------
 
         void IResData.Load(ResFileLoader loader)
         {
+            Type = loader.ReadEnum<ShaderParamType>(true);
             if (loader.ResFile.Version >= 0x03030000)
             {
-                Type = loader.ReadEnum<ShaderParamType>(true);
                 byte sizData = loader.ReadByte();
                 DataOffset = loader.ReadUInt16();
                 int offset = loader.ReadInt32(); // Uniform variable offset.
@@ -67,7 +102,6 @@ namespace Syroot.NintenTools.Bfres
             else
             {
                 // GUESS
-                Type = loader.ReadEnum<ShaderParamType>(true);
                 loader.Seek(1);
                 DataOffset = loader.ReadUInt16();
                 int offset = loader.ReadInt32(); // Uniform variable offset.
@@ -77,6 +111,24 @@ namespace Syroot.NintenTools.Bfres
         
         void IResData.Save(ResFileSaver saver)
         {
+            saver.Write(Type, true);
+            if (saver.ResFile.Version >= 0x03030000)
+            {
+                saver.Write((byte)DataSize);
+                saver.Write(DataOffset);
+                saver.Write(-1); // Offset
+                saver.Write(0); // CallbackPointer
+                saver.Write(DependedIndex);
+                saver.Write(DependIndex);
+                saver.SaveString(Name);
+            }
+            else
+            {
+                saver.Seek(1);
+                saver.Write(DataOffset);
+                saver.Write(-1); // Offset
+                saver.SaveString(Name);
+            }
         }
     }
 
@@ -86,9 +138,9 @@ namespace Syroot.NintenTools.Bfres
         Int, Int2, Int3, Int4,
         UInt, UInt2, UInt3, UInt4,
         Float, Float2, Float3, Float4,
-        Float2x2 = 17, Float2x3, Float2x4,
-        Float3x2 = 21, Float3x3, Float3x4,
-        Float4x2 = 25, Float4x3, Float4x4,
-        Srt2D, Srt3D, TexSrt, Matrix3x2/*GUESS*/
+        Reserved2, Float2x2, Float2x3, Float2x4,
+        Reserved3, Float3x2, Float3x3, Float3x4,
+        Reserved4, Float4x2, Float4x3, Float4x4,
+        Srt2D, Srt3D, TexSrt, Matrix3x2/*GUESS actually should be 3x4?*/
     }
 }

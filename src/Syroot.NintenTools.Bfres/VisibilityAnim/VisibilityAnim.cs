@@ -107,9 +107,9 @@ namespace Syroot.NintenTools.Bfres
         public IList<AnimCurve> Curves { get; private set; }
         
         /// <summary>
-        /// Gets bytes storing the initial visibility as one bit for each <see cref="Bone"/> or <see cref="Material"/>.
+        /// Gets boolean values storing the initial visibility for each <see cref="Bone"/> or <see cref="Material"/>.
         /// </summary>
-        public byte[] BaseDataList { get; private set; } 
+        public bool[] BaseDataList { get; private set; } 
 
         /// <summary>
         /// Gets customly attached <see cref="UserData"/> instances.
@@ -133,12 +133,52 @@ namespace Syroot.NintenTools.Bfres
             BindIndices = loader.LoadCustom(() => loader.ReadUInt16s(numAnim));
             Names = loader.LoadCustom(() => loader.LoadStrings(numAnim)); // Offset to name list.
             Curves = loader.LoadList<AnimCurve>(numCurve);
-            BaseDataList = loader.LoadCustom(() => loader.ReadBytes((int)Math.Ceiling(numAnim / 8f)));
+            BaseDataList = loader.LoadCustom(() =>
+            {
+                bool[] baseData = new bool[numAnim];
+                int i = 0;
+                while (i < numAnim)
+                {
+                    byte b = loader.ReadByte();
+                    for (int j = 0; j < 8 && i < numAnim; j++)
+                    {
+                        baseData[i++] = b.GetBit(j);
+                    }
+                }
+                return baseData;
+            });
             UserData = loader.LoadDictList<UserData>();
         }
         
         void IResData.Save(ResFileSaver saver)
         {
+            saver.WriteSignature(_signature);
+            saver.SaveString(Name);
+            saver.SaveString(Path);
+            saver.Write(_flags);
+            saver.Write((ushort)UserData.Count);
+            saver.Write(FrameCount);
+            saver.Write((ushort)Names.Count);
+            saver.Write((ushort)Curves.Count);
+            saver.Write(BakedSize);
+            saver.Save(BindModel);
+            saver.SaveCustom(BindIndices, () => saver.Write(BindIndices));
+            saver.SaveStrings(Names);
+            saver.SaveList(Curves);
+            saver.SaveCustom(BaseDataList, () =>
+            {
+                int i = 0;
+                while (i < BaseDataList.Length)
+                {
+                    byte b = 0;
+                    for (int j = 0; j < 8 && i < BaseDataList.Length; j++)
+                    {
+                        b.SetBit(j, BaseDataList[i++]);
+                    }
+                    saver.Write(b);
+                }
+            });
+            saver.SaveDictList(UserData);
         }
     }
     

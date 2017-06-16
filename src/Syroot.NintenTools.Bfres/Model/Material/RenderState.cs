@@ -57,6 +57,15 @@ namespace Syroot.NintenTools.Bfres
         
         void IResData.Save(ResFileSaver saver)
         {
+            saver.Write(_flags);
+            saver.Write(PolygonControl.Value);
+            saver.Write(DepthControl.Value);
+            saver.Write(AlphaControl.Value);
+            saver.Write(AlphaControl.RefValue);
+            saver.Write(ColorControl.Value);
+            saver.Write(BlendControl.Target);
+            saver.Write(BlendControl.Value);
+            saver.Write(BlendColor);
         }
     }
     

@@ -97,13 +97,29 @@ namespace Syroot.NintenTools.Bfres
                     _value = loader.ReadSingles(sizArray);
                     break;
                 case RenderInfoType.String:
-                    _value = loader.ReadUInt32s(sizArray);
+                    _value = loader.LoadStrings(sizArray);
                     break;
             }
         }
         
         void IResData.Save(ResFileSaver saver)
         {
+            saver.Write((ushort)((Array)_value).Length); // TODO: Unsafe cast, but _value should always be Array.
+            saver.Write(Type, true);
+            saver.Seek(1);
+            saver.SaveString(Name);
+            switch (Type)
+            {
+                case RenderInfoType.Int32:
+                    saver.Write((int[])_value);
+                    break;
+                case RenderInfoType.Single:
+                    saver.Write((float[])_value);
+                    break;
+                case RenderInfoType.String:
+                    saver.SaveStrings((string[])_value);
+                    break;
+            }
         }
     }
 

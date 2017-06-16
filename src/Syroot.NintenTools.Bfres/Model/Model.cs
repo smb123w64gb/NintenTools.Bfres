@@ -108,7 +108,7 @@ namespace Syroot.NintenTools.Bfres
             saver.WriteSignature(_signature);
             saver.SaveString(Name);
             saver.SaveString(Path);
-            saver.SaveResData(Skeleton);
+            saver.Save(Skeleton);
             saver.SaveList(VertexBuffers);
             saver.SaveDictList(Shapes);
             saver.SaveDictList(Materials);

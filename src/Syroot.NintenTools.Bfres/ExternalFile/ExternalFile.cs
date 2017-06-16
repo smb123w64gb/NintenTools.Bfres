@@ -39,6 +39,8 @@ namespace Syroot.NintenTools.Bfres
         
         void IResData.Save(ResFileSaver saver)
         {
+            saver.SaveBlock(Data, saver.ResFile.Alignment, () => saver.Write(Data));
+            saver.Write(Data.Length);
         }
     }
 }

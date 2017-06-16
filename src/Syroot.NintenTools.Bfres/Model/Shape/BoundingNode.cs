@@ -1,5 +1,4 @@
-﻿using System;
-using Syroot.NintenTools.Bfres.Core;
+﻿using Syroot.NintenTools.Bfres.Core;
 
 namespace Syroot.NintenTools.Bfres
 {
@@ -34,6 +33,11 @@ namespace Syroot.NintenTools.Bfres
         
         void IResData.Save(ResFileSaver saver)
         {
+            saver.Write(LeftChildIndex);
+            saver.Write(RightChildIndex);
+            saver.Write(Unknown);
+            saver.Write(SubMeshIndex);
+            saver.Write(SubMeshCount);
         }
     }
 }

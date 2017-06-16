@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using Syroot.BinaryData;
@@ -187,6 +188,8 @@ namespace Syroot.NintenTools.Bfres
         
         void IResData.Save(ResFileSaver saver)
         {
+            PreSave(); 
+            
             saver.WriteSignature(_signature);
             saver.Write(Version);
             saver.Write(ByteOrder, true);
@@ -220,6 +223,64 @@ namespace Syroot.NintenTools.Bfres
             saver.Write((ushort)SceneAnims.Count);
             saver.Write((ushort)ExternalFiles.Count);
             saver.Write(0); // UserPointer
+        }
+
+        // ---- METHODS (PRIVATE) --------------------------------------------------------------------------------------
+        
+        private void PreSave()
+        {
+            // Update SkeletalAnim instances.
+            foreach (SkeletalAnim anim in SkeletalAnims)
+            {
+                int curveIndex = 0;
+                foreach (BoneAnim subAnim in anim.BoneAnims)
+                {
+                    subAnim.BeginCurve = curveIndex;
+                    curveIndex += subAnim.Curves.Count;
+                }
+            }
+
+            // Update TexPatternAnim instances.
+            foreach (TexPatternAnim anim in TexPatternAnims)
+            {
+                int curveIndex = 0;
+                int infoIndex = 0;
+                foreach (TexPatternMatAnim subAnim in anim.TexPatternMatAnims)
+                {
+                    subAnim.BeginCurve = curveIndex;
+                    subAnim.BeginPatAnim = infoIndex;
+                    curveIndex += subAnim.Curves.Count;
+                    infoIndex += subAnim.PatternAnimInfos.Count;
+                }
+            }
+
+            // Update ShaderParamAnim instances.
+            foreach (ShaderParamAnim anim in ShaderParamAnims)
+            {
+                int curveIndex = 0;
+                int infoIndex = 0;
+                foreach (ShaderParamMatAnim subAnim in anim.ShaderParamMatAnims)
+                {
+                    subAnim.BeginCurve = curveIndex;
+                    subAnim.BeginParamAnim = infoIndex;
+                    curveIndex += subAnim.Curves.Count;
+                    infoIndex += subAnim.ParamAnimInfos.Count;
+                }
+            }
+
+            // Update ShapeAnim instances.
+            foreach (ShapeAnim anim in ShapeAnims)
+            {
+                int curveIndex = 0;
+                int infoIndex = 0;
+                foreach (VertexShapeAnim subAnim in anim.VertexShapeAnims)
+                {
+                    subAnim.BeginCurve = curveIndex;
+                    subAnim.BeginKeyShapeAnim = infoIndex;
+                    curveIndex += subAnim.Curves.Count;
+                    infoIndex += subAnim.KeyShapeAnimInfos.Count;
+                }
+            }
         }
     }
 }
