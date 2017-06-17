@@ -621,7 +621,7 @@ namespace Syroot.NintenTools.Bfres.Core
         private void WriteStrings()
         {
             // Sort the strings ordinally.
-            SortedList<string, StringEntry> sorted = new SortedList<string, StringEntry>(StringComparer.Ordinal);
+            SortedList<string, StringEntry> sorted = new SortedList<string, StringEntry>(ResStringComparer.Instance);
             foreach (KeyValuePair<string, StringEntry> entry in _savedStrings)
             {
                 sorted.Add(entry.Key, entry.Value);
