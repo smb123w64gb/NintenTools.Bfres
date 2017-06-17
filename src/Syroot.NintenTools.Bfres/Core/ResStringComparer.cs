@@ -30,8 +30,8 @@ namespace Syroot.NintenTools.Bfres.Core
         public override int Compare(string x, string y)
         {
             if (ReferenceEquals(x, y)) return 0;
-            if (String.IsNullOrEmpty(x)) return -1;
-            if (String.IsNullOrEmpty(y)) return 1;
+            if (String.IsNullOrEmpty(x)) return 1;
+            if (String.IsNullOrEmpty(y)) return -1;
             return String.CompareOrdinal(x, y);
         }
 

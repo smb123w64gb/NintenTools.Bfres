@@ -101,7 +101,7 @@ namespace Syroot.NintenTools.Bfres.Core
         /// <param name="resData">The <see cref="IResData"/> to save.</param>
         internal void Save(IResData resData)
         {
-            Save(resData);
+            Save(resData, -1);
         }
 
         /// <summary>
@@ -481,6 +481,12 @@ namespace Syroot.NintenTools.Bfres.Core
 
         private void Save(IResData resData, int index)
         {
+            if (resData == null)
+            {
+                Write(0);
+                return;
+            }
+
             if (_savedItems.TryGetValue(resData, out ItemEntry entry))
             {
                 entry.Offsets.Add((uint)Position);
@@ -516,7 +522,7 @@ namespace Syroot.NintenTools.Bfres.Core
                 {
                     case ItemEntryType.List:
                         int index = 0;
-                        foreach (IResData element in (IList)entry.Key)
+                        foreach (IResData element in (IEnumerable)entry.Key)
                         {
                             _savedItems.Add(element, new ItemEntry((uint)Position, ItemEntryType.ResData, index++));
                             WriteResData(element);
@@ -608,8 +614,8 @@ namespace Syroot.NintenTools.Bfres.Core
             Write(reference);
             Write(idxLeft);
             Write(idxRight);
-            SaveString(name);
-            SaveString(name);
+            if (name == null) Write(0); else SaveString(name);
+            if (name == null) Write(0); else SaveString(name);
         }
 
         private void WriteStrings()
@@ -628,7 +634,10 @@ namespace Syroot.NintenTools.Bfres.Core
             {
                 // Align and satisfy offsets.
                 Write(entry.Key.Length);
-                SatisfyOffsets(entry.Value.Offsets);
+                using (TemporarySeek())
+                {
+                    SatisfyOffsets(entry.Value.Offsets, (uint)Position);
+                }
 
                 // Write the name.
                 Write(entry.Key, BinaryStringFormat.ZeroTerminated, entry.Value.Encoding ?? Encoding);
@@ -651,7 +660,10 @@ namespace Syroot.NintenTools.Bfres.Core
             {
                 // Align and satisfy offsets.
                 if (entry.Value.Alignment != 0) Align((int)entry.Value.Alignment);
-                SatisfyOffsets(entry.Value.Offsets);
+                using (TemporarySeek())
+                {
+                    SatisfyOffsets(entry.Value.Offsets, (uint)Position);
+                }
 
                 // Write the data.
                 entry.Value.Callback.Invoke();
@@ -660,21 +672,22 @@ namespace Syroot.NintenTools.Bfres.Core
 
         private void WriteOffsets()
         {
-            foreach (KeyValuePair<object, ItemEntry> entry in _savedItems)
+            using (TemporarySeek())
             {
-                SatisfyOffsets(entry.Value.Offsets, entry.Value.Target);
+                foreach (KeyValuePair<object, ItemEntry> entry in _savedItems)
+                {
+                    SatisfyOffsets(entry.Value.Offsets, entry.Value.Target);
+                }
             }
         }
 
-        private void SatisfyOffsets(IEnumerable<uint> offsets, uint? target = null)
+        private void SatisfyOffsets(IEnumerable<uint> offsets, uint target)
         {
-            target = target ?? (uint)Position;
             foreach (uint offset in offsets)
             {
                 Position = offset;
                 Write((int)(target - offset));
             }
-            Position = target.Value;
         }
 
         // ---- STRUCTURES ---------------------------------------------------------------------------------------------
