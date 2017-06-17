@@ -621,7 +621,7 @@ namespace Syroot.NintenTools.Bfres.Core
         private void WriteStrings()
         {
             // Sort the strings ordinally.
-            SortedList<string, StringEntry> sorted = new SortedList<string, StringEntry>(ResStringComparer.Instance);
+            SortedList<string, StringEntry> sorted = new SortedList<string, StringEntry>(StringComparer.Ordinal);
             foreach (KeyValuePair<string, StringEntry> entry in _savedStrings)
             {
                 sorted.Add(entry.Key, entry.Value);
@@ -630,7 +630,7 @@ namespace Syroot.NintenTools.Bfres.Core
             Align(4);
             uint stringPoolOffset = (uint)Position;
 
-            foreach (KeyValuePair<string, StringEntry> entry in _savedStrings)
+            foreach (KeyValuePair<string, StringEntry> entry in sorted)
             {
                 // Align and satisfy offsets.
                 Write(entry.Key.Length);
