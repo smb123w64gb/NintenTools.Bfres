@@ -9,23 +9,12 @@ namespace Syroot.NintenTools.Bfres
     /// Represents an FMDL subfile in a <see cref="ResFile"/>, storing multi-dimensional texture data.
     /// </summary>
     [DebuggerDisplay(nameof(Texture) + " {" + nameof(Name) + "}")]
-    public class Texture : INamedResData
+    public class Texture : IResData
     {
         // ---- CONSTANTS ----------------------------------------------------------------------------------------------
 
         private const string _signature = "FTEX";
-
-        // ---- FIELDS -------------------------------------------------------------------------------------------------
-
-        private string _name;
-
-        // ---- EVENTS -------------------------------------------------------------------------------------------------
-
-        /// <summary>
-        /// Raised when the <see cref="Name"/> property was changed.
-        /// </summary>
-        public event EventHandler NameChanged;
-
+        
         // ---- PROPERTIES ---------------------------------------------------------------------------------------------
 
         /// <summary>
@@ -112,22 +101,10 @@ namespace Syroot.NintenTools.Bfres
         public uint ArrayLength { get; set; }
 
         /// <summary>
-        /// Gets or sets the name with which the instance can be referenced uniquely in
-        /// <see cref="INamedResDataList{Texture}"/> instances.
+        /// Gets or sets the name with which the instance can be referenced uniquely in <see cref="ResDict{Texture}"/>
+        /// instances.
         /// </summary>
-        public string Name
-        {
-            get { return _name; }
-            set
-            {
-                if (value == null) throw new ArgumentNullException(nameof(value));
-                if (_name != value)
-                {
-                    _name = value;
-                    NameChanged?.Invoke(this, EventArgs.Empty);
-                }
-            }
-        }
+        public string Name { get; set; }
 
         /// <summary>
         /// Gets or sets the path of the file which originally supplied the data of this instance.
@@ -147,7 +124,7 @@ namespace Syroot.NintenTools.Bfres
         /// <summary>
         /// Gets customly attached <see cref="UserData"/> instances.
         /// </summary>
-        public INamedResDataList<UserData> UserData { get; private set; }
+        public ResDict<UserData> UserData { get; private set; }
 
         // ---- METHODS ------------------------------------------------------------------------------------------------
 
@@ -183,7 +160,7 @@ namespace Syroot.NintenTools.Bfres
             Path = loader.LoadString();
             Data = loader.LoadCustom(() => loader.ReadBytes((int)sizData));
             MipData = loader.LoadCustom(() => loader.ReadBytes((int)sizMipData));
-            UserData = loader.LoadDictList<UserData>();
+            UserData = loader.LoadDict<UserData>();
             ushort numUserData = loader.ReadUInt16();
             loader.Seek(2);
         }
@@ -220,7 +197,7 @@ namespace Syroot.NintenTools.Bfres
             saver.SaveString(Path);
             saver.SaveCustom(Data, () => saver.Write(Data));
             saver.SaveCustom(MipData, () => saver.Write(MipData));
-            saver.SaveDictList(UserData);
+            saver.SaveDict(UserData);
             saver.Write((ushort)UserData.Count);
             saver.Seek(2);
         }

@@ -46,7 +46,7 @@ namespace Syroot.NintenTools.Bfres
             saver.Write(Data[0].Length); // Size
             saver.Write(0); // Handle
             saver.Write(Stride);
-            saver.Write(Data.Length); // NumBuffering
+            saver.Write((ushort)Data.Length); // NumBuffering
             saver.Write(0); // ContextPointer
             saver.SaveBlock(Data, ResFileSaver.AlignmentSmall, () =>
             {

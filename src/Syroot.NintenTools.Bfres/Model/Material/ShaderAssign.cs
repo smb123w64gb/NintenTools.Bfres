@@ -13,11 +13,11 @@ namespace Syroot.NintenTools.Bfres
 
         public uint Revision { get; set; }
 
-        public IList<string> AttribAssigns { get; private set; }
+        public ResDict<ResString> AttribAssigns { get; private set; }
 
-        public IList<string> SamplerAssigns { get; private set; }
+        public ResDict<ResString> SamplerAssigns { get; private set; }
 
-        public IList<string> ShaderOptions { get; private set; }
+        public ResDict<ResString> ShaderOptions { get; private set; }
 
         // ---- METHODS ------------------------------------------------------------------------------------------------
 
@@ -29,9 +29,9 @@ namespace Syroot.NintenTools.Bfres
             byte numAttribAssign = loader.ReadByte();
             byte numSamplerAssign = loader.ReadByte();
             ushort numShaderOption = loader.ReadUInt16();
-            AttribAssigns = loader.LoadDictNames();
-            SamplerAssigns = loader.LoadDictNames();
-            ShaderOptions = loader.LoadDictNames();
+            AttribAssigns = loader.LoadDict<ResString>();
+            SamplerAssigns = loader.LoadDict<ResString>();
+            ShaderOptions = loader.LoadDict<ResString>();
         }
         
         void IResData.Save(ResFileSaver saver)
@@ -42,9 +42,9 @@ namespace Syroot.NintenTools.Bfres
             saver.Write((byte)AttribAssigns.Count);
             saver.Write((byte)SamplerAssigns.Count);
             saver.Write((ushort)ShaderOptions.Count);
-            saver.SaveDictNames(AttribAssigns);
-            saver.SaveDictNames(SamplerAssigns);
-            saver.SaveDictNames(ShaderOptions);
+            saver.SaveDict(AttribAssigns);
+            saver.SaveDict(SamplerAssigns);
+            saver.SaveDict(ShaderOptions);
         }
     }
 }

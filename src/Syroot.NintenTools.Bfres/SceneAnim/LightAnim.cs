@@ -9,23 +9,12 @@ namespace Syroot.NintenTools.Bfres
     /// Represents an FLIT section in a <see cref="SceneAnim"/> subfile, storing animations controlling light settings.
     /// </summary>
     [DebuggerDisplay(nameof(LightAnim) + " {" + nameof(Name) + "}")]
-    public class LightAnim : INamedResData
+    public class LightAnim : IResData
     {
         // ---- CONSTANTS ----------------------------------------------------------------------------------------------
 
         private const string _signature = "FLIT";
-
-        // ---- FIELDS -------------------------------------------------------------------------------------------------
-
-        private string _name;
-
-        // ---- EVENTS -------------------------------------------------------------------------------------------------
-
-        /// <summary>
-        /// Raised when the <see cref="Name"/> property was changed.
-        /// </summary>
-        public event EventHandler NameChanged;
-
+        
         // ---- PROPERTIES ---------------------------------------------------------------------------------------------
 
         /// <summary>
@@ -50,22 +39,10 @@ namespace Syroot.NintenTools.Bfres
         public uint BakedSize { get; private set; }
 
         /// <summary>
-        /// Gets or sets the name with which the instance can be referenced uniquely in
-        /// <see cref="INamedResDataList{LightAnim}"/> instances.
+        /// Gets or sets the name with which the instance can be referenced uniquely in <see cref="ResDict{LightAnim}"/>
+        /// instances.
         /// </summary>
-        public string Name
-        {
-            get { return _name; }
-            set
-            {
-                if (value == null) throw new ArgumentNullException(nameof(value));
-                if (_name != value)
-                {
-                    _name = value;
-                    NameChanged?.Invoke(this, EventArgs.Empty);
-                }
-            }
-        }
+        public string Name { get; set; }
 
         /// <summary>
         /// Gets or sets the name of the light type.
@@ -86,7 +63,7 @@ namespace Syroot.NintenTools.Bfres
         /// <summary>
         /// Gets customly attached <see cref="UserData"/> instances.
         /// </summary>
-        public INamedResDataList<UserData> UserData { get; private set; }
+        public ResDict<UserData> UserData { get; private set; }
 
         // ---- METHODS ------------------------------------------------------------------------------------------------
 
@@ -107,7 +84,7 @@ namespace Syroot.NintenTools.Bfres
             AngleAttnFuncName = loader.LoadString();
             Curves = loader.LoadList<AnimCurve>(numCurve);
             BaseData = loader.LoadCustom(() => new LightAnimData(loader, Flags));
-            UserData = loader.LoadDictList<UserData>();
+            UserData = loader.LoadDict<UserData>();
         }
         
         void IResData.Save(ResFileSaver saver)
@@ -127,7 +104,7 @@ namespace Syroot.NintenTools.Bfres
             saver.SaveString(AngleAttnFuncName);
             saver.SaveList(Curves);
             saver.SaveCustom(BaseData, () => BaseData.Save(saver, Flags));
-            saver.SaveDictList(UserData);
+            saver.SaveDict(UserData);
         }
     }
     

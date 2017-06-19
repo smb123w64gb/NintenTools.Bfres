@@ -10,38 +10,15 @@ namespace Syroot.NintenTools.Bfres
     /// specific data subset in the buffer.
     /// </summary>
     [DebuggerDisplay(nameof(VertexAttrib) + " {" + nameof(Name) + "}")]
-    public class VertexAttrib : INamedResData
+    public class VertexAttrib : IResData
     {
-        // ---- FIELDS -------------------------------------------------------------------------------------------------
-
-        private string _name;
-
-        // ---- EVENTS -------------------------------------------------------------------------------------------------
-
-        /// <summary>
-        /// Raised when the <see cref="Name"/> property was changed.
-        /// </summary>
-        public event EventHandler NameChanged;
-
         // ---- PROPERTIES ---------------------------------------------------------------------------------------------
 
         /// <summary>
         /// Gets or sets the name with which the instance can be referenced uniquely in
-        /// <see cref="INamedResDataList{VertexAttrib}"/> instances.
+        /// <see cref="ResDict{VertexAttrib}"/> instances.
         /// </summary>
-        public string Name
-        {
-            get { return _name; }
-            set
-            {
-                if (value == null) throw new ArgumentNullException(nameof(value));
-                if (_name != value)
-                {
-                    _name = value;
-                    NameChanged?.Invoke(this, EventArgs.Empty);
-                }
-            }
-        }
+        public string Name { get; set; }
 
         public byte BufferIndex { get; set; }
 

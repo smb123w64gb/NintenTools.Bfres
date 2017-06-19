@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Syroot.NintenTools.Bfres.Core;
 using Syroot.NintenTools.Bfres.GX2;
 

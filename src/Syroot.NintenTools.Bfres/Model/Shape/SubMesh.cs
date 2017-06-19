@@ -1,5 +1,4 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using Syroot.NintenTools.Bfres.Core;
 
 namespace Syroot.NintenTools.Bfres
@@ -13,8 +12,14 @@ namespace Syroot.NintenTools.Bfres
     {
         // ---- PROPERTIES ---------------------------------------------------------------------------------------------
 
+        /// <summary>
+        /// Gets the offset into the index buffer in bytes.
+        /// </summary>
         public uint Offset { get; set; }
 
+        /// <summary>
+        /// Gets the number of indices to reference.
+        /// </summary>
         public uint Count { get; set; }
 
         // ---- METHODS ------------------------------------------------------------------------------------------------

@@ -10,46 +10,23 @@ namespace Syroot.NintenTools.Bfres
     /// how technically a surface is drawn.
     /// </summary>
     [DebuggerDisplay(nameof(Material) + " {" + nameof(Name) + "}")]
-    public class Material : INamedResData
+    public class Material : IResData
     {
         // ---- CONSTANTS ----------------------------------------------------------------------------------------------
 
         private const string _signature = "FMAT";
-
-        // ---- FIELDS -------------------------------------------------------------------------------------------------
-
-        private string _name;
-
-        // ---- EVENTS -------------------------------------------------------------------------------------------------
-
-        /// <summary>
-        /// Raised when the <see cref="Name"/> property was changed.
-        /// </summary>
-        public event EventHandler NameChanged;
-
+        
         // ---- PROPERTIES ---------------------------------------------------------------------------------------------
 
         /// <summary>
-        /// Gets or sets the name with which the instance can be referenced uniquely in
-        /// <see cref="INamedResDataList{Material}"/> instances.
+        /// Gets or sets the name with which the instance can be referenced uniquely in <see cref="ResDict{Material}"/>
+        /// instances.
         /// </summary>
-        public string Name
-        {
-            get { return _name; }
-            set
-            {
-                if (value == null) throw new ArgumentNullException(nameof(value));
-                if (_name != value)
-                {
-                    _name = value;
-                    NameChanged?.Invoke(this, EventArgs.Empty);
-                }
-            }
-        }
+        public string Name { get; set; }
 
         public MaterialFlags Flags { get; set; }
 
-        public INamedResDataList<RenderInfo> RenderInfos { get; private set; }
+        public ResDict<RenderInfo> RenderInfos { get; private set; }
 
         public RenderState RenderState { get; private set; }
 
@@ -57,9 +34,9 @@ namespace Syroot.NintenTools.Bfres
 
         public IList<TextureRef> TextureRefs { get; private set; }
 
-        public INamedResDataList<Sampler> Samplers { get; private set; }
+        public ResDict<Sampler> Samplers { get; private set; }
 
-        public INamedResDataList<ShaderParam> ShaderParams { get; private set; }
+        public ResDict<ShaderParam> ShaderParams { get; private set; }
 
         /// <summary>
         /// Gets the raw data block which stores <see cref="ShaderParam"/> values.
@@ -69,7 +46,7 @@ namespace Syroot.NintenTools.Bfres
         /// <summary>
         /// Gets customly attached <see cref="UserData"/> instances.
         /// </summary>
-        public INamedResDataList<UserData> UserData { get; private set; }
+        public ResDict<UserData> UserData { get; private set; }
 
         public bool[] VolatileFlags { get; private set; }
 
@@ -91,16 +68,16 @@ namespace Syroot.NintenTools.Bfres
             ushort sizParamSource = loader.ReadUInt16();
             ushort sizParamRaw = loader.ReadUInt16();
             ushort numUserData = loader.ReadUInt16();
-            RenderInfos = loader.LoadDictList<RenderInfo>();
+            RenderInfos = loader.LoadDict<RenderInfo>();
             RenderState = loader.Load<RenderState>();
             ShaderAssign = loader.Load<ShaderAssign>();
             TextureRefs = loader.LoadList<TextureRef>(numTextureRef);
             uint ofsSamplerList = loader.ReadOffset(); // Only use dict.
-            Samplers = loader.LoadDictList<Sampler>();
+            Samplers = loader.LoadDict<Sampler>();
             uint ofsShaderParamList = loader.ReadOffset(); // Only use dict.
-            ShaderParams = loader.LoadDictList<ShaderParam>();
+            ShaderParams = loader.LoadDict<ShaderParam>();
             ParamData = loader.LoadCustom(() => loader.ReadBytes(sizParamSource));
-            UserData = loader.LoadDictList<UserData>();
+            UserData = loader.LoadDict<UserData>();
             VolatileFlags = loader.LoadCustom(() =>
             {
                 bool[] volatileFlags = new bool[numShaderParamVolatile];
@@ -132,16 +109,16 @@ namespace Syroot.NintenTools.Bfres
             saver.Write((ushort)ParamData.Length);
             saver.Write((ushort)0); // SizParamRaw
             saver.Write((ushort)UserData.Count);
-            saver.SaveDictList(RenderInfos);
+            saver.SaveDict(RenderInfos);
             saver.Save(RenderState);
             saver.Save(ShaderAssign);
             saver.SaveList(TextureRefs);
-            saver.SaveList(Samplers);
-            saver.SaveDictList(Samplers);
-            saver.SaveList(ShaderParams);
-            saver.SaveDictList(ShaderParams);
+            saver.SaveList(Samplers.Values);
+            saver.SaveDict(Samplers);
+            saver.SaveList(ShaderParams.Values);
+            saver.SaveDict(ShaderParams);
             saver.SaveCustom(ParamData, () => saver.Write(ParamData));
-            saver.SaveDictList(UserData);
+            saver.SaveDict(UserData);
             saver.SaveCustom(VolatileFlags, () =>
             {
                 int i = 0;

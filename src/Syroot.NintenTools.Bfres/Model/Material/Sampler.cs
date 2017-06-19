@@ -10,40 +10,17 @@ namespace Syroot.NintenTools.Bfres
     /// draw and interpolate textures.
     /// </summary>
     [DebuggerDisplay(nameof(Sampler) + " {" + nameof(Name) + "}")]
-    public class Sampler : INamedResData
+    public class Sampler : IResData
     {
-        // ---- FIELDS -------------------------------------------------------------------------------------------------
-
-        private string _name;
-
-        // ---- EVENTS -------------------------------------------------------------------------------------------------
-
-        /// <summary>
-        /// Raised when the <see cref="Name"/> property was changed.
-        /// </summary>
-        public event EventHandler NameChanged;
-
         // ---- PROPERTIES ---------------------------------------------------------------------------------------------
 
         public TexSampler TexSampler { get; set; }
 
         /// <summary>
-        /// Gets or sets the name with which the instance can be referenced uniquely in
-        /// <see cref="INamedResDataList{Sampler}"/> instances.
+        /// Gets or sets the name with which the instance can be referenced uniquely in <see cref="ResDict{Sampler}"/>
+        /// instances.
         /// </summary>
-        public string Name
-        {
-            get { return _name; }
-            set
-            {
-                if (value == null) throw new ArgumentNullException(nameof(value));
-                if (_name != value)
-                {
-                    _name = value;
-                    NameChanged?.Invoke(this, EventArgs.Empty);
-                }
-            }
-        }
+        public string Name { get; set; }
 
         // ---- METHODS ------------------------------------------------------------------------------------------------
 

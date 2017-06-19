@@ -9,42 +9,19 @@ namespace Syroot.NintenTools.Bfres
     /// Represents an FMDL subfile in a <see cref="ResFile"/>, storing model vertex data, skeletons and used materials.
     /// </summary>
     [DebuggerDisplay(nameof(Model) + " {" + nameof(Name) + "}")]
-    public class Model : INamedResData
+    public class Model : IResData
     {
         // ---- CONSTANTS ----------------------------------------------------------------------------------------------
 
         private const string _signature = "FMDL";
-
-        // ---- FIELDS -------------------------------------------------------------------------------------------------
-
-        private string _name;
-
-        // ---- EVENTS -------------------------------------------------------------------------------------------------
-
-        /// <summary>
-        /// Raised when the <see cref="Name"/> property was changed.
-        /// </summary>
-        public event EventHandler NameChanged;
-
+        
         // ---- PROPERTIES ---------------------------------------------------------------------------------------------
 
         /// <summary>
-        /// Gets or sets the name with which the instance can be referenced uniquely in
-        /// <see cref="INamedResDataList{Model}"/> instances.
+        /// Gets or sets the name with which the instance can be referenced uniquely in <see cref="ResDict{Model}"/>
+        /// instances.
         /// </summary>
-        public string Name
-        {
-            get { return _name; }
-            set
-            {
-                if (value == null) throw new ArgumentNullException(nameof(value));
-                if (_name != value)
-                {
-                    _name = value;
-                    NameChanged?.Invoke(this, EventArgs.Empty);
-                }
-            }
-        }
+        public string Name { get; set; }
         
         /// <summary>
         /// Gets or sets the path of the file which originally supplied the data of this instance.
@@ -64,17 +41,17 @@ namespace Syroot.NintenTools.Bfres
         /// <summary>
         /// Gets the <see cref="Shape"/> instances forming the surface of the model.
         /// </summary>
-        public INamedResDataList<Shape> Shapes { get; private set; }
+        public ResDict<Shape> Shapes { get; private set; }
 
         /// <summary>
         /// Gets the <see cref="Material"/> instance applied on the <see cref="Shapes"/> to color their surface.
         /// </summary>
-        public INamedResDataList<Material> Materials { get; private set; }
+        public ResDict<Material> Materials { get; private set; }
 
         /// <summary>
         /// Gets customly attached <see cref="UserData"/> instances.
         /// </summary>
-        public INamedResDataList<UserData> UserData { get; private set; }
+        public ResDict<UserData> UserData { get; private set; }
 
         public uint TotalVertices
         {
@@ -90,9 +67,9 @@ namespace Syroot.NintenTools.Bfres
             Path = loader.LoadString();
             Skeleton = loader.Load<Skeleton>();
             uint ofsVertexBuffers = loader.ReadOffset();
-            Shapes = loader.LoadDictList<Shape>();
-            Materials = loader.LoadDictList<Material>();
-            UserData = loader.LoadDictList<UserData>();
+            Shapes = loader.LoadDict<Shape>();
+            Materials = loader.LoadDict<Material>();
+            UserData = loader.LoadDict<UserData>();
             ushort numVertexBuffer = loader.ReadUInt16();
             ushort numShape = loader.ReadUInt16();
             ushort numMaterial = loader.ReadUInt16();
@@ -110,9 +87,9 @@ namespace Syroot.NintenTools.Bfres
             saver.SaveString(Path);
             saver.Save(Skeleton);
             saver.SaveList(VertexBuffers);
-            saver.SaveDictList(Shapes);
-            saver.SaveDictList(Materials);
-            saver.SaveDictList(UserData);
+            saver.SaveDict(Shapes);
+            saver.SaveDict(Materials);
+            saver.SaveDict(UserData);
             saver.Write((ushort)VertexBuffers.Count);
             saver.Write((ushort)Shapes.Count);
             saver.Write((ushort)Materials.Count);

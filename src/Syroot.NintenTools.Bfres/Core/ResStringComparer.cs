@@ -11,6 +11,12 @@ namespace Syroot.NintenTools.Bfres.Core
 
         private static ResStringComparer _instance;
 
+        // ---- CONSTRUCTORS & DESTRUCTOR ------------------------------------------------------------------------------
+
+        private ResStringComparer()
+        {
+        }
+
         // ---- PROPERTIES ---------------------------------------------------------------------------------------------
 
         internal static ResStringComparer Instance

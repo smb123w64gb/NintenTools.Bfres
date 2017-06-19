@@ -21,6 +21,10 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <Compile Remove="Core\ResFileSaver_NintendoOrder.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="Syroot.IO.BinaryData" Version="2.0.1-beta1" />
 		<PackageReference Include="Syroot.Maths" Version="1.4.0" />
 	</ItemGroup>

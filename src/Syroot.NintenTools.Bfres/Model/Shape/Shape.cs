@@ -9,42 +9,19 @@ namespace Syroot.NintenTools.Bfres
     /// Represents an FSHP section in a <see cref="Model"/> subfile.
     /// </summary>
     [DebuggerDisplay(nameof(Shape) + " {" + nameof(Name) + "}")]
-    public class Shape : INamedResData
+    public class Shape : IResData
     {
         // ---- CONSTANTS ----------------------------------------------------------------------------------------------
 
         private const string _signature = "FSHP";
-
-        // ---- FIELDS -------------------------------------------------------------------------------------------------
-
-        private string _name;
-
-        // ---- EVENTS -------------------------------------------------------------------------------------------------
-
-        /// <summary>
-        /// Raised when the <see cref="Name"/> property was changed.
-        /// </summary>
-        public event EventHandler NameChanged;
-
+        
         // ---- PROPERTIES ---------------------------------------------------------------------------------------------
 
         /// <summary>
-        /// Gets or sets the name with which the instance can be referenced uniquely in
-        /// <see cref="INamedResDataList{Shape}"/> instances.
+        /// Gets or sets the name with which the instance can be referenced uniquely in <see cref="ResDict{Shape}"/>
+        /// instances.
         /// </summary>
-        public string Name
-        {
-            get { return _name; }
-            set
-            {
-                if (value == null) throw new ArgumentNullException(nameof(value));
-                if (_name != value)
-                {
-                    _name = value;
-                    NameChanged?.Invoke(this, EventArgs.Empty);
-                }
-            }
-        }
+        public string Name { get; set; }
 
         public ShapeFlags Flags { get; set; }
 
@@ -69,7 +46,7 @@ namespace Syroot.NintenTools.Bfres
 
         public IList<ushort> SkinBoneIndices { get; private set; }
 
-        public IDictionary<string, KeyShape> KeyShapes { get; private set; }
+        public ResDict<KeyShape> KeyShapes { get; private set; }
 
         public IList<Bounding> SubMeshBoundings { get; private set; }
 

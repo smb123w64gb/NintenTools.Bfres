@@ -36,7 +36,7 @@ namespace Syroot.NintenTools.Bfres
             set { _flags &= ~_flagsRotationMask | (uint)value; }
         }
         
-        public INamedResDataList<Bone> Bones { get; private set; }
+        public ResDict<Bone> Bones { get; private set; }
 
         public IList<ushort> MatrixToBoneTable { get; private set; }
 
@@ -52,7 +52,7 @@ namespace Syroot.NintenTools.Bfres
             ushort numSmoothMatrix = loader.ReadUInt16();
             ushort numRigidMatrix = loader.ReadUInt16();
             loader.Seek(2);
-            Bones = loader.LoadDictList<Bone>();
+            Bones = loader.LoadDict<Bone>();
             uint ofsBoneList = loader.ReadOffset(); // Only load dict.
             MatrixToBoneTable = loader.LoadCustom(() => loader.ReadUInt16s((numSmoothMatrix + numRigidMatrix)));
             InverseModelMatrices = loader.LoadCustom(() => loader.ReadMatrix3x4s(numSmoothMatrix));
@@ -67,8 +67,8 @@ namespace Syroot.NintenTools.Bfres
             saver.Write((ushort)InverseModelMatrices.Count); // NumSmoothMatrix
             saver.Write((ushort)(MatrixToBoneTable.Count - InverseModelMatrices.Count)); // NumRigidMatrix
             saver.Seek(2);
-            saver.SaveDictList(Bones);
-            saver.SaveList(Bones);
+            saver.SaveDict(Bones);
+            saver.SaveList(Bones.Values);
             saver.SaveCustom(MatrixToBoneTable, () => saver.Write(MatrixToBoneTable));
             saver.SaveCustom(InverseModelMatrices, () => saver.Write(InverseModelMatrices));
             saver.Write(0); // UserPointer

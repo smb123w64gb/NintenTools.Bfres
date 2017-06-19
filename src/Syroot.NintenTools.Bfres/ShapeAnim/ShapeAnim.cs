@@ -11,42 +11,19 @@ namespace Syroot.NintenTools.Bfres
     /// instance.
     /// </summary>
     [DebuggerDisplay(nameof(ShapeAnim) + " {" + nameof(Name) + "}")]
-    public class ShapeAnim : INamedResData
+    public class ShapeAnim : IResData
     {
         // ---- CONSTANTS ----------------------------------------------------------------------------------------------
 
         private const string _signature = "FSHA";
-
-        // ---- FIELDS -------------------------------------------------------------------------------------------------
-
-        private string _name;
-
-        // ---- EVENTS -------------------------------------------------------------------------------------------------
-
-        /// <summary>
-        /// Raised when the <see cref="Name"/> property was changed.
-        /// </summary>
-        public event EventHandler NameChanged;
-
+        
         // ---- PROPERTIES ---------------------------------------------------------------------------------------------
 
         /// <summary>
-        /// Gets or sets the name with which the instance can be referenced uniquely in
-        /// <see cref="INamedResDataList{ShapeAnim}"/> instances.
+        /// Gets or sets the name with which the instance can be referenced uniquely in <see cref="ResDict{ShapeAnim}"/>
+        /// instances.
         /// </summary>
-        public string Name
-        {
-            get { return _name; }
-            set
-            {
-                if (value == null) throw new ArgumentNullException(nameof(value));
-                if (_name != value)
-                {
-                    _name = value;
-                    NameChanged?.Invoke(this, EventArgs.Empty);
-                }
-            }
-        }
+        public string Name { get; set; }
 
         /// <summary>
         /// Gets or sets the path of the file which originally supplied the data of this instance.
@@ -88,7 +65,7 @@ namespace Syroot.NintenTools.Bfres
         /// <summary>
         /// Gets customly attached <see cref="UserData"/> instances.
         /// </summary>
-        public INamedResDataList<UserData> UserData { get; private set; }
+        public ResDict<UserData> UserData { get; private set; }
 
         // ---- METHODS ------------------------------------------------------------------------------------------------
 
@@ -108,7 +85,7 @@ namespace Syroot.NintenTools.Bfres
             BindModel = loader.Load<Model>();
             BindIndices = loader.LoadCustom(() => loader.ReadUInt16s(numVertexShapeAnim));
             VertexShapeAnims = loader.LoadList<VertexShapeAnim>(numVertexShapeAnim);
-            UserData = loader.LoadDictList<UserData>();
+            UserData = loader.LoadDict<UserData>();
         }
         
         void IResData.Save(ResFileSaver saver)
@@ -127,7 +104,7 @@ namespace Syroot.NintenTools.Bfres
             saver.Save(BindModel);
             saver.SaveCustom(BindIndices, () => saver.Write(BindIndices));
             saver.SaveList(VertexShapeAnims);
-            saver.SaveDictList(UserData);
+            saver.SaveDict(UserData);
         }
     }
 

@@ -9,23 +9,12 @@ namespace Syroot.NintenTools.Bfres
     /// Represents an FCAM section in a <see cref="SceneAnim"/> subfile, storing animations controlling fog settings.
     /// </summary>
     [DebuggerDisplay(nameof(FogAnim) + " {" + nameof(Name) + "}")]
-    public class FogAnim : INamedResData
+    public class FogAnim : IResData
     {
         // ---- CONSTANTS ----------------------------------------------------------------------------------------------
 
         private const string _signature = "FFOG";
-
-        // ---- FIELDS -------------------------------------------------------------------------------------------------
-
-        private string _name;
-
-        // ---- EVENTS -------------------------------------------------------------------------------------------------
-
-        /// <summary>
-        /// Raised when the <see cref="Name"/> property was changed.
-        /// </summary>
-        public event EventHandler NameChanged;
-
+        
         // ---- PROPERTIES ---------------------------------------------------------------------------------------------
 
         /// <summary>
@@ -46,22 +35,10 @@ namespace Syroot.NintenTools.Bfres
         public uint BakedSize { get; private set; }
 
         /// <summary>
-        /// Gets or sets the name with which the instance can be referenced uniquely in
-        /// <see cref="INamedResDataList{FogAnim}"/> instances.
+        /// Gets or sets the name with which the instance can be referenced uniquely in <see cref="ResDict{FogAnim}"/>
+        /// instances.
         /// </summary>
-        public string Name
-        {
-            get { return _name; }
-            set
-            {
-                if (value == null) throw new ArgumentNullException(nameof(value));
-                if (_name != value)
-                {
-                    _name = value;
-                    NameChanged?.Invoke(this, EventArgs.Empty);
-                }
-            }
-        }
+        public string Name { get; set; }
 
         public string DistanceAttnFuncName { get; set; }
 
@@ -75,7 +52,7 @@ namespace Syroot.NintenTools.Bfres
         /// <summary>
         /// Gets customly attached <see cref="UserData"/> instances.
         /// </summary>
-        public INamedResDataList<UserData> UserData { get; private set; }
+        public ResDict<UserData> UserData { get; private set; }
         
         // ---- METHODS ------------------------------------------------------------------------------------------------
 
@@ -92,7 +69,7 @@ namespace Syroot.NintenTools.Bfres
             DistanceAttnFuncName = loader.LoadString();
             Curves = loader.LoadList<AnimCurve>(numCurve);
             BaseData = loader.LoadCustom(() => new FogAnimData(loader));
-            UserData = loader.LoadDictList<UserData>();
+            UserData = loader.LoadDict<UserData>();
         }
         
         void IResData.Save(ResFileSaver saver)
@@ -108,7 +85,7 @@ namespace Syroot.NintenTools.Bfres
             saver.SaveString(DistanceAttnFuncName);
             saver.SaveList(Curves);
             saver.SaveCustom(BaseData, () => BaseData.Save(saver));
-            saver.SaveDictList(UserData);
+            saver.SaveDict(UserData);
         }
     }
     

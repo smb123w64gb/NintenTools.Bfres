@@ -9,19 +9,8 @@ namespace Syroot.NintenTools.Bfres
     /// Represents a parameter value in a <see cref="UserData"/> section, passing data to shader variables.
     /// </summary>
     [DebuggerDisplay(nameof(ShaderParam) + " {" + nameof(Name) + "}")]
-    public class ShaderParam : INamedResData
+    public class ShaderParam : IResData
     {
-        // ---- FIELDS -------------------------------------------------------------------------------------------------
-
-        private string _name;
-
-        // ---- EVENTS -------------------------------------------------------------------------------------------------
-
-        /// <summary>
-        /// Raised when the <see cref="Name"/> property was changed.
-        /// </summary>
-        public event EventHandler NameChanged;
-
         // ---- PROPERTIES ---------------------------------------------------------------------------------------------
 
         /// <summary>
@@ -40,21 +29,9 @@ namespace Syroot.NintenTools.Bfres
 
         /// <summary>
         /// Gets or sets the name with which the instance can be referenced uniquely in
-        /// <see cref="INamedResDataList{ShaderParam}"/> instances.
+        /// <see cref="ResDict{ShaderParam}"/> instances.
         /// </summary>
-        public string Name
-        {
-            get { return _name; }
-            set
-            {
-                if (value == null) throw new ArgumentNullException(nameof(value));
-                if (_name != value)
-                {
-                    _name = value;
-                    NameChanged?.Invoke(this, EventArgs.Empty);
-                }
-            }
-        }
+        public string Name { get; set; }
 
         /// <summary>
         /// Gets the size of the value in bytes.

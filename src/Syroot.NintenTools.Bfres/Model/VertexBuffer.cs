@@ -18,7 +18,7 @@ namespace Syroot.NintenTools.Bfres
 
         public uint VertexCount { get; private set; } // TODO: Compute vertex count.
 
-        public INamedResDataList<VertexAttrib> Attributes { get; private set; }
+        public ResDict<VertexAttrib> Attributes { get; private set; }
 
         public IList<Buffer> Buffers { get; private set; }
 
@@ -36,7 +36,7 @@ namespace Syroot.NintenTools.Bfres
             VertexSkinCount = loader.ReadByte();
             loader.Seek(3);
             uint ofsVertexAttribList = loader.ReadOffset(); // Only load dict.
-            Attributes = loader.LoadDictList<VertexAttrib>();
+            Attributes = loader.LoadDict<VertexAttrib>();
             Buffers = loader.LoadList<Buffer>(numBuffer);
             uint userPointer = loader.ReadUInt32();
         }
@@ -50,8 +50,8 @@ namespace Syroot.NintenTools.Bfres
             saver.Write(VertexCount);
             saver.Write(VertexSkinCount);
             saver.Seek(3);
-            saver.SaveList(Attributes);
-            saver.SaveDictList(Attributes);
+            saver.SaveList(Attributes.Values);
+            saver.SaveDict(Attributes);
             saver.SaveList(Buffers);
             saver.Write(0); // UserPointer
         }

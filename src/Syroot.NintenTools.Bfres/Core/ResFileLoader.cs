@@ -65,9 +65,9 @@ namespace Syroot.NintenTools.Bfres.Core
             // Load the raw data into structures recursively.
             ((IResData)ResFile).Load(this);
         }
-        
-        // ---- Data Load Methods ----
 
+        // ---- Data Load Methods ----
+        
         /// <summary>
         /// Reads and returns an <see cref="IResData"/> instance of type <typeparamref name="T"/> from the following
         /// offset or returns <c>null</c> if the read offset is 0.
@@ -110,104 +110,26 @@ namespace Syroot.NintenTools.Bfres.Core
         }
 
         /// <summary>
-        /// Reads and returns an <see cref="IList{String}"/> instance from the following offset storing only the keys of
-        /// the dict or returns <c>null</c> if the read offset is 0.
+        /// Reads and returns an <see cref="ResDict{T}"/> instance with elements of type <typeparamref name="T"/> from
+        /// the following offset or returns an empty instance if the read offset is 0.
         /// </summary>
-        /// <returns>The <see cref="IList{String}"/> instance or <c>null</c>.</returns>
+        /// <typeparam name="T">The type of the <see cref="IResData"/> elements.</typeparam>
+        /// <returns>The <see cref="ResDict{T}"/> instance.</returns>
         [DebuggerStepThrough]
-        internal IList<string> LoadDictNames()
-        {
-            List<string> list = new List<string>();
-            uint offset = ReadOffset();
-            if (offset == 0) return list;
-
-            // Read the dictionary header.
-            using (TemporarySeek(offset, SeekOrigin.Begin))
-            {
-                uint size = ReadUInt32();
-                int entryCount = ReadInt32();
-
-                // Read the dictionary nodes.
-                Seek(_dictNodeSize); // Skip the root node.
-                for (; entryCount > 0; entryCount--)
-                {
-                    uint keyBits = ReadUInt32();
-                    ushort idxLeft = ReadUInt16();
-                    ushort idxRight = ReadUInt16();
-                    uint ofsName = ReadOffset(); // Uses data offset instead.
-                    list.Add(LoadString()); // Data offset same as name offset.
-                }
-                return list;
-            }
-        }
-
-        /// <summary>
-        /// Reads and returns an <see cref="IDictionary{String, T}"/> instance with element values of type
-        /// <typeparamref name="T"/> from the following offset or returns <c>null</c> if the read offset is 0.
-        /// </summary>
-        /// <typeparam name="T">The type of the <see cref="IResData"/> element values.</typeparam>
-        /// <returns>The <see cref="IDictionary{String, T}"/> instance or <c>null</c>.</returns>
-        [DebuggerStepThrough]
-        internal IDictionary<string, T> LoadDict<T>()
+        internal ResDict<T> LoadDict<T>()
             where T : IResData, new()
         {
-            SortedDictionary<string, T> dict = new SortedDictionary<string, T>();
             uint offset = ReadOffset();
-            if (offset == 0) return dict;
-
-            // Read the dictionary header.
+            if (offset == 0) return new ResDict<T>();
+            
             using (TemporarySeek(offset, SeekOrigin.Begin))
             {
-                uint size = ReadUInt32();
-                int entryCount = ReadInt32();
-
-                // Read the dictionary nodes.
-                Seek(_dictNodeSize); // Skip the root node.
-                for (; entryCount > 0; entryCount--)
-                {
-                    uint keyBits = ReadUInt32();
-                    ushort idxLeft = ReadUInt16();
-                    ushort idxRight = ReadUInt16();
-                    dict.Add(LoadString(), Load<T>()); // Read the offset to the data and instantiate it.
-                }
+                ResDict<T> dict = new ResDict<T>();
+                ((IResData)dict).Load(this);
                 return dict;
             }
         }
-
-        /// <summary>
-        /// Reads and returns an <see cref="INamedResDataList{T}"/> instance with elements of type
-        /// <typeparamref name="T"/> from the following offset or returns <c>null</c> if the read offset is 0.
-        /// </summary>
-        /// <typeparam name="T">The type of the <see cref="IResData"/> elements.</typeparam>
-        /// <returns>The <see cref="INamedResDataList{T}"/> instance or <c>null</c>.</returns>
-        [DebuggerStepThrough]
-        internal INamedResDataList<T> LoadDictList<T>()
-            where T : INamedResData, new()
-        {
-            NamedResDataList<T> list = new NamedResDataList<T>();
-            uint offset = ReadOffset();
-            if (offset == 0) return list;
-
-            // Read the dictionary header.
-            using (TemporarySeek(offset, SeekOrigin.Begin))
-            {
-                uint size = ReadUInt32();
-                int entryCount = ReadInt32();
-
-                // Read the dictionary nodes.
-                Seek(_dictNodeSize); // Skip the root node.
-                for (; entryCount > 0; entryCount--)
-                {
-                    uint keyBits = ReadUInt32();
-                    ushort idxLeft = ReadUInt16();
-                    ushort idxRight = ReadUInt16();
-                    uint ofsName = ReadOffset(); // Uses INamedResData.Name property instead.
-                    list.Add(Load<T>()); // Read the offset to the data and instantiate it.
-                }
-                return list;
-            }
-        }
-
+        
         /// <summary>
         /// Reads and returns an <see cref="IList{T}"/> instance with <paramref name="count"/> elements of type
         /// <typeparamref name="T"/> from the following offset or returns <c>null</c> if the read offset is 0.
@@ -551,14 +473,14 @@ namespace Syroot.NintenTools.Bfres.Core
         }
 
         // ---- METHODS (PRIVATE) --------------------------------------------------------------------------------------
-
+        
         [DebuggerStepThrough]
         private T ReadResData<T>()
             where T : IResData, new()
         {
             uint offset = (uint)Position;
 
-            // Same data can be referenced multiple times. Load it in any case to move in the stream, needed for arrays.
+            // Same data can be referenced multiple times. Load it in any case to move in the stream, needed for lists.
             T instance = new T();
             instance.Load(this);
 

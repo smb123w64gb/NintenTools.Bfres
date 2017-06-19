@@ -10,7 +10,7 @@ namespace Syroot.NintenTools.Bfres
     /// <see cref="Material"/> instances.
     /// </summary>
     [DebuggerDisplay(nameof(VisibilityAnim) + " {" + nameof(Name) + "}")]
-    public class VisibilityAnim : INamedResData
+    public class VisibilityAnim : IResData
     {
         // ---- CONSTANTS ----------------------------------------------------------------------------------------------
 
@@ -20,36 +20,16 @@ namespace Syroot.NintenTools.Bfres
         private const ushort _flagsMaskType = 0b00000001_00000000;
 
         // ---- FIELDS -------------------------------------------------------------------------------------------------
-
-        private string _name;
+        
         private ushort _flags;
-
-        // ---- EVENTS -------------------------------------------------------------------------------------------------
-
-        /// <summary>
-        /// Raised when the <see cref="Name"/> property was changed.
-        /// </summary>
-        public event EventHandler NameChanged;
-
+        
         // ---- PROPERTIES ---------------------------------------------------------------------------------------------
 
         /// <summary>
         /// Gets or sets the name with which the instance can be referenced uniquely in
-        /// <see cref="INamedResDataList{VisibilityAnim}"/> instances.
+        /// <see cref="ResDict{VisibilityAnim}"/> instances.
         /// </summary>
-        public string Name
-        {
-            get { return _name; }
-            set
-            {
-                if (value == null) throw new ArgumentNullException(nameof(value));
-                if (_name != value)
-                {
-                    _name = value;
-                    NameChanged?.Invoke(this, EventArgs.Empty);
-                }
-            }
-        }
+        public string Name { get; set; }
 
         /// <summary>
         /// Gets or sets the path of the file which originally supplied the data of this instance.
@@ -114,7 +94,7 @@ namespace Syroot.NintenTools.Bfres
         /// <summary>
         /// Gets customly attached <see cref="UserData"/> instances.
         /// </summary>
-        public INamedResDataList<UserData> UserData { get; private set; }
+        public ResDict<UserData> UserData { get; private set; }
 
         // ---- METHODS ------------------------------------------------------------------------------------------------
 
@@ -147,7 +127,7 @@ namespace Syroot.NintenTools.Bfres
                 }
                 return baseData;
             });
-            UserData = loader.LoadDictList<UserData>();
+            UserData = loader.LoadDict<UserData>();
         }
         
         void IResData.Save(ResFileSaver saver)
@@ -178,7 +158,7 @@ namespace Syroot.NintenTools.Bfres
                     saver.Write(b);
                 }
             });
-            saver.SaveDictList(UserData);
+            saver.SaveDict(UserData);
         }
     }
     

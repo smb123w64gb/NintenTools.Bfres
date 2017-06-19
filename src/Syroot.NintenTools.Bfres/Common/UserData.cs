@@ -11,39 +11,19 @@ namespace Syroot.NintenTools.Bfres
     /// Represents custom user variables which can be attached to many sections and subfiles of a <see cref="ResFile"/>.
     /// </summary>
     [DebuggerDisplay(nameof(UserData) + " {" + nameof(Name) + "}")]
-    public class UserData : INamedResData
+    public class UserData : IResData
     {
         // ---- FIELDS -------------------------------------------------------------------------------------------------
-
-        private string _name;
+        
         private object _value;
-
-        // ---- EVENTS -------------------------------------------------------------------------------------------------
-
-        /// <summary>
-        /// Raised when the <see cref="Name"/> property was changed.
-        /// </summary>
-        public event EventHandler NameChanged;
-
+        
         // ---- PROPERTIES ---------------------------------------------------------------------------------------------
 
         /// <summary>
-        /// Gets or sets the name with which the instance can be referenced uniquely in
-        /// <see cref="INamedResDataList{UserData}"/> instances.
+        /// Gets or sets the name with which the instance can be referenced uniquely in <see cref="ResDict{UserData}"/>
+        /// instances.
         /// </summary>
-        public string Name
-        {
-            get { return _name; }
-            set
-            {
-                if (value == null) throw new ArgumentNullException(nameof(value));
-                if (_name != value)
-                {
-                    _name = value;
-                    NameChanged?.Invoke(this, EventArgs.Empty);
-                }
-            }
-        }
+        public string Name { get; set; }
 
         /// <summary>
         /// The data type of the stored values.

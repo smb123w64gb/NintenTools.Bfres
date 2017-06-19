@@ -9,42 +9,19 @@ namespace Syroot.NintenTools.Bfres
     /// fog settings.
     /// </summary>
     [DebuggerDisplay(nameof(SceneAnim) + " {" + nameof(Name) + "}")]
-    public class SceneAnim : INamedResData
+    public class SceneAnim : IResData
     {
         // ---- CONSTANTS ----------------------------------------------------------------------------------------------
 
         private const string _signature = "FSCN";
-
-        // ---- FIELDS -------------------------------------------------------------------------------------------------
-
-        private string _name;
-
-        // ---- EVENTS -------------------------------------------------------------------------------------------------
-
-        /// <summary>
-        /// Raised when the <see cref="Name"/> property was changed.
-        /// </summary>
-        public event EventHandler NameChanged;
-
+        
         // ---- PROPERTIES ---------------------------------------------------------------------------------------------
 
         /// <summary>
-        /// Gets or sets the name with which the instance can be referenced uniquely in
-        /// <see cref="INamedResDataList{SceneAnim}"/> instances.
+        /// Gets or sets the name with which the instance can be referenced uniquely in <see cref="ResDict{SceneAnim}"/>
+        /// instances.
         /// </summary>
-        public string Name
-        {
-            get { return _name; }
-            set
-            {
-                if (value == null) throw new ArgumentNullException(nameof(value));
-                if (_name != value)
-                {
-                    _name = value;
-                    NameChanged?.Invoke(this, EventArgs.Empty);
-                }
-            }
-        }
+        public string Name { get; set; }
 
         /// <summary>
         /// Gets or sets the path of the file which originally supplied the data of this instance.
@@ -54,22 +31,22 @@ namespace Syroot.NintenTools.Bfres
         /// <summary>
         /// Gets the <see cref="CameraAnim"/> instances.
         /// </summary>
-        public INamedResDataList<CameraAnim> CameraAnims { get; private set; }
+        public ResDict<CameraAnim> CameraAnims { get; private set; }
         
         /// <summary>
         /// Gets the <see cref="LightAnim"/> instances.
         /// </summary>
-        public INamedResDataList<LightAnim> LightAnims { get; private set; }
+        public ResDict<LightAnim> LightAnims { get; private set; }
 
         /// <summary>
         /// Gets the <see cref="FogAnim"/> instances.
         /// </summary>
-        public INamedResDataList<FogAnim> FogAnims { get; private set; }
+        public ResDict<FogAnim> FogAnims { get; private set; }
 
         /// <summary>
         /// Gets customly attached <see cref="UserData"/> instances.
         /// </summary>
-        public INamedResDataList<UserData> UserData { get; private set; }
+        public ResDict<UserData> UserData { get; private set; }
 
         // ---- METHODS ------------------------------------------------------------------------------------------------
 
@@ -82,10 +59,10 @@ namespace Syroot.NintenTools.Bfres
             ushort numCameraAnim = loader.ReadUInt16();
             ushort numLightAnim = loader.ReadUInt16();
             ushort numFogAnim = loader.ReadUInt16();
-            CameraAnims = loader.LoadDictList<CameraAnim>();
-            LightAnims = loader.LoadDictList<LightAnim>();
-            FogAnims = loader.LoadDictList<FogAnim>();
-            UserData = loader.LoadDictList<UserData>();
+            CameraAnims = loader.LoadDict<CameraAnim>();
+            LightAnims = loader.LoadDict<LightAnim>();
+            FogAnims = loader.LoadDict<FogAnim>();
+            UserData = loader.LoadDict<UserData>();
         }
         
         void IResData.Save(ResFileSaver saver)
@@ -97,10 +74,10 @@ namespace Syroot.NintenTools.Bfres
             saver.Write((ushort)CameraAnims.Count);
             saver.Write((ushort)LightAnims.Count);
             saver.Write((ushort)FogAnims.Count);
-            saver.SaveDictList(CameraAnims);
-            saver.SaveDictList(LightAnims);
-            saver.SaveDictList(FogAnims);
-            saver.SaveDictList(UserData);
+            saver.SaveDict(CameraAnims);
+            saver.SaveDict(LightAnims);
+            saver.SaveDict(FogAnims);
+            saver.SaveDict(UserData);
         }
     }
 }

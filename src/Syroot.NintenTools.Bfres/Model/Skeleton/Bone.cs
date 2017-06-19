@@ -11,7 +11,7 @@ namespace Syroot.NintenTools.Bfres
     /// effects.
     /// </summary>
     [DebuggerDisplay(nameof(Bone) + " {" + nameof(Name) + "}")]
-    public class Bone : INamedResData
+    public class Bone : IResData
     {
         // ---- CONSTANTS ----------------------------------------------------------------------------------------------
 
@@ -23,36 +23,16 @@ namespace Syroot.NintenTools.Bfres
         private const uint _flagsMaskTransformCumulative = 0b11110000_00000000_00000000_00000000;
 
         // ---- FIELDS -------------------------------------------------------------------------------------------------
-
-        private string _name;
+        
         private uint _flags;
-
-        // ---- EVENTS -------------------------------------------------------------------------------------------------
-
-        /// <summary>
-        /// Raised when the <see cref="Name"/> property was changed.
-        /// </summary>
-        public event EventHandler NameChanged;
-
+        
         // ---- PROPERTIES ---------------------------------------------------------------------------------------------
 
         /// <summary>
-        /// Gets or sets the name with which the instance can be referenced uniquely in
-        /// <see cref="INamedResDataList{Bone}"/> instances.
+        /// Gets or sets the name with which the instance can be referenced uniquely in <see cref="ResDict{Bone}"/>
+        /// instances.
         /// </summary>
-        public string Name
-        {
-            get { return _name; }
-            set
-            {
-                if (value == null) throw new ArgumentNullException(nameof(value));
-                if (_name != value)
-                {
-                    _name = value;
-                    NameChanged?.Invoke(this, EventArgs.Empty);
-                }
-            }
-        }
+        public string Name { get; set; }
 
         public ushort ParentIndex { get; set; }
 
@@ -101,7 +81,7 @@ namespace Syroot.NintenTools.Bfres
         /// <summary>
         /// Gets customly attached <see cref="UserData"/> instances.
         /// </summary>
-        public INamedResDataList<UserData> UserData { get; private set; }
+        public ResDict<UserData> UserData { get; private set; }
 
         // ---- METHODS ------------------------------------------------------------------------------------------------
 
@@ -118,7 +98,7 @@ namespace Syroot.NintenTools.Bfres
             Scale = loader.ReadVector3F();
             Rotation = loader.ReadVector4F();
             Position = loader.ReadVector3F();
-            UserData = loader.LoadDictList<UserData>();
+            UserData = loader.LoadDict<UserData>();
         }
         
         void IResData.Save(ResFileSaver saver)
@@ -134,7 +114,7 @@ namespace Syroot.NintenTools.Bfres
             saver.Write(Scale);
             saver.Write(Rotation);
             saver.Write(Position);
-            saver.SaveDictList(UserData);
+            saver.SaveDict(UserData);
         }
     }
 

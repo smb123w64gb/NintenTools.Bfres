@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.IO;
 using Syroot.BinaryData;
 using Syroot.NintenTools.Bfres.Core;
@@ -34,8 +32,10 @@ namespace Syroot.NintenTools.Bfres
         /// <param name="leaveOpen"><c>true</c> to leave the stream open after reading, otherwise <c>false</c>.</param>
         public ResFile(Stream stream, bool leaveOpen = false)
         {
-            ResFileLoader loader = new ResFileLoader(this, stream, leaveOpen);
-            loader.Execute();
+            using (ResFileLoader loader = new ResFileLoader(this, stream, leaveOpen))
+            {
+                loader.Execute();
+            }
         }
 
         /// <summary>
@@ -45,8 +45,10 @@ namespace Syroot.NintenTools.Bfres
         /// <param name="fileName">The name of the file to load the data from.</param>
         public ResFile(string fileName)
         {
-            ResFileLoader loader = new ResFileLoader(this, fileName);
-            loader.Execute();
+            using (ResFileLoader loader = new ResFileLoader(this, fileName))
+            {
+                loader.Execute();
+            }
         }
         
         // ---- PROPERTIES ---------------------------------------------------------------------------------------------
@@ -74,76 +76,80 @@ namespace Syroot.NintenTools.Bfres
         /// <summary>
         /// Gets the stored <see cref="Model"/> (FMDL) instances.
         /// </summary>
-        public INamedResDataList<Model> Models { get; private set; }
+        public ResDict<Model> Models { get; private set; }
 
         /// <summary>
         /// Gets the stored <see cref="Texture"/> (FTEX) instances.
         /// </summary>
-        public INamedResDataList<Texture> Textures { get; private set; }
+        public ResDict<Texture> Textures { get; private set; }
 
         /// <summary>
         /// Gets the stored <see cref="SkeletalAnim"/> (FSKA) instances.
         /// </summary>
-        public INamedResDataList<SkeletalAnim> SkeletalAnims { get; private set; }
+        public ResDict<SkeletalAnim> SkeletalAnims { get; private set; }
 
         /// <summary>
         /// Gets the stored <see cref="ShaderParamAnim"/> (FSHU) instances.
         /// </summary>
-        public INamedResDataList<ShaderParamAnim> ShaderParamAnims { get; private set; }
+        public ResDict<ShaderParamAnim> ShaderParamAnims { get; private set; }
 
         /// <summary>
         /// Gets the stored <see cref="ShaderParamAnim"/> (FSHU) instances for color animations.
         /// </summary>
-        public INamedResDataList<ShaderParamAnim> ColorAnims { get; private set; }
+        public ResDict<ShaderParamAnim> ColorAnims { get; private set; }
 
         /// <summary>
         /// Gets the stored <see cref="ShaderParamAnim"/> (FSHU) instances for texture SRT animations.
         /// </summary>
-        public INamedResDataList<ShaderParamAnim> TexSrtAnims { get; private set; }
+        public ResDict<ShaderParamAnim> TexSrtAnims { get; private set; }
 
         /// <summary>
         /// Gets the stored <see cref="TexPatternAnim"/> (FTXP) instances.
         /// </summary>
-        public INamedResDataList<TexPatternAnim> TexPatternAnims { get; private set; }
+        public ResDict<TexPatternAnim> TexPatternAnims { get; private set; }
 
         /// <summary>
         /// Gets the stored <see cref="VisibilityAnim"/> (FVIS) instances for bone visibility animations.
         /// </summary>
-        public INamedResDataList<VisibilityAnim> BoneVisibilityAnims { get; private set; }
+        public ResDict<VisibilityAnim> BoneVisibilityAnims { get; private set; }
 
         /// <summary>
         /// Gets the stored <see cref="VisibilityAnim"/> (FVIS) instances for material visibility animations.
         /// </summary>
-        public INamedResDataList<VisibilityAnim> MatVisibilityAnims { get; private set; }
+        public ResDict<VisibilityAnim> MatVisibilityAnims { get; private set; }
 
         /// <summary>
         /// Gets the stored <see cref="ShapeAnim"/> (FSHA) instances.
         /// </summary>
-        public INamedResDataList<ShapeAnim> ShapeAnims { get; private set; }
+        public ResDict<ShapeAnim> ShapeAnims { get; private set; }
 
         /// <summary>
         /// Gets the stored <see cref="SceneAnim"/> (FSCN) instances.
         /// </summary>
-        public INamedResDataList<SceneAnim> SceneAnims { get; private set; }
+        public ResDict<SceneAnim> SceneAnims { get; private set; }
 
         /// <summary>
         /// Gets attached <see cref="ExternalFile"/> instances. The key of the dictionary typically represents the name
         /// of the file they were originally created from.
         /// </summary>
-        public IDictionary<string, ExternalFile> ExternalFiles { get; private set; }
+        public ResDict<ExternalFile> ExternalFiles { get; private set; }
 
         // ---- METHODS (PUBLIC) ---------------------------------------------------------------------------------------
 
         public void Save(Stream stream, bool leaveOpen = false)
         {
-            ResFileSaver saver = new ResFileSaver(this, stream, leaveOpen);
-            saver.Execute();
+            using (ResFileSaver saver = new ResFileSaver(this, stream, leaveOpen))
+            {
+                saver.Execute();
+            }
         }
 
         public void Save(string fileName)
         {
-            ResFileSaver saver = new ResFileSaver(this, fileName);
-            saver.Execute();
+            using (ResFileSaver saver = new ResFileSaver(this, fileName))
+            {
+                saver.Execute();
+            }
         }
 
         // ---- METHODS ------------------------------------------------------------------------------------------------
@@ -159,17 +165,17 @@ namespace Syroot.NintenTools.Bfres
             Name = loader.LoadString();
             uint sizStringPool = loader.ReadUInt32();
             uint ofsStringPool = loader.ReadOffset();
-            Models = loader.LoadDictList<Model>();
-            Textures = loader.LoadDictList<Texture>();
-            SkeletalAnims = loader.LoadDictList<SkeletalAnim>();
-            ShaderParamAnims = loader.LoadDictList<ShaderParamAnim>();
-            ColorAnims = loader.LoadDictList<ShaderParamAnim>();
-            TexSrtAnims = loader.LoadDictList<ShaderParamAnim>();
-            TexPatternAnims = loader.LoadDictList<TexPatternAnim>();
-            BoneVisibilityAnims = loader.LoadDictList<VisibilityAnim>();
-            MatVisibilityAnims = loader.LoadDictList<VisibilityAnim>();
-            ShapeAnims = loader.LoadDictList<ShapeAnim>();
-            SceneAnims = loader.LoadDictList<SceneAnim>();
+            Models = loader.LoadDict<Model>();
+            Textures = loader.LoadDict<Texture>();
+            SkeletalAnims = loader.LoadDict<SkeletalAnim>();
+            ShaderParamAnims = loader.LoadDict<ShaderParamAnim>();
+            ColorAnims = loader.LoadDict<ShaderParamAnim>();
+            TexSrtAnims = loader.LoadDict<ShaderParamAnim>();
+            TexPatternAnims = loader.LoadDict<TexPatternAnim>();
+            BoneVisibilityAnims = loader.LoadDict<VisibilityAnim>();
+            MatVisibilityAnims = loader.LoadDict<VisibilityAnim>();
+            ShapeAnims = loader.LoadDict<ShapeAnim>();
+            SceneAnims = loader.LoadDict<SceneAnim>();
             ExternalFiles = loader.LoadDict<ExternalFile>();
             ushort numModel = loader.ReadUInt16();
             ushort numTexture = loader.ReadUInt16();
@@ -198,17 +204,17 @@ namespace Syroot.NintenTools.Bfres
             saver.Write(Alignment);
             saver.SaveString(Name);
             saver.SaveFieldStringPool();
-            saver.SaveDictList(Models);
-            saver.SaveDictList(Textures);
-            saver.SaveDictList(SkeletalAnims);
-            saver.SaveDictList(ShaderParamAnims);
-            saver.SaveDictList(ColorAnims);
-            saver.SaveDictList(TexSrtAnims);
-            saver.SaveDictList(TexPatternAnims);
-            saver.SaveDictList(BoneVisibilityAnims);
-            saver.SaveDictList(MatVisibilityAnims);
-            saver.SaveDictList(ShapeAnims);
-            saver.SaveDictList(SceneAnims);
+            saver.SaveDict(Models);
+            saver.SaveDict(Textures);
+            saver.SaveDict(SkeletalAnims);
+            saver.SaveDict(ShaderParamAnims);
+            saver.SaveDict(ColorAnims);
+            saver.SaveDict(TexSrtAnims);
+            saver.SaveDict(TexPatternAnims);
+            saver.SaveDict(BoneVisibilityAnims);
+            saver.SaveDict(MatVisibilityAnims);
+            saver.SaveDict(ShapeAnims);
+            saver.SaveDict(SceneAnims);
             saver.SaveDict(ExternalFiles);
             saver.Write((ushort)Models.Count);
             saver.Write((ushort)Textures.Count);
@@ -230,7 +236,7 @@ namespace Syroot.NintenTools.Bfres
         private void PreSave()
         {
             // Update SkeletalAnim instances.
-            foreach (SkeletalAnim anim in SkeletalAnims)
+            foreach (SkeletalAnim anim in SkeletalAnims.Values)
             {
                 int curveIndex = 0;
                 foreach (BoneAnim subAnim in anim.BoneAnims)
@@ -241,7 +247,7 @@ namespace Syroot.NintenTools.Bfres
             }
 
             // Update TexPatternAnim instances.
-            foreach (TexPatternAnim anim in TexPatternAnims)
+            foreach (TexPatternAnim anim in TexPatternAnims.Values)
             {
                 int curveIndex = 0;
                 int infoIndex = 0;
@@ -255,7 +261,7 @@ namespace Syroot.NintenTools.Bfres
             }
 
             // Update ShaderParamAnim instances.
-            foreach (ShaderParamAnim anim in ShaderParamAnims)
+            foreach (ShaderParamAnim anim in ShaderParamAnims.Values)
             {
                 int curveIndex = 0;
                 int infoIndex = 0;
@@ -269,7 +275,7 @@ namespace Syroot.NintenTools.Bfres
             }
 
             // Update ShapeAnim instances.
-            foreach (ShapeAnim anim in ShapeAnims)
+            foreach (ShapeAnim anim in ShapeAnims.Values)
             {
                 int curveIndex = 0;
                 int infoIndex = 0;
