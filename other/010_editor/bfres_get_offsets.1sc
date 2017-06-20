@@ -11,6 +11,7 @@
 //------------------------------------------------
 
 RequiresFile();
+BigEndian();
 
 int64 target = GetCursorPos();
 int foundCount = 0;

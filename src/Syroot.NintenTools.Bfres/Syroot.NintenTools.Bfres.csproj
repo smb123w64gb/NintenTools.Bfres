@@ -21,6 +21,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <Compile Remove="Core\Ieee754Converter.cs" />
 	  <Compile Remove="Core\ResFileSaver_NintendoOrder.cs" />
 	</ItemGroup>
 

@@ -137,11 +137,11 @@ namespace Syroot.NintenTools.Bfres
         {
             // Read the header.
             uint size = loader.ReadUInt32();
-            int nodeCount = loader.ReadInt32(); // Excludes root node.
+            int numNodes = loader.ReadInt32(); // Excludes root node.
 
             // Read the nodes including the root node.
             List<Node> nodes = new List<Node>();
-            for (; nodeCount >= 0; nodeCount--)
+            for (; numNodes >= 0; numNodes--)
             {
                 nodes.Add(ReadNode(loader));
             }
@@ -160,8 +160,8 @@ namespace Syroot.NintenTools.Bfres
             foreach (Node node in _nodes)
             {
                 saver.Write(node.Ref);
-                saver.Write(node.Left);
-                saver.Write(node.Right);
+                saver.Write(node.IdxLeft);
+                saver.Write(node.IdxRight);
                 saver.SaveString(node.Key);
                 switch (node.Value)
                 {
@@ -237,8 +237,8 @@ namespace Syroot.NintenTools.Bfres
             return new Node()
             {
                 Ref = loader.ReadUInt32(),
-                Left = loader.ReadUInt16(),
-                Right = loader.ReadUInt16(),
+                IdxLeft = loader.ReadUInt16(),
+                IdxRight = loader.ReadUInt16(),
                 Key = loader.LoadString(),
                 Value = LoadNodeValue(loader)
             };
@@ -251,8 +251,8 @@ namespace Syroot.NintenTools.Bfres
             internal const int SizeInBytes = 16;
 
             internal uint Ref;
-            internal ushort Left;
-            internal ushort Right;
+            internal ushort IdxLeft;
+            internal ushort IdxRight;
             internal string Key;
             internal IResData Value;
         }

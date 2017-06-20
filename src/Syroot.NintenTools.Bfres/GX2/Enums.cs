@@ -33,7 +33,7 @@ namespace Syroot.NintenTools.Bfres.GX2
         Format_8_SNorm = 0x00000200,
         Format_8_SInt = 0x00000300,
         Format_8_UIntToSingle = 0x00000800,
-        Format_8_SIntToSingle = 0x00000a00,
+        Format_8_SIntToSingle = 0x00000A00,
         // 8 bits (4x2)
         Format_4_4_UNorm = 0x00000001,
         // 16 bits (16x1)
@@ -43,14 +43,14 @@ namespace Syroot.NintenTools.Bfres.GX2
         Format_16_SInt = 0x00000302,
         Format_16_Single = 0x00000803,
         Format_16_UIntToSingle = 0x00000802,
-        Format_16_SIntToSingle = 0x00000a02,
+        Format_16_SIntToSingle = 0x00000A02,
         // 16 bits (8x2)
         Format_8_8_UNorm = 0x00000004,
         Format_8_8_UInt = 0x00000104,
         Format_8_8_SNorm = 0x00000204,
         Format_8_8_SInt = 0x00000304,
         Format_8_8_UIntToSingle = 0x00000804,
-        Format_8_8_SIntToSingle = 0x00000a04,
+        Format_8_8_SIntToSingle = 0x00000A04,
         // 32 bits (32x1)
         Format_32_UInt = 0x00000105,
         Format_32_SInt = 0x00000305,
@@ -62,33 +62,33 @@ namespace Syroot.NintenTools.Bfres.GX2
         Format_16_16_SInt = 0x00000307,
         Format_16_16_Single = 0x00000808,
         Format_16_16_UIntToSingle = 0x00000807,
-        Format_16_16_SIntToSingle = 0x00000a07,
+        Format_16_16_SIntToSingle = 0x00000A07,
         // 32 bits (10/11x3)
         Format_10_11_11_Single = 0x00000809,
         // 32 bits (8x4)
-        Format_8_8_8_8_UNorm = 0x0000000a,
-        Format_8_8_8_8_UInt = 0x0000010a,
-        Format_8_8_8_8_SNorm = 0x0000020a,
-        Format_8_8_8_8_SInt = 0x0000030a,
-        Format_8_8_8_8_UIntToSingle = 0x0000080a,
-        Format_8_8_8_8_SIntToSingle = 0x00000a0a,
+        Format_8_8_8_8_UNorm = 0x0000000A,
+        Format_8_8_8_8_UInt = 0x0000010A,
+        Format_8_8_8_8_SNorm = 0x0000020A,
+        Format_8_8_8_8_SInt = 0x0000030A,
+        Format_8_8_8_8_UIntToSingle = 0x0000080A,
+        Format_8_8_8_8_SIntToSingle = 0x00000A0A,
         // 32 bits (10x3 + 2)
-        Format_10_10_10_2_UNorm = 0x0000000b,
-        Format_10_10_10_2_UInt = 0x0000010b,
-        Format_10_10_10_2_SNorm = 0x0000020b, // Last 2 bits are UNorm
-        Format_10_10_10_2_SInt = 0x0000030b,
+        Format_10_10_10_2_UNorm = 0x0000000B,
+        Format_10_10_10_2_UInt = 0x0000010B,
+        Format_10_10_10_2_SNorm = 0x0000020B, // Last 2 bits are UNorm
+        Format_10_10_10_2_SInt = 0x0000030B,
         // 64 bits (32x2)
-        Format_32_32_UInt = 0x0000010c,
-        Format_32_32_SInt = 0x0000030c,
-        Format_32_32_Single = 0x0000080d,
+        Format_32_32_UInt = 0x0000010C,
+        Format_32_32_SInt = 0x0000030C,
+        Format_32_32_Single = 0x0000080D,
         // 64 bits (16x4)
-        Format_16_16_16_16_UNorm = 0x0000000e,
-        Format_16_16_16_16_UInt = 0x0000010e,
-        Format_16_16_16_16_SNorm = 0x0000020e,
-        Format_16_16_16_16_SInt = 0x0000030e,
-        Format_16_16_16_16_Single = 0x0000080f,
-        Format_16_16_16_16_UIntToSingle = 0x0000080e,
-        Format_16_16_16_16_SIntToSingle = 0x00000a0e,
+        Format_16_16_16_16_UNorm = 0x0000000E,
+        Format_16_16_16_16_UInt = 0x0000010E,
+        Format_16_16_16_16_SNorm = 0x0000020E,
+        Format_16_16_16_16_SInt = 0x0000030E,
+        Format_16_16_16_16_Single = 0x0000080F,
+        Format_16_16_16_16_UIntToSingle = 0x0000080E,
+        Format_16_16_16_16_SIntToSingle = 0x00000A0E,
         // 96 bits (32x3)
         Format_32_32_32_UInt = 0x00000110,
         Format_32_32_32_SInt = 0x00000310,
@@ -150,6 +150,19 @@ namespace Syroot.NintenTools.Bfres.GX2
         NotEqual,
         GreaterOrEqual,
         Always
+    }
+
+    /// <summary>
+    /// Represents the source channels to map to a color channel in textures.
+    /// </summary>
+    public enum GX2CompSel : byte
+    {
+        ChannelR,
+        ChannelG,
+        ChannelB,
+        ChannelA,
+        Always0,
+        Always1
     }
 
     /// <summary>

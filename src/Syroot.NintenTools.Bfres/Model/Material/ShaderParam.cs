@@ -46,16 +46,16 @@ namespace Syroot.NintenTools.Bfres
                 }
                 if (Type <= ShaderParamType.Float4x4)
                 {
-                    return sizeof(float) * 4 * ((((uint)Type - (uint)ShaderParamType.Reserved2) >> 2) + 2);
+                    uint cols = ((uint)Type & 0x03) + 1;
+                    uint rows = (((uint)Type - (uint)ShaderParamType.Reserved2) >> 2) + 2;
+                    return sizeof(float) * cols * rows;
                 }
                 switch (Type)
                 {
-                    case ShaderParamType.Srt2D:
-                    case ShaderParamType.TexSrt:
-                        return Matrix2x3.SizeInBytes;
-                    case ShaderParamType.Srt3D:
-                    case ShaderParamType.Matrix3x2:
-                        return Matrix3x4.SizeInBytes;
+                    case ShaderParamType.Srt2D: return Srt2D.SizeInBytes;
+                    case ShaderParamType.Srt3D: return Srt3D.SizeInBytes;
+                    case ShaderParamType.TexSrt: return TexSrt.SizeInBytes;
+                    case ShaderParamType.TexSrtEx: return TexSrtEx.SizeInBytes;
                 }
                 throw new ResException($"Cannot retrieve size of unknown {nameof(ShaderParamType)} {Type}.");
             }
@@ -118,6 +118,6 @@ namespace Syroot.NintenTools.Bfres
         Reserved2, Float2x2, Float2x3, Float2x4,
         Reserved3, Float3x2, Float3x3, Float3x4,
         Reserved4, Float4x2, Float4x3, Float4x4,
-        Srt2D, Srt3D, TexSrt, Matrix3x2/*GUESS actually should be 3x4?*/
+        Srt2D, Srt3D, TexSrt, TexSrtEx
     }
 }

@@ -70,7 +70,7 @@ namespace Syroot.NintenTools.Bfres
             byte numMesh = loader.ReadByte();
             byte numKeyShape = loader.ReadByte();
             TargetAttribCount = loader.ReadByte();
-            ushort numSubMeshBoundingNodes = loader.ReadUInt16(); // Normally padding.
+            ushort numSubMeshBoundingNodes = loader.ReadUInt16(); // Padding in engine.
             Radius = loader.ReadSingle();
             VertexBuffer = loader.Load<VertexBuffer>();
             Meshes = loader.LoadList<Mesh>(numMesh);
@@ -78,14 +78,13 @@ namespace Syroot.NintenTools.Bfres
             KeyShapes = loader.LoadDict<KeyShape>();
             if (numSubMeshBoundingNodes == 0)
             {
+                // Compute the count differently if the node count was padding.
                 SubMeshBoundings = loader.LoadCustom(() => loader.ReadBoundings(Meshes[0].SubMeshes.Count + 1)); 
             }
             else
             {
-                // Normally nonexistent.
                 SubMeshBoundingNodes = loader.LoadList<BoundingNode>(numSubMeshBoundingNodes);
-                SubMeshBoundings = loader.LoadCustom(() => loader.ReadBoundings(Meshes[0].SubMeshes.Count + 1));
-                // Normally nonexistent.
+                SubMeshBoundings = loader.LoadCustom(() => loader.ReadBoundings(numSubMeshBoundingNodes));
                 SubMeshBoundingIndices = loader.LoadCustom(() => loader.ReadUInt16s(numSubMeshBoundingNodes));
             }
             uint userPointer = loader.ReadUInt32();

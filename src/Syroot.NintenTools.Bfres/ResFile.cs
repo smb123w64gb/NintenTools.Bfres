@@ -189,7 +189,7 @@ namespace Syroot.NintenTools.Bfres
             ushort numShapeAnim = loader.ReadUInt16();
             ushort numSceneAnim = loader.ReadUInt16();
             ushort numExternalFile = loader.ReadUInt16();
-            uint userPointer = loader.ReadOffset();
+            uint userPointer = loader.ReadUInt32();
         }
         
         void IResData.Save(ResFileSaver saver)

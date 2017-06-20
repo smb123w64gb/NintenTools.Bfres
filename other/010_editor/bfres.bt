@@ -3,12 +3,13 @@
 //
 //      File: BFRES.bt
 //   Authors: Syroot
-//   Version: 1.1.6
+//   Version: 1.2.0
 //   Purpose: Parse NintendoWare for Cafe (NW4F) graphics archive files (minimum version 3.0.0.0).
 //  Category: Wii U
 // File Mask: *.bfres
 //  ID Bytes: 46 52 45 53 //FRES
 //   History: 
+// 	1.2.0	2017-06-21	Update templates, fix many layouts and parse flags / enumerations.
 // 	1.1.6	2017-06-10	Fix issues with FSCN sections.
 // 	1.1.5	2017-06-07	Fix order of base animation data fields for BoneAnims.
 // 	1.1.4	2017-06-04	Add guessed ShaderParam layout for <3.3.0.0 files, add ShaderParam type 32 in those files.
@@ -42,15 +43,15 @@
 
 struct ResFile;
 struct Offset; struct NameOffset;
-struct Dict; struct DictNode;
+struct Dict; struct DictNode; struct DictNodeName;
 enum DictType
 {
 	DT_NONE,
-	DT_USER_DATA, DT_TEXTURE_REF,
+	DT_TEXTURE_REF, DT_STRING, DT_USER_DATA,
 	DT_MODEL,
 		DT_BONE,
 		DT_VERTEX_ATTRIB,
-		DT_SHAPE,
+		DT_SHAPE, DT_KEY_SHAPE,
 		DT_MATERIAL, DT_RENDER_INFO, DT_SAMPLER,
 	DT_TEXTURE,
 	DT_SKELETAL_ANIM,
@@ -71,8 +72,8 @@ struct UserData;
 
 struct Model; struct Buffer;
 	struct Skeleton; struct Bone;
-	struct Vertex; struct VertexAttrib; 
-	struct Shape; struct Mesh; struct SubMesh; struct KeyShape; struct VisibilityNode; struct Bounding;
+	struct VertexBuffer; struct VertexAttrib; 
+	struct Shape; struct Mesh; struct SubMesh; struct KeyShape; struct BoundingNode; struct Bounding;
 	struct Material; struct RenderInfo; struct RenderState; struct Sampler; struct ShaderParam; struct ShaderAssign;
 struct Texture;
 struct SkeletalAnim; struct BoneAnim;
@@ -93,20 +94,21 @@ struct ShaderArchive; struct ShadingModel;
 
 // ==== Includes =======================================================================================================
 
-#include "Math.bt"
-#include "BFRES_Common.bt"
-#include "BFRES_FMDL.bt"
-#include "BFRES_FTEX.bt"
-#include "BFRES_FSKA.bt"
-#include "BFRES_FSHU.bt"
-#include "BFRES_FTXP.bt"
-#include "BFRES_FVIS.bt"
-#include "BFRES_FSHA.bt"
-#include "BFRES_FSCN.bt"
-#include "BFRES_External.bt"
-#include "BFRES_BFSHA.bt"
+#include "math.bt"
+#include "bfres_common.bt"
+#include "bfres_fmdl.bt"
+#include "bfres_ftex.bt"
+#include "bfres_fska.bt"
+#include "bfres_fshu.bt"
+#include "bfres_ftxp.bt"
+#include "bfres_fvis.bt"
+#include "bfres_fsha.bt"
+#include "bfres_fscn.bt"
+#include "bfres_external.bt"
+#include "bfres_bfsha.bt"
 
 // ==== File Contents ==================================================================================================
 
 BigEndian();
+BitfieldRightToLeft();
 ResFile file <open=true>;

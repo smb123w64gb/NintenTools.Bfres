@@ -64,20 +64,20 @@ namespace Syroot.NintenTools.Bfres
 
         void IResData.Load(ResFileLoader loader)
         {
-            ushort sizArray = loader.ReadUInt16();
+            ushort lenArray = loader.ReadUInt16();
             Type = loader.ReadEnum<RenderInfoType>(true);
             loader.Seek(1);
             Name = loader.LoadString();
             switch (Type)
             {
                 case RenderInfoType.Int32:
-                    _value = loader.ReadInt32s(sizArray);
+                    _value = loader.ReadInt32s(lenArray);
                     break;
                 case RenderInfoType.Single:
-                    _value = loader.ReadSingles(sizArray);
+                    _value = loader.ReadSingles(lenArray);
                     break;
                 case RenderInfoType.String:
-                    _value = loader.LoadStrings(sizArray);
+                    _value = loader.LoadStrings(lenArray);
                     break;
             }
         }
@@ -92,9 +92,11 @@ namespace Syroot.NintenTools.Bfres
             {
                 case RenderInfoType.Int32:
                     saver.Write((int[])_value);
+                    saver.Write(0); // Weird padding for numerical values.
                     break;
                 case RenderInfoType.Single:
                     saver.Write((float[])_value);
+                    saver.Write(0); // Weird padding for numerical values.
                     break;
                 case RenderInfoType.String:
                     saver.SaveStrings((string[])_value);

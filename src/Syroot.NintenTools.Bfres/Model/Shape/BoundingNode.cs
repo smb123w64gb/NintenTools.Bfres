@@ -16,6 +16,8 @@ namespace Syroot.NintenTools.Bfres
 
         public ushort Unknown { get; set; }
 
+        public ushort NextSibling { get; set; }
+
         public ushort SubMeshIndex { get; set; }
 
         public ushort SubMeshCount { get; set; }
@@ -27,6 +29,7 @@ namespace Syroot.NintenTools.Bfres
             LeftChildIndex = loader.ReadUInt16();
             RightChildIndex = loader.ReadUInt16();
             Unknown = loader.ReadUInt16();
+            NextSibling = loader.ReadUInt16();
             SubMeshIndex = loader.ReadUInt16();
             SubMeshCount = loader.ReadUInt16();
         }
@@ -36,6 +39,7 @@ namespace Syroot.NintenTools.Bfres
             saver.Write(LeftChildIndex);
             saver.Write(RightChildIndex);
             saver.Write(Unknown);
+            saver.Write(NextSibling);
             saver.Write(SubMeshIndex);
             saver.Write(SubMeshCount);
         }

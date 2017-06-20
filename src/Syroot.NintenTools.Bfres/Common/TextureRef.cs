@@ -4,8 +4,6 @@ using Syroot.NintenTools.Bfres.Core;
 
 namespace Syroot.NintenTools.Bfres
 {
-    // TODO: This class should possibly not exist, reference textures directly.
-
     /// <summary>
     /// Represents a reference to a <see cref="Texture"/> instance by name.
     /// </summary>

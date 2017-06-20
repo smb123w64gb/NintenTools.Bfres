@@ -92,10 +92,25 @@ namespace Syroot.NintenTools.Bfres
         public uint ViewSliceCount { get; set; }
 
         /// <summary>
-        /// Gets or sets the GX2CompSel value.
+        /// Gets or sets the source channel to map to the R (red) channel.
         /// </summary>
-        public uint CompSel { get; set; }
-        
+        public GX2CompSel CompSelR { get; set; }
+
+        /// <summary>
+        /// Gets or sets the source channel to map to the R (red) channel.
+        /// </summary>
+        public GX2CompSel CompSelG { get; set; }
+
+        /// <summary>
+        /// Gets or sets the source channel to map to the R (red) channel.
+        /// </summary>
+        public GX2CompSel CompSelB { get; set; }
+
+        /// <summary>
+        /// Gets or sets the source channel to map to the R (red) channel.
+        /// </summary>
+        public GX2CompSel CompSelA { get; set; }
+
         public uint[] Regs { get; set; }
 
         public uint ArrayLength { get; set; }
@@ -152,7 +167,10 @@ namespace Syroot.NintenTools.Bfres
             ViewMipCount = loader.ReadUInt32();
             ViewSliceFirst = loader.ReadUInt32();
             ViewSliceCount = loader.ReadUInt32();
-            CompSel = loader.ReadUInt32();
+            CompSelR = loader.ReadEnum<GX2CompSel>(true);
+            CompSelG = loader.ReadEnum<GX2CompSel>(true);
+            CompSelB = loader.ReadEnum<GX2CompSel>(true);
+            CompSelA = loader.ReadEnum<GX2CompSel>(true);
             Regs = loader.ReadUInt32s(5);
             uint handle = loader.ReadUInt32();
             ArrayLength = loader.ReadUInt32(); // Possibly just a byte.
@@ -189,7 +207,10 @@ namespace Syroot.NintenTools.Bfres
             saver.Write(ViewMipCount);
             saver.Write(ViewSliceFirst);
             saver.Write(ViewSliceCount);
-            saver.Write(CompSel);
+            saver.Write(CompSelR, true);
+            saver.Write(CompSelG, true);
+            saver.Write(CompSelB, true);
+            saver.Write(CompSelA, true);
             saver.Write(Regs);
             saver.Write(0); // Handle
             saver.Write(ArrayLength);

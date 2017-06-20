@@ -3,61 +3,66 @@
 typedef struct // ShaderParamAnim
 {
 	char signature[4]; // FSHU
-	NameOffset nameOffset;
-	NameOffset pathOffset;
-	uint flags <format=binary>;
-	int frameCount;
-	ushort matAnimCount;
-	ushort userDataCount;
-	int paramAnimCount;
-	int curveCount;
-	uint bakedSize;
-	Offset modelOffset; // Points to FMDL
-	Offset bindIndexArrayOffset;
-	Offset matAnimArrayOffset;
-	Offset userDataDictOffset;
+	NameOffset ofsName;
+	NameOffset ofsPath;
+	enum <uint> ShaderParamAnimFlags
+	{
+		SPAF_None,
+		SPAF_CurveBaked = 1 << 0,
+		SPAF_IsLooping = 1 << 2
+	} flg : 3;
+	int numFrame;
+	ushort numMatAnim;
+	ushort numUserData;
+	int numParamAnim;
+	int numCurve;
+	uint sizBaked;
+	Offset ofsModel; // Points to FMDL
+	Offset ofsBindIndexList;
+	Offset ofsMatAnimList;
+	Offset ofsUserDataDict;
 	// Read bind indices.
-	FSeek(bindIndexArrayOffset.target);
-	ushort bindIndices[matAnimCount] <optimize=true>;
+	FSeek(ofsBindIndexList.target);
+	ushort bindIndices[numMatAnim] <optimize=true>;
 	FAlign(4);
 	// Read material animations.
-	FSeek(matAnimArrayOffset.target);
-	ShaderParamMatAnim matAnims[matAnimCount] <optimize=false>;
+	FSeek(ofsMatAnimList.target);
+	ShaderParamMatAnim matAnims[numMatAnim] <optimize=false>;
 	// Read user data.
-	if (userDataDictOffset.value)
+	if (ofsUserDataDict.value)
 	{
-		FSeek(userDataDictOffset.target);
-		Dict userDataDict(DT_USER_DATA);
+		FSeek(ofsUserDataDict.target);
+		Dict userData(DT_USER_DATA);
 	}
 } ShaderParamAnim <bgcolor=0xFFD6CD>;
 
 typedef struct // ShaderParamMatAnim
 {
-	ushort animParamCount;
-	ushort curveCount;
-	ushort constantCount;
+	ushort numAnimParam;
+	ushort numCurve;
+	ushort numConstant;
 	ushort padding <fgcolor=0x808080, hidden=true>;
 	int beginCurve;
 	int beginParamAnim;
-	NameOffset nameOffset;
-	Offset paramAnimInfoArrayOffset;
-	Offset curveArrayOffset;
-	Offset constantArrayOffset;
+	NameOffset ofsName;
+	Offset ofsParamAnimInfoList;
+	Offset ofsCurveList;
+	Offset ofsConstantList;
 	local uint pos <hidden=true> = FTell();
 	// Read animation param infos.
-	FSeek(paramAnimInfoArrayOffset.target);
-	ParamAnimInfo paramAnimInfos[animParamCount] <optimize=false>;
+	FSeek(ofsParamAnimInfoList.target);
+	ParamAnimInfo paramAnimInfos[numAnimParam] <optimize=false>;
 	// Read animation curves.
-	if (curveCount)
+	if (numCurve)
 	{
-		FSeek(curveArrayOffset.target);
-		AnimCurve animCurves[curveCount] <optimize=false>;
+		FSeek(ofsCurveList.target);
+		AnimCurve animCurves[numCurve] <optimize=false>;
 	}
 	// Read constants.
-	if (constantCount) // Offset can be valid but count 0.
+	if (numConstant) // Offset can be valid but count 0.
 	{
-		FSeek(constantArrayOffset.target);
-		AnimConstant constants[constantCount] <optimize=true>;
+		FSeek(ofsConstantList.target);
+		AnimConstant constants[numConstant] <optimize=true>;
 	}
 	FSeek(pos); // Seek back to header end.
 } ShaderParamMatAnim <bgcolor=0xEBC7BF, read=ShaderParamMatAnimRead>;
@@ -65,12 +70,12 @@ typedef struct // ShaderParamMatAnim
 typedef struct // ParamAnimInfo
 {
 	ushort beginCurve;
-	ushort floatCurveCount;
-	ushort intCurveCount;
+	ushort numFloatCurve;
+	ushort numIntCurve;
 	ushort beginConstant;
-	ushort constantCount;
-	ushort subBindIndex;
-	NameOffset nameOffset;
+	ushort numConstant;
+	ushort idxSubBind;
+	NameOffset ofsName;
 } ParamAnimInfo <bgcolor=0xD9B7B0, read=ParamAnimInfoRead>;
 
 typedef struct // AnimConstant
@@ -87,10 +92,10 @@ typedef struct // AnimConstant
 
 string ParamAnimInfoRead(ParamAnimInfo &paramAnimInfo)
 {
-	return paramAnimInfo.nameOffset.name;
+	return paramAnimInfo.ofsName.name;
 }
 
 string ShaderParamMatAnimRead(ShaderParamMatAnim &shaderParamMatAnim)
 {
-	return shaderParamMatAnim.nameOffset.name;
+	return shaderParamMatAnim.ofsName.name;
 }

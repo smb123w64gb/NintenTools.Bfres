@@ -3,39 +3,39 @@
 typedef struct // SceneAnim
 {
 	char signature[4]; // FSCN
-	NameOffset nameOffset;
-	NameOffset pathOffset;
-	ushort userDataCount;
-	ushort cameraAnimCount;
-	ushort lightAnimCount;
-	ushort fogAnimCount;
-	Offset cameraAnimDictOffset;
-	Offset lightAnimDictOffset;
-	Offset fogAnimDictOffset;
-	Offset userDataDictOffset;
+	NameOffset ofsName;
+	NameOffset ofsPath;
+	ushort numUserData;
+	ushort numCameraAnim;
+	ushort numLightAnim;
+	ushort numFogAnim;
+	Offset ofsCameraAnimDict;
+	Offset ofsLightAnimDict;
+	Offset ofsFogAnimDict;
+	Offset ofsUserDataDict;
 	// Read camera animations.
-	if (cameraAnimCount)
+	if (numCameraAnim)
 	{
-		FSeek(cameraAnimDictOffset.target);
-		Dict cameraAnimDict(DT_CAMERA_ANIM);
+		FSeek(ofsCameraAnimDict.target);
+		Dict cameraAnims(DT_CAMERA_ANIM);
 	}
 	// Read light animations.
-	if (lightAnimCount)
+	if (numLightAnim)
 	{
-		FSeek(lightAnimDictOffset.target);
-		Dict lightAnimDict(DT_LIGHT_ANIM);
+		FSeek(ofsLightAnimDict.target);
+		Dict lightAnims(DT_LIGHT_ANIM);
 	}
 	// Read fog animations.
-	if (fogAnimCount)
+	if (numFogAnim)
 	{
-		FSeek(fogAnimDictOffset.target);
-		Dict fogAnimDict(DT_FOG_ANIM);
+		FSeek(ofsFogAnimDict.target);
+		Dict fogAnims(DT_FOG_ANIM);
 	}
 	// Read user data.
-	if (userDataDictOffset.value)
+	if (ofsUserDataDict.value)
 	{
-		FSeek(userDataDictOffset.target);
-		Dict userDataDict(DT_USER_DATA);
+		FSeek(ofsUserDataDict.target);
+		Dict userData(DT_USER_DATA);
 	}
 } SceneAnim <bgcolor=0xCDFFEF, read=SceneAnimRead>;
 
@@ -44,31 +44,45 @@ typedef struct // SceneAnim
 typedef struct // CameraAnim
 {
 	char signature[4]; // FCAM
-	ushort flags <format=binary>;
-	ushort padding <fgcolor=0x808080, hidden=true>;
-	int frameCount;
-	ubyte curveCount;
-	ubyte padding <fgcolor=0x808080, hidden=true>;
-	ushort userDataCount;
-	uint bakedSize;
-	NameOffset nameOffset;
-	Offset curveArrayOffset;
-	Offset baseValueArrayOffset;
-	Offset userDataDictOffset;
-	// Read animation curves.
-	if (curveCount)
+	enum <ushort> CameraAnimFlags
 	{
-		FSeek(curveArrayOffset.target);
-		AnimCurve animCurves[curveCount] <optimize=false>;
+		CAF_CurveBaked = 1 << 0,
+		CAF_IsLooping = 1 << 2
+	} flg : 8;
+	enum <ushort> CameraAnimRotation
+	{
+		CAR_Aim,
+		CAR_EulerZXY
+	} flgRotation : 2;
+	enum <ushort> CameraAnimProjection
+	{
+		CAP_Orthographic,
+		CAP_Perspective
+	} flgProjection : 1;
+	ushort padding <fgcolor=0x808080, hidden=true>;
+	int numFrame;
+	ubyte numCurve;
+	ubyte padding <fgcolor=0x808080, hidden=true>;
+	ushort numUserData;
+	uint sizBaked;
+	NameOffset ofsName;
+	Offset ofsCurveList;
+	Offset ofsBaseValue;
+	Offset ofsUserDataDict;
+	// Read animation curves.
+	if (numCurve)
+	{
+		FSeek(ofsCurveList.target);
+		AnimCurve animCurves[numCurve] <optimize=false>;
 	}
 	// Read base values.
-	FSeek(baseValueArrayOffset.target);
+	FSeek(ofsBaseValue.target);
 	CameraAnimResult baseValue;
 	// Read user data.
-	if (userDataDictOffset.value)
+	if (ofsUserDataDict.value)
 	{
-		FSeek(userDataDictOffset.target);
-		Dict userDataDict(DT_USER_DATA);
+		FSeek(ofsUserDataDict.target);
+		Dict userData(DT_USER_DATA);
 	}
 } CameraAnim <bgcolor=0xBDEBDC, read=CameraAnimRead>;
 
@@ -77,7 +91,6 @@ typedef struct // CameraAnimResult
 	float nearZ;
 	float farZ;
 	float aspect;
-	float height;
 	float fovY;
 	Vector3F position;
 	Vector3F rotation;
@@ -89,46 +102,66 @@ typedef struct // CameraAnimResult
 typedef struct // LightAnim
 {
 	char signature[4]; // FLIT
-	ushort flags <format=binary>;
-	ushort userDataCount;
-	int frameCount;
-	ubyte curveCount;
-	byte lightTypeIndex;
-	byte distanceAttenuationFuncIndex;
-	byte angleAttenuationFuncIndex;
-	uint bakedSize;
-	NameOffset nameOffset;
-	NameOffset lightTypeNameOffset;
-	NameOffset distanceAttenuationFuncNameOffset;
-	NameOffset angleAttenuationFuncNameOffset;
-	Offset curveArrayOffset;
-	Offset baseValueArrayOffset;
-	Offset userDataDictOffset;
+	enum <ushort> LightAnimFlags
+	{
+		LAF_CurveBaked = 1 << 0,
+		LAF_IsLooping = 1 << 2
+	} flg : 8;
+	enum <ushort> LightAnimCurve
+	{
+		LAC_Enable = 1 << 8
+	} flgCurve : 1;
+	enum <ushort> LightAnimBase
+	{
+		LAB_None,
+		LAB_Enable = 1 << 0,
+		LAB_Position = 1 << 1,
+		LAB_Direction = 1 << 2,
+		LAB_DistanceAttn = 1 << 3,
+		LAB_AngleAttn = 1 << 4,
+		LAB_Color0 = 1 << 5,
+		LAB_Color1 = 1 << 6
+	} flgBase : 7;
+	ushort numUserData;
+	int numFrame;
+	ubyte numCurve;
+	byte idxLightType;
+	byte idxDistanceAttnFunc;
+	byte idxAngleAttnFunc;
+	uint sizBaked;
+	NameOffset ofsName;
+	NameOffset ofsLightTypeName;
+	NameOffset ofsDistanceAttnFuncName;
+	NameOffset ofsAngleAttnFuncName;
+	Offset ofsCurveList;
+	Offset ofsBaseValue;
+	Offset ofsUserDataDict;
 	// Read animation curves.
-	if (curveCount)
+	if (numCurve)
 	{
-		FSeek(curveArrayOffset.target);
-		AnimCurve animCurves[curveCount] <optimize=false>;
+		FSeek(ofsCurveList.target);
+		AnimCurve animCurves[numCurve] <optimize=false>;
 	}
-	// Read base values. TODO: Read only those specified in the flags.
-	FSeek(baseValueArrayOffset.target);
-	LightAnimResult baseValue;
+	// Read base values.
+	FSeek(ofsBaseValue.target);
+	LightAnimResult baseValue(flgBase);
 	// Read user data.
-	if (userDataDictOffset.value)
+	if (ofsUserDataDict.value)
 	{
-		FSeek(userDataDictOffset.target);
-		Dict userDataDict(DT_USER_DATA);
+		FSeek(ofsUserDataDict.target);
+		Dict userData(DT_USER_DATA);
 	}
 } LightAnim <bgcolor=0xA1C8BB, read=LightAnimRead>;
 
-typedef struct // LightAnimResult
+typedef struct(LightAnimFlags flg) // LightAnimResult
 {
-	int enable;
-	Vector3F position;
-	Vector3F rotation;
-	Vector2F distanceAttenuation;
-	Vector2F angleAttenuation;
-	Vector3F colors[2];
+	if (flg & LAB_Enable) int enable;
+	if (flg & LAB_Position) Vector3F position;
+	if (flg & LAB_Direction) Vector3F direction;
+	if (flg & LAB_DistanceAttn) Vector2F distanceAttn;
+	if (flg & LAB_AngleAttn) Vector2F angleAttn;
+	if (flg & LAB_Color0) Vector3F color0;
+	if (flg & LAB_Color1) Vector3F color1;
 } LightAnimResult <bgcolor=0x95B8AD>;
 
 // ---- FFOG ----
@@ -136,32 +169,36 @@ typedef struct // LightAnimResult
 typedef struct // FogAnim
 {
 	char signature[4]; // FFOG
-	ushort flags <format=binary>;
-	ushort padding <fgcolor=0x808080, hidden=true>;
-	int frameCount;
-	ubyte curveCount;
-	byte distanceAttenuationFuncIndex;
-	ushort userDataCount;
-	uint bakedSize;
-	NameOffset nameOffset;
-	NameOffset distanceAttenuationFuncNameOffset;
-	Offset curveArrayOffset;
-	Offset baseValueArrayOffset;
-	Offset userDataDictOffset;
-	// Read animation curves.
-	if (curveCount)
+	enum <ushort> FogAnimFlags
 	{
-		FSeek(curveArrayOffset.target);
-		AnimCurve animCurves[curveCount] <optimize=false>;
+		FAF_CurveBaked = 1 << 0,
+		FAF_IsLooping = 1 << 2
+	} flg : 3;
+	ushort padding <fgcolor=0x808080, hidden=true>;
+	int numFrame;
+	ubyte numCurve;
+	byte idxDistanceAttnFunc;
+	ushort numUserData;
+	uint sizBaked;
+	NameOffset ofsName;
+	NameOffset ofsDistanceAttnFuncName;
+	Offset ofsCurveList;
+	Offset ofsBaseValue;
+	Offset ofsUserDataDict;
+	// Read animation curves.
+	if (numCurve)
+	{
+		FSeek(ofsCurveList.target);
+		AnimCurve animCurves[numCurve] <optimize=false>;
 	}
 	// Read base values.
-	FSeek(baseValueArrayOffset.target);
+	FSeek(ofsBaseValue.target);
 	FogAnimResult baseValue;
 	// Read user data.
-	if (userDataDictOffset.value)
+	if (ofsUserDataDict.value)
 	{
-		FSeek(userDataDictOffset.target);
-		Dict userDataDict(DT_USER_DATA);
+		FSeek(ofsUserDataDict.target);
+		Dict userData(DT_USER_DATA);
 	}
 } FogAnim <bgcolor=0x8AAAA0, read=FogAnimRead>;
 
@@ -175,20 +212,20 @@ typedef struct // FogAnimResult
 
 string CameraAnimRead(CameraAnim &cameraAnim)
 {
-	return cameraAnim.nameOffset.name;
+	return cameraAnim.ofsName.name;
 }
 
 string FogAnimRead(FogAnim &fogAnim)
 {
-	return fogAnim.nameOffset.name;
+	return fogAnim.ofsName.name;
 }
 
 string LightAnimRead(LightAnim &lightAnim)
 {
-	return lightAnim.nameOffset.name;
+	return lightAnim.ofsName.name;
 }
 
 string SceneAnimRead(SceneAnim &sceneAnim)
 {
-	return sceneAnim.nameOffset.name;
+	return sceneAnim.ofsName.name;
 }

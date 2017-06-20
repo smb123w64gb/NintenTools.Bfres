@@ -19,13 +19,13 @@ namespace Syroot.NintenTools.Bfres
         private const uint _flagsMaskScale = 0b00000000_00000000_00000011_00000000;
         private const uint _flagsMaskRotate = 0b00000000_00000000_01110000_00000000;
         private const uint _flagsMaskBillboard = 0b00000000_00000111_00000000_00000000;
-        private const uint _flagsMaskTransform = 0b00001111_10000000_00000000_00000000;
+        private const uint _flagsMaskTransform = 0b00001111_00000000_00000000_00000000;
         private const uint _flagsMaskTransformCumulative = 0b11110000_00000000_00000000_00000000;
 
         // ---- FIELDS -------------------------------------------------------------------------------------------------
-        
+
         private uint _flags;
-        
+
         // ---- PROPERTIES ---------------------------------------------------------------------------------------------
 
         /// <summary>
@@ -48,9 +48,9 @@ namespace Syroot.NintenTools.Bfres
             set { _flags &= ~_flagsMask | (uint)value; }
         }
 
-        public BoneFlagsRotate FlagsRotation
+        public BoneFlagsRotation FlagsRotation
         {
-            get { return (BoneFlagsRotate)(_flags & _flagsMaskRotate); }
+            get { return (BoneFlagsRotation)(_flags & _flagsMaskRotate); }
             set { _flags &= ~_flagsMaskRotate | (uint)value; }
         }
 
@@ -100,7 +100,7 @@ namespace Syroot.NintenTools.Bfres
             Position = loader.ReadVector3F();
             UserData = loader.LoadDict<UserData>();
         }
-        
+
         void IResData.Save(ResFileSaver saver)
         {
             saver.SaveString(Name);
@@ -120,19 +120,19 @@ namespace Syroot.NintenTools.Bfres
 
     public enum BoneFlags : uint
     {
-        Visible = 1 << 0   
+        Visible = 1 << 0
     }
-    
-    public enum BoneFlagsRotate : uint
+
+    public enum BoneFlagsRotation : uint
     {
         Quaternion,
         EulerXYZ = 1 << 12
     }
-    
+
     public enum BoneFlagsBillboard : uint
     {
         None,
-        Child = 1 <<16,
+        Child = 1 << 16,
         WorldViewVector = 2 << 16,
         WorldViewPoint = 3 << 16,
         ScreenViewVector = 4 << 16,
@@ -144,12 +144,12 @@ namespace Syroot.NintenTools.Bfres
     [Flags]
     public enum BoneFlagsTransform : uint
     {
-        SegmentScaleCompensate = 1 << 23,
+        None,
         ScaleUniform = 1 << 24,
         ScaleVolumeOne = 1 << 25,
         RotateZero = 1 << 26,
         TranslateZero = 1 << 27,
-        ScaleOne =  ScaleVolumeOne | ScaleUniform,
+        ScaleOne = ScaleUniform | ScaleVolumeOne,
         RotateTranslateZero = RotateZero | TranslateZero,
         Identity = ScaleOne | RotateZero | TranslateZero
     }

@@ -88,6 +88,7 @@ namespace Syroot.NintenTools.Bfres.Core
                 ItemEntry entry = _savedItems[i];
                 if (entry.Target != null) continue; // Ignore if it has already been written (list or dict elements).
 
+                Align(4);
                 switch (entry.Type)
                 {
                     case ItemEntryType.List:
@@ -112,7 +113,6 @@ namespace Syroot.NintenTools.Bfres.Core
                         
                     case ItemEntryType.Dict:
                     case ItemEntryType.ResData:
-                        Align(4);
                         entry.Target = (uint)Position;
                         ((IResData)entry.Data).Save(this);
                         break;

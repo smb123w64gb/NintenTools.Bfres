@@ -3,87 +3,92 @@
 typedef struct // TexPatternAnim
 {
 	char signature[4]; // FTXP
-	NameOffset nameOffset;
-	NameOffset pathOffset;
-	ushort flags <format=binary>;
-	ushort userDataCount;
-	int frameCount;
-	ushort textureRefCount;
-	ushort matAnimCount;
-	uint patAnimCount;
-	uint curveCount;
-	uint bakedSize;
-	Offset modelOffset; // Points to FMDL
-	Offset bindIndexArrayOffset;
-	Offset matAnimArrayOffset;
-	Offset textureRefDictOffset;
-	Offset userDataDictOffset;
+	NameOffset ofsName;
+	NameOffset ofsPath;
+	enum <ushort> TexPatternAnimFlags
+	{
+		TAF_None,
+		TAF_CurveBaked = 1 << 0,
+		TAF_IsLooping = 1 << 2
+	} flg : 2;
+	ushort numUserData;
+	int numFrame;
+	ushort numTextureRef;
+	ushort numMatAnim;
+	uint numPatAnim;
+	uint numCurve;
+	uint sizBaked;
+	Offset ofsModel; // Points to FMDL
+	Offset ofsBindIndexList;
+	Offset ofsMatAnimList;
+	Offset ofsTextureRefDict;
+	Offset ofsUserDataDict;
 	// Read bind indices.
-	FSeek(bindIndexArrayOffset.target);
-	ushort bindIndices[matAnimCount] <optimize=true>;
+	FSeek(ofsBindIndexList.target);
+	ushort bindIndices[numMatAnim] <optimize=true>;
 	FAlign(4);
 	// Read material animations.
-	FSeek(matAnimArrayOffset.target);
-	TexPatternMatAnim matAnims[matAnimCount] <optimize=false>;
+	FSeek(ofsMatAnimList.target);
+	TexPatternMatAnim matAnims[numMatAnim] <optimize=false>;
 	// Read texture references.
-	FSeek(textureRefDictOffset.target);
-	Dict textureRefDict(DT_TEXTURE_REF);
+	FSeek(ofsTextureRefDict.target);
+	Dict textureRefs(DT_TEXTURE_REF);
 	// Read user data.
-	if (userDataDictOffset.value)
+	if (ofsUserDataDict.value)
 	{
-		FSeek(userDataDictOffset.target);
-		Dict userDataDict(DT_USER_DATA);
+		FSeek(ofsUserDataDict.target);
+		Dict userData(DT_USER_DATA);
 	}
 } TexPatternAnim <bgcolor=0xFFEFCD, read=TexPatternAnimRead>;
 
 typedef struct // TexPatternMatAnim
 {
-	ushort patAnimCount;
-	ushort curveCount;
+	ushort numPatAnim;
+	ushort numCurve;
 	uint beginCurve;
 	uint beginPatAnim;
-	NameOffset nameOffset;
-	Offset patAnimInfoArrayOffset;
-	Offset curveArrayOffset;
-	Offset baseValueArrayOffset;
+	NameOffset ofsName;
+	Offset ofsPatAnimInfoList;
+	Offset ofsCurveList;
+	Offset ofsBaseValue;
 	local uint pos <hidden=true> = FTell();
 	// Read pattern animation infos.
-	FSeek(patAnimInfoArrayOffset.target);
-	PatAnimInfo patAnimInfos[patAnimCount] <optimize=false>;
+	FSeek(ofsPatAnimInfoList.target);
+	PatAnimInfo patAnimInfos[numPatAnim] <optimize=false>;
 	// Read animation curves.
-	if (curveCount)
+	if (numCurve)
 	{
-		FSeek(curveArrayOffset.target);
-		AnimCurve animCurves[curveCount] <optimize=false>;
+		FSeek(ofsCurveList.target);
+		AnimCurve animCurves[numCurve] <optimize=false>;
 	}
 	// Read base values.
-	FSeek(baseValueArrayOffset.target);
-	ushort baseValues[patAnimCount] <bgcolor=0xC8BBA1, optimize=true>;
+	FSeek(ofsBaseValue.target);
+	ushort baseValues[numPatAnim] <bgcolor=0xC8BBA1, optimize=true>;
 	FAlign(4);
 	FSeek(pos); // Seek back to header end.
 } TexPatternMatAnim <bgcolor=0xEBDCBD, read=TexPatternMatAnimRead>;
 
 typedef struct // PatAnimInfo
 {
-	byte curveIndex;
-	byte subBindIndex;
+	byte idxCurve;
+	byte idxSubBind;
 	ushort padding <fgcolor=0x808080, hidden=true>;
-	NameOffset nameOffset;
+	NameOffset ofsName;
 } PatAnimInfo <bgcolor=0xD9CBAE, read=PatAnimInfoRead>;
 
 // ==== Template Methods ===============================================================================================
 
 string PatAnimInfoRead(PatAnimInfo &patAnimInfo)
 {
-	return patAnimInfo.nameOffset.name;
+	return patAnimInfo.ofsName.name;
 }
 
 string TexPatternAnimRead(TexPatternAnim &texPatternAnim)
 {
-	return texPatternAnim.nameOffset.name;
+	return texPatternAnim.ofsName.name;
 }
 
 string TexPatternMatAnimRead(TexPatternMatAnim &texPatternMatAnim)
 {
-	return texPatternMatAnim.nameOffset.name;
+	return texPatternMatAnim.ofsName.name;
 }

@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections;
 using System.Diagnostics;
 using System.Text;
 using Syroot.NintenTools.Bfres.Core;
-using System.Linq;
 
 namespace Syroot.NintenTools.Bfres
 {

@@ -53,9 +53,14 @@ namespace Syroot.NintenTools.Bfres
         /// </summary>
         public ResDict<UserData> UserData { get; private set; }
 
-        public uint TotalVertices
+        /// <summary>
+        /// Gets or sets the total number of vertices to process when drawing this model.
+        /// </summary>
+        // TODO: Compute total vertices.
+        public uint TotalVertexCount
         {
-            get { return 0x1234567; } // TODO: Compute total vertices.
+            get;
+            private set;
         }
 
         // ---- METHODS ------------------------------------------------------------------------------------------------
@@ -66,7 +71,7 @@ namespace Syroot.NintenTools.Bfres
             Name = loader.LoadString();
             Path = loader.LoadString();
             Skeleton = loader.Load<Skeleton>();
-            uint ofsVertexBuffers = loader.ReadOffset();
+            uint ofsVertexBufferList = loader.ReadOffset();
             Shapes = loader.LoadDict<Shape>();
             Materials = loader.LoadDict<Material>();
             UserData = loader.LoadDict<UserData>();
@@ -74,10 +79,10 @@ namespace Syroot.NintenTools.Bfres
             ushort numShape = loader.ReadUInt16();
             ushort numMaterial = loader.ReadUInt16();
             ushort numUserData = loader.ReadUInt16();
-            uint totalVertices = loader.ReadUInt32();
+            TotalVertexCount = loader.ReadUInt32();
             uint userPointer = loader.ReadUInt32();
 
-            VertexBuffers = loader.LoadList<VertexBuffer>(numVertexBuffer, ofsVertexBuffers);
+            VertexBuffers = loader.LoadList<VertexBuffer>(numVertexBuffer, ofsVertexBufferList);
         }
         
         void IResData.Save(ResFileSaver saver)
@@ -94,7 +99,7 @@ namespace Syroot.NintenTools.Bfres
             saver.Write((ushort)Shapes.Count);
             saver.Write((ushort)Materials.Count);
             saver.Write((ushort)UserData.Count);
-            saver.Write(TotalVertices);
+            saver.Write(TotalVertexCount);
             saver.Write(0); // UserPointer
         }
     }

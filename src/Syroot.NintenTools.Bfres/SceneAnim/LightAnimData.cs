@@ -18,7 +18,7 @@ namespace Syroot.NintenTools.Bfres
         public int Enable;
 
         /// <summary>
-        /// The spatial origin of the light source.
+        /// The spatial origin of the light source for point or spot lights.
         /// </summary>
         public Vector3F Position;
 
@@ -28,12 +28,12 @@ namespace Syroot.NintenTools.Bfres
         public Vector3F Rotation;
 
         /// <summary>
-        /// The distance attenuation of the light power.
+        /// The distance attenuation of the light.
         /// </summary>
         public Vector2F DistanceAttn;
 
         /// <summary>
-        /// The angle attenuation of the light power.
+        /// The angle attenuation of the light in degrees.
         /// </summary>
         public Vector2F AngleAttn;
 

@@ -8,10 +8,10 @@ typedef struct // ShaderArchive
 	ushort headerSize <format=hex>; // Only up to alignment.
 	uint fileSize;
 	uint alignment <format=hex>;
-	NameOffset nameOffset;
+	NameOffset ofsName;
 	uint stringPoolSize;
 	Offset stringPoolOffset;
-	NameOffset pathOffset;
+	NameOffset ofsPath;
 	ushort shadingModel;
 	ushort flags <format=binary>;
 	uint abiVersion;
@@ -41,7 +41,7 @@ typedef struct // ShadingModel
 	int uniformCount;
 	byte systemBlockIndices[4];
 	int defaultProgramIndex;
-	NameOffset nameOffset;
+	NameOffset ofsName;
 	ubyte maxStackEntries[4]; // Moved here for now.
 	uint revision;
 	Offset staticOptionArrayOffset;
@@ -96,7 +96,7 @@ typedef struct // ShaderOption
 	ubyte bit32Index;
 	ubyte bit32Shift;
 	uint bit32Mask;
-	NameOffset nameOffset;
+	NameOffset ofsName;
 	Offset choiceDictOffset;
 	Offset choiceValuesOffset;
 	// Read choices.
@@ -226,15 +226,15 @@ string SamplerVarRead(SamplerVar &samplerVar)
 
 string ShaderArchiveRead(ShaderArchive &shaderArchive)
 {
-	return shaderArchive.nameOffset.name;
+	return shaderArchive.ofsName.name;
 }
 
 string ShadingModelRead(ShadingModel &shadingModel)
 {
-	return shadingModel.nameOffset.name;
+	return shadingModel.ofsName.name;
 }
 
 string ShaderOptionRead(ShaderOption &shaderOption)
 {
-	return shaderOption.nameOffset.name;
+	return shaderOption.ofsName.name;
 }
