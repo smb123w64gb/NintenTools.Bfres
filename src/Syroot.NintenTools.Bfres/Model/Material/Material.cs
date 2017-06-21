@@ -48,7 +48,11 @@ namespace Syroot.NintenTools.Bfres
         /// </summary>
         public ResDict<UserData> UserData { get; private set; }
 
-        public bool[] VolatileFlags { get; private set; }
+        /// <summary>
+        /// Represents a set of bits determining whether <see cref="ShaderParam"/> instances are volatile.
+        /// </summary>
+        // TODO: Wrap into a bool array.
+        public byte[] VolatileFlags { get; private set; }
 
         // TODO: Methods to access ShaderParam variable values.
 
@@ -78,20 +82,7 @@ namespace Syroot.NintenTools.Bfres
             ShaderParams = loader.LoadDict<ShaderParam>();
             ParamData = loader.LoadCustom(() => loader.ReadBytes(sizParamSource));
             UserData = loader.LoadDict<UserData>();
-            VolatileFlags = loader.LoadCustom(() =>
-            {
-                bool[] volatileFlags = new bool[numShaderParamVolatile];
-                int i = 0;
-                while (i < numShaderParamVolatile)
-                {
-                    byte b = loader.ReadByte();
-                    for (int j = 0; j < 8 && i < numShaderParamVolatile; j++)
-                    {
-                        volatileFlags[i++] = b.GetBit(j);
-                    }
-                }
-                return volatileFlags;
-            });
+            VolatileFlags = loader.LoadCustom(() => loader.ReadBytes((int)Math.Ceiling(numShaderParam / 8f)));
             uint userPointer = loader.ReadUInt32();
         }
         
@@ -119,19 +110,7 @@ namespace Syroot.NintenTools.Bfres
             saver.SaveDict(ShaderParams);
             saver.SaveCustom(ParamData, () => saver.Write(ParamData));
             saver.SaveDict(UserData);
-            saver.SaveCustom(VolatileFlags, () =>
-            {
-                int i = 0;
-                while (i < VolatileFlags.Length)
-                {
-                    byte b = 0;
-                    for (int j = 0; j < 8 && i < VolatileFlags.Length; j++)
-                    {
-                        b.SetBit(j, VolatileFlags[i++]);
-                    }
-                    saver.Write(b);
-                }
-            });
+            saver.SaveCustom(VolatileFlags, () => saver.Write(VolatileFlags));
             saver.Write(0); // UserPointer
         }
     }

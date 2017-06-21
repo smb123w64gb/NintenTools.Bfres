@@ -196,7 +196,7 @@ namespace Syroot.NintenTools.Bfres
             saver.Write(Use, true);
             saver.Write(Data.Length);
             saver.Write(0); // ImagePointer
-            saver.Write(MipData.Length);
+            saver.Write(MipData == null ? 0 : MipData.Length);
             saver.Write(0); // MipPointer
             saver.Write(TileMode, true);
             saver.Write(Swizzle);
@@ -216,8 +216,8 @@ namespace Syroot.NintenTools.Bfres
             saver.Write(ArrayLength);
             saver.SaveString(Name);
             saver.SaveString(Path);
-            saver.SaveCustom(Data, () => saver.Write(Data));
-            saver.SaveCustom(MipData, () => saver.Write(MipData));
+            saver.SaveBlock(Data, saver.ResFile.Alignment, () => saver.Write(Data));
+            saver.SaveBlock(MipData, saver.ResFile.Alignment, () => saver.Write(MipData));
             saver.SaveDict(UserData);
             saver.Write((ushort)UserData.Count);
             saver.Seek(2);

@@ -157,6 +157,7 @@ namespace Syroot.NintenTools.Bfres
             saver.Write(Count);
 
             // Write nodes.
+            int index = -1; // Start at -1 due to root node.
             foreach (Node node in _nodes)
             {
                 saver.Write(node.Ref);
@@ -169,20 +170,10 @@ namespace Syroot.NintenTools.Bfres
                         saver.SaveString(resString);
                         break;
                     default:
-                        saver.Save(node.Value);
+                        saver.Save(node.Value, index++);
                         break;
                 }
             }
-
-            // Write the node data headers sequentially to be used as list elements.
-            //CurrentIndex = 0;
-            //foreach (ResDict.Node node in dict.Nodes)
-            //{
-            //    TryGetItemEntry(node.Value, ItemEntryType.ResData, out ItemEntry entry);
-            //    entry.Target = (uint)Position;
-            //    node.Value.Save(this);
-            //    CurrentIndex++;
-            //}
         }
 
         // ---- METHODS (PROTECTED) ------------------------------------------------------------------------------------

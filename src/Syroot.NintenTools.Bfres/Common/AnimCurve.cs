@@ -151,16 +151,16 @@ namespace Syroot.NintenTools.Bfres
                 {
                     case AnimCurveKeyType.Single:
                         return loader.ReadSingles(keyElementCount);
-                    case AnimCurveKeyType.Int16:
+                    case AnimCurveKeyType.Int16: // TODO: Not really an Int16
                         float[] singleKeys = new float[keyElementCount];
-                        for (int i = 0; i < numKey; i++)
+                        for (int i = 0; i < keyElementCount; i++)
                         {
                             singleKeys[i] = loader.ReadInt16();
                         }
                         return singleKeys;
                     case AnimCurveKeyType.Byte:
                         float[] byteKeys = new float[keyElementCount];
-                        for (int i = 0; i < numKey; i++)
+                        for (int i = 0; i < keyElementCount; i++)
                         {
                             byteKeys[i] = loader.ReadByte();
                         }

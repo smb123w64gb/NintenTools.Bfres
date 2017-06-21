@@ -511,7 +511,7 @@ typedef struct // Material
 	if (ofsVolatileFlagList.value)
 	{
 		FSeek(ofsVolatileFlagList.target);
-		byte volatileFlags[Ceil(numShaderParam / sizeof(byte))] <format=binary>; // Bitset
+		byte volatileFlags[Ceil(numShaderParam / 8.0)] <format=binary>; // Bitset
 		FAlign(4);
 	}
 	// Read user data.
@@ -660,7 +660,7 @@ typedef struct // ShaderAssign
 	if (ofsShaderOptionDict.value)
 	{
 		FSeek(ofsShaderOptionDict.target);
-		Dict shaderOptionValues(DT_STRING);
+		Dict shaderOptions(DT_STRING);
 	}
 	FSeek(pos); // Seek back to header end.
 } ShaderAssign <bgcolor=0x947F9D>;

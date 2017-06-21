@@ -104,7 +104,8 @@ namespace Syroot.NintenTools.Bfres.Core
                             CurrentIndex = 0;
                             foreach (IResData element in list)
                             {
-                                _savedItems.Add(new ItemEntry(element, ItemEntryType.ResData, target: (uint)Position));
+                                _savedItems.Add(new ItemEntry(element, ItemEntryType.ResData, target: (uint)Position,
+                                    index: CurrentIndex));
                                 element.Save(this);
                                 CurrentIndex++;
                             }
@@ -114,6 +115,7 @@ namespace Syroot.NintenTools.Bfres.Core
                     case ItemEntryType.Dict:
                     case ItemEntryType.ResData:
                         entry.Target = (uint)Position;
+                        CurrentIndex = entry.Index;
                         ((IResData)entry.Data).Save(this);
                         break;
 
@@ -140,7 +142,9 @@ namespace Syroot.NintenTools.Bfres.Core
         /// Reserves space for an offset to the <paramref name="resData"/> written later.
         /// </summary>
         /// <param name="resData">The <see cref="IResData"/> to save.</param>
-        internal void Save(IResData resData)
+        /// <param name="index">The index of the element, used for instances referenced by a <see cref="ResDict"/>.
+        /// </param>
+        internal void Save(IResData resData, int index = -1)
         {
             if (resData == null)
             {
@@ -150,10 +154,11 @@ namespace Syroot.NintenTools.Bfres.Core
             if (TryGetItemEntry(resData, ItemEntryType.ResData, out ItemEntry entry))
             {
                 entry.Offsets.Add((uint)Position);
+                entry.Index = index;
             }
             else
             {
-                _savedItems.Add(new ItemEntry(resData, ItemEntryType.ResData, (uint)Position));
+                _savedItems.Add(new ItemEntry(resData, ItemEntryType.ResData, (uint)Position, index: index));
             }
             Write(UInt32.MaxValue);
         }
@@ -194,22 +199,25 @@ namespace Syroot.NintenTools.Bfres.Core
             if (TryGetItemEntry(list.First(), ItemEntryType.ResData, out ItemEntry entry))
             {
                 entry.Offsets.Add((uint)Position);
+                entry.Index = 0;
             }
             else
             {
                 // Queue all elements of the list.
-                int i = 0;
+                int index = 0;
                 foreach (T element in list)
                 {
-                    if (i == 0)
+                    if (index == 0)
                     {
-                        _savedItems.Add(new ItemEntry(element, ItemEntryType.ResData, (uint)Position));
+                        // Add with offset to the first item for the list.
+                        _savedItems.Add(new ItemEntry(element, ItemEntryType.ResData, (uint)Position, index: index));
                     }
                     else
                     {
-                        _savedItems.Add(new ItemEntry(element, ItemEntryType.ResData));
+                        // Add without offsets existing yet.
+                        _savedItems.Add(new ItemEntry(element, ItemEntryType.ResData, index: index));
                     }
-                    i++;
+                    index++;
                 }
             }
             Write(UInt32.MaxValue);
@@ -595,9 +603,10 @@ namespace Syroot.NintenTools.Bfres.Core
             internal List<uint> Offsets;
             internal uint? Target;
             internal Action Callback;
+            internal int Index;
             
             internal ItemEntry(object data, ItemEntryType type, uint? offset = null, uint? target = null,
-                Action callback = null)
+                Action callback = null, int index = -1)
             {
                 Data = data;
                 Type = type;
@@ -608,6 +617,7 @@ namespace Syroot.NintenTools.Bfres.Core
                 }
                 Callback = callback;
                 Target = target;
+                Index = index;
             }
         }
 
