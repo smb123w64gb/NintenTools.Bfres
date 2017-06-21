@@ -1,6 +1,6 @@
 # NintenTools.Bfres
 
-The goal of this .NET library is to provide easy access to data stored in the BFRES Nintendo graphics archive file format (most prominently used to store 3D game models).
+The goal of this .NET library is to provide easy access to data stored in the BFRES Nintendo graphics archive file format (most prominently used to store 3D game models) and store data in new files.
 
 ## Supported Features
 
@@ -21,7 +21,7 @@ The goal of this .NET library is to provide easy access to data stored in the BF
     | -         | External File              | `ExternalFile`    |
  
 - Saving existing BFRES files or original ones from scratch. This is experimental and unfinished.
-- Parsing BFRES files visually in [010 Editor](https://www.sweetscape.com/010editor/) with the provided [binary templates](https://github.com/Syroot/NintenTools.Bfres/tree/master/other/010%20Binary%20Templates).
+- Parsing BFRES files visually in [010 Editor](https://www.sweetscape.com/010editor/) with the provided [binary templates](https://github.com/Syroot/NintenTools.Bfres/tree/master/other/010_editor).
 
 The following features are **not yet implemented**, but planned:
 - Methods simplifying access to vertex data from `VertexBuffer` instances in combination with `VertexAttrib`.
