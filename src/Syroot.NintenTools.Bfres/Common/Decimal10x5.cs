@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Globalization;
 
 namespace Syroot.NintenTools.Bfres
 {
@@ -23,14 +22,14 @@ namespace Syroot.NintenTools.Bfres
         /// <summary>
         /// Represents the largest possible value of <see cref="Decimal10x5"/>.
         /// </summary>
-        public static readonly Decimal10x5 MaxValue = new Decimal10x5(UInt16.MaxValue);
+        public static readonly Decimal10x5 MaxValue = new Decimal10x5(Int16.MaxValue);
 
         /// <summary>
         /// Represents the smallest possible value of <see cref="Decimal10x5"/>.
         /// </summary>
-        public static readonly Decimal10x5 MinValue = new Decimal10x5(UInt16.MinValue);
+        public static readonly Decimal10x5 MinValue = new Decimal10x5(Int16.MinValue);
         
-        private const int _m = 10; // Number of integer part bits.
+        private const int _m = 10; // Number of integral part bits.
         private const int _n = 5; // Number for fractional part bits.
         
         // ---- CONSTRUCTORS & DESTRUCTOR ------------------------------------------------------------------------------
