@@ -389,6 +389,27 @@ namespace Syroot.NintenTools.Bfres.Core
         }
 
         /// <summary>
+        /// Writes a <see cref="Decimal10x5"/> instance into the current stream.
+        /// </summary>
+        /// <param name="value">The <see cref="Decimal10x5"/> instance.</param>
+        internal void Write(Decimal10x5 value)
+        {
+            Write(value.Raw);
+        }
+
+        /// <summary>
+        /// Writes <see cref="Decimal10x5"/> instances into the current stream.
+        /// </summary>
+        /// <param name="values">The <see cref="Decimal10x5"/> instances.</param>
+        internal void Write(IEnumerable<Decimal10x5> values)
+        {
+            foreach (Decimal10x5 value in values)
+            {
+                Write(value);
+            }
+        }
+
+        /// <summary>
         /// Writes a <see cref="Matrix3x4"/> instance into the current stream.
         /// </summary>
         /// <param name="value">The <see cref="Matrix3x4"/> instance.</param>

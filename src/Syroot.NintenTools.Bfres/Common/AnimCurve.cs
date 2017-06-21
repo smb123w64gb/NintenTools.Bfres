@@ -1,5 +1,4 @@
-﻿using System;
-using Syroot.NintenTools.Bfres.Core;
+﻿using Syroot.NintenTools.Bfres.Core;
 
 namespace Syroot.NintenTools.Bfres
 {
@@ -66,12 +65,18 @@ namespace Syroot.NintenTools.Bfres
         /// </summary>
         public float EndFrame { get; set; }
 
+        /// <summary>
+        /// Gets or sets the scale to multiply values of the curve by.
+        /// </summary>
         public float Scale { get; set; }
 
+        /// <summary>
+        /// Gets or sets the offset to add to the values of the curve (after multiplicating them).
+        /// </summary>
         public DWord Offset { get; set; }
 
         /// <summary>
-        /// Only existent in BFRES files of version 3.4.0.0 or newer.
+        /// Unknown purpose. Only existent in BFRES files of version 3.4.0.0 or newer.
         /// </summary>
         public float Delta { get; set; }
 
@@ -126,13 +131,13 @@ namespace Syroot.NintenTools.Bfres
                 {
                     case AnimCurveFrameType.Single:
                         return loader.ReadSingles(numKey);
-                    case AnimCurveFrameType.Int16:
-                        float[] singleFrames = new float[numKey];
+                    case AnimCurveFrameType.Decimal10x5:
+                        float[] dec10x5Frames = new float[numKey];
                         for (int i = 0; i < numKey; i++)
                         {
-                            singleFrames[i] = loader.ReadInt16();
+                            dec10x5Frames[i] = (float)loader.ReadDecimal10x5();
                         }
-                        return singleFrames;
+                        return dec10x5Frames;
                     case AnimCurveFrameType.Byte:
                         float[] byteFrames = new float[numKey];
                         for (int i = 0; i < numKey; i++)
@@ -151,13 +156,13 @@ namespace Syroot.NintenTools.Bfres
                 {
                     case AnimCurveKeyType.Single:
                         return loader.ReadSingles(keyElementCount);
-                    case AnimCurveKeyType.Int16: // TODO: Not really an Int16
-                        float[] singleKeys = new float[keyElementCount];
+                    case AnimCurveKeyType.Decimal10x5:
+                        float[] dec10x5Keys = new float[keyElementCount];
                         for (int i = 0; i < keyElementCount; i++)
                         {
-                            singleKeys[i] = loader.ReadInt16();
+                            dec10x5Keys[i] = (float)loader.ReadDecimal10x5();
                         }
-                        return singleKeys;
+                        return dec10x5Keys;
                     case AnimCurveKeyType.Byte:
                         float[] byteKeys = new float[keyElementCount];
                         for (int i = 0; i < keyElementCount; i++)
@@ -191,10 +196,10 @@ namespace Syroot.NintenTools.Bfres
                     case AnimCurveFrameType.Single:
                         saver.Write(Frames);
                         break;
-                    case AnimCurveFrameType.Int16:
+                    case AnimCurveFrameType.Decimal10x5:
                         foreach (float frame in Frames)
                         {
-                            saver.Write((short)frame);
+                            saver.Write((Decimal10x5)frame);
                         }
                         break;
                     case AnimCurveFrameType.Byte:
@@ -212,10 +217,10 @@ namespace Syroot.NintenTools.Bfres
                     case AnimCurveKeyType.Single:
                         saver.Write(Keys);
                         break;
-                    case AnimCurveKeyType.Int16:
+                    case AnimCurveKeyType.Decimal10x5:
                         foreach (float key in Keys)
                         {
-                            saver.Write((short)key);
+                            saver.Write((Decimal10x5)key);
                         }
                         break;
                     case AnimCurveKeyType.Byte:
@@ -236,17 +241,17 @@ namespace Syroot.NintenTools.Bfres
     public enum AnimCurveFrameType : ushort
     {
         /// <summary>
-        /// The frames are stored as <see cref="Single"/> instances.
+        /// The frames are stored as <see cref="System.Single"/> instances.
         /// </summary>
         Single,
 
         /// <summary>
-        /// The frames are stored as <see cref="Int16"/> instances.
+        /// The frames are stored as <see cref="Bfres.Decimal10x5"/> instances.
         /// </summary>
-        Int16,
+        Decimal10x5,
 
         /// <summary>
-        /// The frames are stored as <see cref="Byte"/> instances.
+        /// The frames are stored as <see cref="System.Byte"/> instances.
         /// </summary>
         Byte
     }
@@ -258,17 +263,17 @@ namespace Syroot.NintenTools.Bfres
     public enum AnimCurveKeyType : ushort
     {
         /// <summary>
-        /// The keys are stored as <see cref="Single"/> instances.
+        /// The keys are stored as <see cref="System.Single"/> instances.
         /// </summary>
         Single = 0 << 2,
 
         /// <summary>
-        /// The keys are stored as <see cref="Int16"/> instances.
+        /// The keys are stored as <see cref="Bfres.Decimal10x5"/> instances.
         /// </summary>
-        Int16 = 1 << 2,
+        Decimal10x5 = 1 << 2,
 
         /// <summary>
-        /// The keys are stored as <see cref="Byte"/> instances.
+        /// The keys are stored as <see cref="System.Byte"/> instances.
         /// </summary>
         Byte = 2 << 2
     }

@@ -231,13 +231,13 @@ typedef struct // AnimCurve
 	enum <ushort> AnimCurveFrameType
 	{
 		ACFT_Single,
-		ACFT_Int16,
+		ACFT_Decimal10x5,
 		ACFT_Byte
 	} flgFrameType : 2;
 	enum <ushort> AnimCurveKeyType
 	{
 		ACKT_Single,
-		ACKT_Int16,
+		ACKT_Decimal10x5,
 		ACKT_Byte
 	} flgKeyType : 2;
 	enum <ushort> AnimCurveType
@@ -272,7 +272,7 @@ typedef struct // AnimCurve
 	switch (flgFrameType)
 	{
 		case ACFT_Single: float frames[numKey]; break;
-		case ACFT_Int16: short frames[numKey]; break;
+		case ACFT_Decimal10x5: ushort frames[numKey]; break; // TODO: Convert to 16-bit fixed point
 		case ACFT_Byte: ubyte frames[numKey]; break;
 	}
 	FAlign(4);
@@ -289,7 +289,7 @@ typedef struct // AnimCurve
 	switch (flgKeyType)
 	{
 		case ACKT_Single: float data[keyElementCount] <bgcolor=0xC8A1A1, optimize=false>; break;
-		case ACKT_Int16: short data[keyElementCount] <bgcolor=0xC8A1A1, optimize=false>; break;
+		case ACFT_Decimal10x5: ushort data[keyElementCount] <bgcolor=0xC8A1A1, optimize=false>; break; // TODO: Convert to 16-bit fixed point
 		case ACKT_Byte: ubyte data[keyElementCount] <bgcolor=0xC8A1A1, optimize=false>; break;
 	}
 	FAlign(4);

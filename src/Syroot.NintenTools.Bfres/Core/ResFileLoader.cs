@@ -13,10 +13,6 @@ namespace Syroot.NintenTools.Bfres.Core
     /// </summary>
     public class ResFileLoader : BinaryDataReader
     {
-        // ---- CONSTANTS ----------------------------------------------------------------------------------------------
-
-        private const int _dictNodeSize = 16;
-
         // ---- FIELDS -------------------------------------------------------------------------------------------------
 
         private IDictionary<uint, IResData> _dataMap;
@@ -67,7 +63,7 @@ namespace Syroot.NintenTools.Bfres.Core
         }
 
         // ---- Data Load Methods ----
-        
+
         /// <summary>
         /// Reads and returns an <see cref="IResData"/> instance of type <typeparamref name="T"/> from the following
         /// offset or returns <c>null</c> if the read offset is 0.
@@ -121,7 +117,7 @@ namespace Syroot.NintenTools.Bfres.Core
         {
             uint offset = ReadOffset();
             if (offset == 0) return new ResDict<T>();
-            
+
             using (TemporarySeek(offset, SeekOrigin.Begin))
             {
                 ResDict<T> dict = new ResDict<T>();
@@ -129,7 +125,7 @@ namespace Syroot.NintenTools.Bfres.Core
                 return dict;
             }
         }
-        
+
         /// <summary>
         /// Reads and returns an <see cref="IList{T}"/> instance with <paramref name="count"/> elements of type
         /// <typeparamref name="T"/> from the following offset or returns <c>null</c> if the read offset is 0.
@@ -272,6 +268,21 @@ namespace Syroot.NintenTools.Bfres.Core
             for (int i = 0; i < count; i++)
             {
                 values[i] = ReadBounding();
+            }
+            return values;
+        }
+
+        internal Decimal10x5 ReadDecimal10x5()
+        {
+            return new Decimal10x5(ReadUInt16());
+        }
+
+        internal IList<Decimal10x5> ReadDecimal10x5s(int count)
+        {
+            Decimal10x5[] values = new Decimal10x5[count];
+            for (int i = 0; i < count; i++)
+            {
+                values[i] = ReadDecimal10x5();
             }
             return values;
         }
