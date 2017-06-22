@@ -83,7 +83,7 @@ namespace Syroot.NintenTools.Bfres
         public BoneAnimData BaseData { get; set; }
 
         /// <summary>
-        /// Gets the index of the first <see cref="Curve"/> relative to all curves of the parent
+        /// Gets the index of the first <see cref="AnimCurve"/> relative to all curves of the parent
         /// <see cref="SkeletalAnim.BoneAnims"/> instances.
         /// </summary>
         internal int BeginCurve { get; set; }

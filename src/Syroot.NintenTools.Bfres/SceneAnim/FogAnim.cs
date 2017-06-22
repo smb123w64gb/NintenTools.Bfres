@@ -47,6 +47,9 @@ namespace Syroot.NintenTools.Bfres
         /// </summary>
         public IList<AnimCurve> Curves { get; private set; }
 
+        /// <summary>
+        /// Gets the <see cref="FogAnimData"/> instance storing initial fog parameters.
+        /// </summary>
         public FogAnimData BaseData { get; set; }
 
         /// <summary>

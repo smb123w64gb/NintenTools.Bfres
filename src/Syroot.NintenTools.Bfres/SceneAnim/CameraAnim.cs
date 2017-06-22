@@ -43,6 +43,9 @@ namespace Syroot.NintenTools.Bfres
         /// </summary>
         public IList<AnimCurve> Curves { get; private set; }
 
+        /// <summary>
+        /// Gets the <see cref="CameraAnimData"/> instance storing initial camera parameters.
+        /// </summary>
         public CameraAnimData BaseData { get; set; }
 
         /// <summary>

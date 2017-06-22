@@ -7,20 +7,22 @@ using Syroot.NintenTools.Bfres.Core;
 namespace Syroot.NintenTools.Bfres
 {
     /// <summary>
-    /// Represents the non-generic base of a dictionary which can quickly look up <see cref="IResData"/> instances of
-    /// type <typeparamref name="T"/> via key or index.
+    /// Represents the non-generic base of a dictionary which can quickly look up <see cref="IResData"/> instances via
+    /// key or index.
     /// </summary>
-    /// <typeparam name="T">The specialized type of the <see cref="IResData"/> instances.</typeparam>
     [DebuggerDisplay("Count = {Count}")]
     [DebuggerTypeProxy(typeof(TypeProxy))]
     public abstract class ResDict : IEnumerable<KeyValuePair<string, IResData>>, IResData
     {
         // ---- FIELDS -------------------------------------------------------------------------------------------------
 
-        protected IList<Node> _nodes; // Includes root node.
+        private IList<Node> _nodes; // Includes root node.
 
         // ---- CONSTRUCTORS & DESTRUCTOR ------------------------------------------------------------------------------
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ResDict"/> class.
+        /// </summary>
         protected ResDict()
         {
             // Create root node.
@@ -134,8 +136,8 @@ namespace Syroot.NintenTools.Bfres
         /// </summary>
         /// <param name="instance">The <see cref="IResData"/> instance of the key to get or set.</param>
         /// <returns>The key of the specified <paramref name="instance"/>.</returns>
-        /// <exception cref="ArgumentException">An <see cref="IResData"/> instance with the same <paramref name="key"/>
-        /// already exists.</exception>
+        /// <exception cref="ArgumentException">An <see cref="IResData"/> instance with the same key already exists.
+        /// </exception>
         /// <exception cref="KeyNotFoundException">A key for the given <paramref name="instance"/> does not exist.
         /// </exception>
         internal string this[IResData instance]
@@ -350,8 +352,7 @@ namespace Syroot.NintenTools.Bfres
         // ---- METHODS ------------------------------------------------------------------------------------------------
 
         /// <summary>
-        /// Returns an <see cref="IEnumerator{KeyValuePair{String, IResData}}"/> which can be used to iterate over the
-        /// items in the dictionary.
+        /// Returns a generic <see cref="IEnumerator"/> which can be used to iterate over the items in the dictionary.
         /// </summary>
         /// <returns>An enumerator to iterate over the items in the dictionary.</returns>
         IEnumerator<KeyValuePair<string, IResData>> IEnumerable<KeyValuePair<string, IResData>>.GetEnumerator()
@@ -636,6 +637,9 @@ namespace Syroot.NintenTools.Bfres
     {
         // ---- CONSTRUCTORS & DESTRUCTOR ------------------------------------------------------------------------------
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ResDict{T}"/> class.
+        /// </summary>
         public ResDict() : base()
         {
         }
@@ -664,7 +668,7 @@ namespace Syroot.NintenTools.Bfres
         /// <param name="index">The 0-based index of the instance to get or set.</param>
         /// <returns>The instance at the specified <paramref name="index"/>.</returns>
         /// <exception cref="ArgumentOutOfRangeException">The index is smaller than 0 or bigger or equal to
-        /// <see cref="Count"/>.</exception>
+        /// <see cref="ResDict.Count"/>.</exception>
         public new T this[int index]
         {
             get { return (T)base[index]; }
@@ -713,8 +717,7 @@ namespace Syroot.NintenTools.Bfres
         }
 
         /// <summary>
-        /// Returns an <see cref="IEnumerator{KeyValuePair{String, T}}"/> which can be used to iterate over the items in
-        /// the dictionary.
+        /// Returns a generic <see cref="IEnumerator"/> which can be used to iterate over the items in the dictionary.
         /// </summary>
         /// <returns>An enumerator to iterate over the items in the dictionary.</returns>
         public IEnumerator<KeyValuePair<string, T>> GetEnumerator()

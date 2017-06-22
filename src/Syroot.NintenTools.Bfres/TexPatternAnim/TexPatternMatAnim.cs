@@ -33,7 +33,7 @@ namespace Syroot.NintenTools.Bfres
         public IList<ushort> BaseDataList { get; private set; }
 
         /// <summary>
-        /// Gets the index of the first <see cref="Curve"/> relative to all curves of the parent
+        /// Gets the index of the first <see cref="AnimCurve"/> relative to all curves of the parent
         /// <see cref="TexPatternAnim.TexPatternMatAnims"/> instances.
         /// </summary>
         internal int BeginCurve { get; set; }

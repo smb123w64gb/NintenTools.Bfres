@@ -10,7 +10,7 @@
 
 		<PackageId>Syroot.NintenTools.Bfres</PackageId>
 		<PackageTags>bfres;cafe;nintendo;nw4f;wiiu</PackageTags>
-		<PackageReleaseNotes>Added support for saving new BFRES files, many structure fixes.</PackageReleaseNotes>
+		<PackageReleaseNotes>Support for saving new BFRES files, structure fixing.</PackageReleaseNotes>
 		<PackageIconUrl>https://raw.githubusercontent.com/Syroot/NintenTools.Bfres/master/res/Logo.png</PackageIconUrl>
 		<PackageProjectUrl>https://github.com/Syroot/NintenTools.Bfres</PackageProjectUrl>
 		<PackageLicenseUrl>https://raw.githubusercontent.com/Syroot/NintenTools.Bfres/master/LICENSE</PackageLicenseUrl>
@@ -21,7 +21,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Syroot.IO.BinaryData" Version="2.0.1-beta1" />
+		<PackageReference Include="Syroot.IO.BinaryData" Version="2.0.1" />
 		<PackageReference Include="Syroot.Maths" Version="1.4.0" />
 	</ItemGroup>
 

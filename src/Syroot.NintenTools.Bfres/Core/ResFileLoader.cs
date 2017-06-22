@@ -38,6 +38,7 @@ namespace Syroot.NintenTools.Bfres.Core
         /// Initializes a new instance of the <see cref="ResFileLoader"/> class from the file with the given
         /// <paramref name="fileName"/>.
         /// </summary>
+        /// <param name="resFile">The <see cref="ResFile"/> instance to load data into.</param>
         /// <param name="fileName">The name of the file to load the data from.</param>
         internal ResFileLoader(ResFile resFile, string fileName)
             : this(resFile, new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.Read))
@@ -131,6 +132,7 @@ namespace Syroot.NintenTools.Bfres.Core
         /// <typeparamref name="T"/> from the following offset or returns <c>null</c> if the read offset is 0.
         /// </summary>
         /// <typeparam name="T">The type of the <see cref="IResData"/> elements.</typeparam>
+        /// <param name="count">The number of elements to expect for the list.</param>
         /// <param name="offset">The optional offset to use instead of reading a following one.</param>
         /// <returns>The <see cref="IList{T}"/> instance or <c>null</c>.</returns>
         /// <remarks>Offset required for FMDL FVTX lists (offset specified before count).</remarks>

@@ -50,6 +50,7 @@ namespace Syroot.NintenTools.Bfres.Core
         /// Initializes a new instance of the <see cref="ResFileSaver"/> class for the file with the given
         /// <paramref name="fileName"/>.
         /// </summary>
+        /// <param name="resFile">The <see cref="ResFile"/> instance to save.</param>
         /// <param name="fileName">The name of the file to save the data into.</param>
         internal ResFileSaver(ResFile resFile, string fileName)
             : this(resFile, new FileStream(fileName, FileMode.Create, FileAccess.Write, FileShare.Read), false)
@@ -227,7 +228,7 @@ namespace Syroot.NintenTools.Bfres.Core
         /// Reserves space for an offset to the <paramref name="dict"/> written later.
         /// </summary>
         /// <typeparam name="T">The type of the <see cref="IResData"/> element values.</typeparam>
-        /// <param name="list">The <see cref="ResDict{T}"/> to save.</param>
+        /// <param name="dict">The <see cref="ResDict{T}"/> to save.</param>
         internal void SaveDict<T>(ResDict<T> dict)
             where T : IResData, new()
         {

@@ -2,9 +2,12 @@
 
 The goal of this .NET library is to provide easy access to data stored in the BFRES Nintendo graphics archive file format (most prominently used to store 3D game models) and store data in new files.
 
+The library has now gone out of beta.
+- It has been tested rewriting Mario Kart 8 object, character and track models (BFRES version 3.4.0.4), which means compatibility with other games might require some work to be optimal.
+- Usability of the library will improve over time with new helper methods and classes. If you have ideas, feel free to send feature requests in the [issues section](https://github.com/Syroot/NintenTools.Bfres/issues).
+
 ## Supported Features
 
-- The library is in an alpha state - your code might break when upgrading to newer alpha versions.
 - Loading all subfiles and their sections of a BFRES file (at least version 3.x or newer):
 
     | Signature | Description                | Class             |

@@ -57,7 +57,10 @@ namespace Syroot.NintenTools.Bfres
         /// Gets <see cref="AnimCurve"/> instances animating properties of objects stored in this section.
         /// </summary>
         public IList<AnimCurve> Curves { get; private set; }
-
+        
+        /// <summary>
+        /// Gets the <see cref="LightAnimData"/> instance storing initial light parameters.
+        /// </summary>
         public LightAnimData BaseData { get; set; }
 
         /// <summary>

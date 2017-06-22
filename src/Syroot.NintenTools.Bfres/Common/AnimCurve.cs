@@ -1,4 +1,5 @@
-﻿using Syroot.NintenTools.Bfres.Core;
+﻿using System;
+using Syroot.NintenTools.Bfres.Core;
 
 namespace Syroot.NintenTools.Bfres
 {
