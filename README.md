@@ -20,15 +20,16 @@ The goal of this .NET library is to provide easy access to data stored in the BF
     | FSCN      | Scene Animation            | `SceneAnim`       |
     | -         | External File              | `ExternalFile`    |
  
-- Saving existing BFRES files or original ones from scratch. This is experimental and unfinished.
+- Save new or modified BFRES files written from scratch.
 - Parsing BFRES files visually in [010 Editor](https://www.sweetscape.com/010editor/) with the provided [binary templates](https://github.com/Syroot/NintenTools.Bfres/tree/master/other/010_editor).
 
 The following features are **not yet implemented**, but planned:
-- Methods simplifying access to vertex data from `VertexBuffer` instances in combination with `VertexAttrib`.
+- Methods providing easy access to vertex data from `VertexBuffer` instances in combination with `VertexAttrib`.
+- Simplified modification of `AnimCurve` instances and better handling of key data.
 - Classes mapping typical `ExternalFile` contents (like BFSHA shader data), manually loadable on demand.
 
 The following features are **not planned**:
-- Accessing raw header data (like file offsets). While the library wraps headers, they are not exposed and dismissed after loading the referenced data into classes. Since this might be useful for injection tools, it might be implemented on demand (please submit a feature request).
+- Accessing raw header data (like file offsets). Since this can be useful for injection tools, it might be implemented on demand (please submit a feature request).
 - Deswizzling texture data.
 
 ## NuGet Package
