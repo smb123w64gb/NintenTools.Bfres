@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using Syroot.NintenTools.Bfres.Core;
 
 namespace Syroot.NintenTools.Bfres
@@ -66,6 +65,20 @@ namespace Syroot.NintenTools.Bfres
             }
         }
 
+        /// <summary>
+        /// Returns only the publically visible nodes, excluding the root node.
+        /// </summary>
+        protected IEnumerable<Node> Nodes
+        {
+            get
+            {
+                for (int i = 1; i < _nodes.Count; i++)
+                {
+                    yield return _nodes[i];
+                }
+            }
+        }
+
         // ---- OPERATORS ----------------------------------------------------------------------------------------------
 
         /// <summary>
@@ -77,8 +90,18 @@ namespace Syroot.NintenTools.Bfres
         /// <see cref="Count"/>.</exception>
         internal IResData this[int index]
         {
-            get { return GetNode(index).Value; }
-            set { GetNode(index).Value = value; }
+            get
+            {
+                // Throw if index out of bounds.
+                Lookup(index, out Node node);
+                return node.Value;
+            }
+            set
+            {
+                // Throw if index out of bounds.
+                Lookup(index, out Node node);
+                node.Value = value;
+            }
         }
 
         /// <summary>
@@ -92,11 +115,115 @@ namespace Syroot.NintenTools.Bfres
         /// <paramref name="key"/> does not exist.</exception>
         internal IResData this[string key]
         {
-            get { return GetNode(key).Value; }
-            set { GetNode(key).Value = value; }
+            get
+            {
+                // Throw if key does not exist.
+                Lookup(key, out Node node, out int index);
+                return node.Value;
+            }
+            set
+            {
+                // Throw if key does not exist.
+                Lookup(key, out Node node, out int index);
+                node.Value = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the key under which the specified <paramref name="instance"/> is stored.
+        /// </summary>
+        /// <param name="instance">The <see cref="IResData"/> instance of the key to get or set.</param>
+        /// <returns>The key of the specified <paramref name="instance"/>.</returns>
+        /// <exception cref="ArgumentException">An <see cref="IResData"/> instance with the same <paramref name="key"/>
+        /// already exists.</exception>
+        /// <exception cref="KeyNotFoundException">A key for the given <paramref name="instance"/> does not exist.
+        /// </exception>
+        internal string this[IResData instance]
+        {
+            get
+            {
+                // Throw if instance does not exist.
+                Lookup(instance, out Node node, out int index);
+                return node.Key;
+            }
+            set
+            {
+                // Throw if instance does not exist.
+                Lookup(instance, out Node node, out int index);
+                // Throw if keys would be duplicated.
+                if (Lookup(value, out Node keyNode, out index, false))
+                {
+                    throw new ArgumentException($"Key \"{value}\" already exists.");
+                }
+            }
         }
 
         // ---- METHODS (PUBLIC) ---------------------------------------------------------------------------------------
+
+        /// <summary>
+        /// Removes all elements from the dictionary.
+        /// </summary>
+        public void Clear()
+        {
+            // Create new collection with root node.
+            _nodes.Clear();
+            _nodes.Add(new Node());
+        }
+
+        /// <summary>
+        /// Determines whether an instance is saved under the given <paramref name="key"/> in the dictionary.
+        /// </summary>
+        /// <param name="key">The textual key to locate in the dictionary. The value can be <c>null</c>.</param>
+        /// <returns><c>true</c> if <paramref name="key"/> was found in the dictionary; otherwise <c>false</c>.</returns>
+        public bool ContainsKey(string key)
+        {
+            return Lookup(key, out Node node, out int index, false);
+        }
+
+        /// <summary>
+        /// Searches for the specified <paramref name="key"/> and returns the zero-based index of the first occurrence
+        /// within the entire dictionary.
+        /// </summary>
+        /// <param name="key">The textual key to locate in the dictionary. The value can be <c>null</c>.</param>
+        /// <returns>The zero-based index of the first occurence of <paramref name="key"/> within the entire dictionary
+        /// if found; otherwise <c>-1</c>.</returns>
+        public int IndexOf(string key)
+        {
+            return Lookup(key, out Node node, out int index, false) ? index : -1;
+        }
+
+        /// <summary>
+        /// Removes the first occurrence of the instance with the specific <paramref name="key"/> from the dictionary.
+        /// </summary>
+        /// <param name="key">The textual key of the <see cref="IResData"/> instance which will be removed.</param>
+        /// <returns><c>true</c> if the instance under <paramref name="key"/> was successfully removed; otherwise
+        /// <c>false</c>. This method also returns <c>false</c> if <paramref name="key"/> was not found in the
+        /// dictionary.</returns>
+        public bool Remove(string key)
+        {
+            if (Lookup(key, out Node node, out int index, false))
+            {
+                _nodes.Remove(node);
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Removes the instance at the specified <paramref name="index"/> of the dictionary.
+        /// </summary>
+        /// <param name="index">The zero-based index of the instance to remove.</param>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="index"/> is less than 0 or equal to or greater
+        /// than <see cref="Count"/>.</exception>
+        public void RemoveAt(int index)
+        {
+            // Throw if index out of bounds.
+            Lookup(index, out Node node, true);
+            _nodes.Remove(node);
+        }
 
         /// <summary>
         /// Returns <c>true</c> if an <see cref="IResData"/> instance was stored under the given <paramref name="key"/>
@@ -106,34 +233,146 @@ namespace Syroot.NintenTools.Bfres
         /// <param name="key">The textual key of the <see cref="IResData"/> instance to get or set.</param>
         /// <param name="value">The variable receiving the found <see cref="IResData"/> or <c>null</c>.</param>
         /// <returns><c>true</c> if an instance was found and assigned; otherwise <c>false</c>.</returns>
-        public bool TryGetValue(string key, out IResData value)
+        internal bool TryGetValue(string key, out IResData value)
         {
-            if (TryGetNode(key, out Node node))
+            if (Lookup(key, out Node node, out int index, false))
             {
                 value = node.Value;
                 return true;
             }
-            value = null;
-            return false;
-        }
-
-        IEnumerator<KeyValuePair<string, IResData>> IEnumerable<KeyValuePair<string, IResData>>.GetEnumerator()
-        {
-            foreach (Node node in GetPublicNodes())
+            else
             {
-                yield return new KeyValuePair<string, IResData>(node.Key, node.Value);
+                value = null;
+                return false;
             }
         }
 
-        IEnumerator IEnumerable.GetEnumerator()
+        // ---- METHODS (INTERNAL) -------------------------------------------------------------------------------------
+
+        /// <summary>
+        /// Adds the given <paramref name="value"/> under the specified <paramref name="key"/>.
+        /// </summary>
+        /// <param name="key">The textual key under which the <see cref="IResData"/> instance will be stored.</param>
+        /// <param name="value">The <see cref="IResData"/> to add.</param>
+        /// <exception cref="ArgumentException">An <see cref="IResData"/> instance with the same <paramref name="key"/>
+        /// already exists.</exception>
+        internal void Add(string key, IResData value)
         {
-            foreach (Node node in GetPublicNodes())
+            // Throw if key already exists.
+            Lookup(key, out Node node, out int index);
+            _nodes.Add(new Node(key, value));
+        }
+
+        /// <summary>
+        /// Determines whether the given <paramref name="value"/> is in the dictionary.
+        /// </summary>
+        /// <param name="value">The <see cref="IResData"/> instance to locate in the dictionary. The value can be
+        /// <c>null</c>.</param>
+        /// <returns><c>true</c> if <paramref name="value"/> was found in the dictionary; otherwise <c>false</c>.
+        /// </returns>
+        internal bool ContainsValue(IResData value)
+        {
+            return Lookup(value, out Node node, out int index, false);
+        }
+
+        /// <summary>
+        /// Searches for the specified <paramref name="value"/> and returns the zero-based index of the first occurrence
+        /// within the entire dictionary.
+        /// </summary>
+        /// <param name="value">The <see cref="IResData"/> instance to locate in the dictionary. The value can be
+        /// <c>null</c>.</param>
+        /// <returns>The zero-based index of the first occurence of <paramref name="value"/> within the entire
+        /// dictionary if found; otherwise <c>-1</c>.</returns>
+        internal int IndexOf(IResData value)
+        {
+            return Lookup(value, out Node node, out int index, false) ? index : -1;
+        }
+
+        /// <summary>
+        /// Removes the first occurrence of a specific <paramref name="value"/> from the dictionary.
+        /// </summary>
+        /// <param name="value">The <see cref="IResData"/> instance to remove from the dictionary. The value can be
+        /// <c>null</c>.</param>
+        /// <returns><c>true</c> if <paramref name="value"/> was successfully removed; otherwise <c>false</c>. This
+        /// method also returns <c>false</c> if <paramref name="value"/> was not found in the dictionary.</returns>
+        internal bool Remove(IResData value)
+        {
+            if (Lookup(value, out Node node, out int index, false))
             {
-                yield return new KeyValuePair<string, IResData>(node.Key, node.Value);
+                _nodes.Remove(node);
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Copies the elements of the dictionary as <see cref="KeyValuePair{String, IResData}"/> instances to a new
+        /// array and returns it.
+        /// </summary>
+        /// <returns>An array containing copies of the elements.</returns>
+        internal KeyValuePair<string, IResData>[] ToArray()
+        {
+            KeyValuePair<string, IResData>[] resData = new KeyValuePair<string, IResData>[Count];
+            int i = 0;
+            foreach (Node node in Nodes)
+            {
+                resData[i] = new KeyValuePair<string, IResData>(node.Key, node.Value);
+                i++;
+            }
+            return resData;
+        }
+
+        /// <summary>
+        /// Returns <c>true</c> if a key was found for the given <paramref name="value"/> and has been assigned to
+        /// <paramref name="key"/>, or <c>false</c> if no key was found for the value and <c>null</c> was assigned to
+        /// <paramref name="key"/>.
+        /// </summary>
+        /// <param name="value">The <see cref="IResData"/> to look up a key for.</param>
+        /// <param name="key">The variable receiving the found key or <c>null</c>.</param>
+        /// <returns><c>true</c> if a key was found and assigned; otherwise <c>false</c>.</returns>
+        internal bool TryGetKey(IResData value, out string key)
+        {
+            if (Lookup(value, out Node node, out int index, false))
+            {
+                key = node.Key;
+                return true;
+            }
+            else
+            {
+                key = null;
+                return false;
             }
         }
 
         // ---- METHODS ------------------------------------------------------------------------------------------------
+
+        /// <summary>
+        /// Returns an <see cref="IEnumerator{KeyValuePair{String, IResData}}"/> which can be used to iterate over the
+        /// items in the dictionary.
+        /// </summary>
+        /// <returns>An enumerator to iterate over the items in the dictionary.</returns>
+        IEnumerator<KeyValuePair<string, IResData>> IEnumerable<KeyValuePair<string, IResData>>.GetEnumerator()
+        {
+            foreach (Node node in Nodes)
+            {
+                yield return new KeyValuePair<string, IResData>(node.Key, node.Value);
+            }
+        }
+
+        /// <summary>
+        /// Returns an <see cref="IEnumerator"/> which can be used to iterate over the items in the dictionary.
+        /// </summary>
+        /// <returns>An enumerator to iterate over the items in the dictionary.</returns>
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            foreach (Node node in Nodes)
+            {
+                yield return new KeyValuePair<string, IResData>(node.Key, node.Value);
+            }
+        }
 
         void IResData.Load(ResFileLoader loader)
         {
@@ -185,10 +424,11 @@ namespace Syroot.NintenTools.Bfres
         /// Returns the <see cref="IResData"/> instance of the node with the given <paramref name="name"/> using the
         /// Patricia trie logic.
         /// </summary>
-        /// <remarks>Internally, nodes are looked up linearly by iterating over the node list, this method is
-        /// implemented for test and validation purposes.</remarks>
+        /// <remarks>Nodes are looked up linearly by iterating over the node list internally, this method has been
+        /// implemented for test and validation purposes only.</remarks>
         /// <param name="name">The name of the node to look up.</param>
-        internal IResData Lookup(string name)
+        /// <returns>The <see cref="IResData"/> instance referenced by the found node.</returns>
+        internal IResData Traverse(string name)
         {
             Node parent = _nodes[0];
             Node child = _nodes[parent.IdxLeft];
@@ -207,56 +447,15 @@ namespace Syroot.NintenTools.Bfres
         }
 
         // ---- METHODS (PROTECTED) ------------------------------------------------------------------------------------
-
-        protected Node GetNode(int index)
-        {
-            // Prevent access to the root node.
-            if (index < 0)
-            {
-                throw new ArgumentOutOfRangeException();
-            }
-            return _nodes[index + 1];
-        }
-
-        protected Node GetNode(string key)
-        {
-            if (TryGetNode(key, out Node node))
-            {
-                return node;
-            }
-            throw new ArgumentException($"A node with the key \"{key}\" was not found.", nameof(key));
-        }
-
-        protected IEnumerable<Node> GetPublicNodes()
-        {
-            for (int i = 1; i < _nodes.Count; i++)
-            {
-                yield return _nodes[i];
-            }
-        }
-
-        protected bool TryGetNode(string key, out Node node)
-        {
-            foreach (Node foundNode in GetPublicNodes())
-            {
-                if (foundNode.Key == key)
-                {
-                    node = foundNode;
-                    return true;
-                }
-            }
-            node = null;
-            return false;
-        }
-
+        
         protected abstract IResData LoadNodeValue(ResFileLoader loader);
 
         // ---- METHODS (PRIVATE) --------------------------------------------------------------------------------------
 
-        public void UpdateNodes()
+        private void UpdateNodes()
         {
             // Create a new root node with empty key so the length can be retrieved throughout the process.
-            _nodes[0] = new Node() { Reference = UInt32.MaxValue, Key = String.Empty };
+            _nodes[0] = new Node() { Key = String.Empty };
 
             // Update the data-referencing nodes.
             for (ushort i = 1; i < _nodes.Count; i++)
@@ -323,6 +522,56 @@ namespace Syroot.NintenTools.Bfres
             return walkDirection < name.Length ? (name[walkDirection] >> bitPosition) & 1 : 0;
         }
 
+        private bool Lookup(int index, out Node node, bool throwOnFail = true)
+        {
+            if (index < 0 || index > Count)
+            {
+                if (throwOnFail) throw new IndexOutOfRangeException($"{index} out of bounds in {this}.");
+                node = null;
+                return false;
+            }
+            node = _nodes[index + 1];
+            return true;
+        }
+
+        private bool Lookup(string key, out Node node, out int index, bool throwOnFail = true)
+        {
+            int i = 0;
+            foreach (Node foundNode in Nodes)
+            {
+                i++;
+                if (foundNode.Key == key)
+                {
+                    node = foundNode;
+                    index = i;
+                    return true;
+                }
+            }
+            if (throwOnFail) throw new ArgumentException($"{key} not found in {this}.", nameof(key));
+            node = null;
+            index = -1;
+            return false;
+        }
+
+        private bool Lookup(IResData value, out Node node, out int index, bool throwOnFail = true)
+        {
+            int i = 0;
+            foreach (Node foundNode in Nodes)
+            {
+                i++;
+                if (foundNode.Value == value)
+                {
+                    node = foundNode;
+                    index = i;
+                    return true;
+                }
+            }
+            if (throwOnFail) throw new ArgumentException($"{value} not found in {this}.", nameof(value));
+            node = null;
+            index = -1;
+            return false;
+        }
+
         private Node ReadNode(ResFileLoader loader)
         {
             return new Node()
@@ -347,6 +596,17 @@ namespace Syroot.NintenTools.Bfres
             internal ushort IdxRight;
             internal string Key;
             internal IResData Value;
+
+            internal Node()
+            {
+                Reference = UInt32.MaxValue;
+            }
+
+            internal Node(string key, IResData value) : this()
+            {
+                Key = key;
+                Value = value;
+            }
         }
 
         private class TypeProxy
@@ -389,7 +649,7 @@ namespace Syroot.NintenTools.Bfres
         {
             get
             {
-                foreach (Node node in GetPublicNodes())
+                foreach (Node node in Nodes)
                 {
                     yield return (T)node.Value;
                 }
@@ -399,7 +659,7 @@ namespace Syroot.NintenTools.Bfres
         // ---- OPERATORS ----------------------------------------------------------------------------------------------
 
         /// <summary>
-        /// Gets or sets the instance stored at the specified <paramref name="index"/>.
+        /// Gets or sets the value stored at the specified <paramref name="index"/>.
         /// </summary>
         /// <param name="index">The 0-based index of the instance to get or set.</param>
         /// <returns>The instance at the specified <paramref name="index"/>.</returns>
@@ -407,12 +667,12 @@ namespace Syroot.NintenTools.Bfres
         /// <see cref="Count"/>.</exception>
         public new T this[int index]
         {
-            get { return (T)GetNode(index).Value; }
-            set { GetNode(index).Value = value; }
+            get { return (T)base[index]; }
+            set { base[index] = value; }
         }
 
         /// <summary>
-        /// Gets or sets the instance stored under the specified <paramref name="key"/>.
+        /// Gets or sets the value stored under the specified <paramref name="key"/>.
         /// </summary>
         /// <param name="key">The textual key of the instance to get or set.</param>
         /// <returns>The instance with the specified <paramref name="key"/>.</returns>
@@ -422,24 +682,104 @@ namespace Syroot.NintenTools.Bfres
         /// </exception>
         public new T this[string key]
         {
-            get { return (T)GetNode(key).Value; }
-            set { GetNode(key).Value = value; }
+            get { return (T)base[key]; }
+            set { base[key] = value; }
         }
 
         // ---- METHODS (PUBLIC) ---------------------------------------------------------------------------------------
-        
+
         /// <summary>
-        /// Returns an enumerator that iterates through the collection.
+        /// Adds the given <paramref name="value"/> under the specified <paramref name="key"/>.
         /// </summary>
-        /// <returns>An enumerator that can be used to iterate through the collection.</returns>
+        /// <param name="key">The textual key under which the <see cref="IResData"/> instance will be stored.</param>
+        /// <param name="value">The <see cref="IResData"/> to add.</param>
+        /// <exception cref="ArgumentException">An <see cref="IResData"/> instance with the same <paramref name="key"/>
+        /// already exists.</exception>
+        public void Add(string key, T value)
+        {
+            Add(key, (IResData)value);
+        }
+
+        /// <summary>
+        /// Determines whether the given <paramref name="value"/> is in the dictionary.
+        /// </summary>
+        /// <param name="value">The <see cref="IResData"/> instance to locate in the dictionary. The value can be
+        /// <c>null</c>.</param>
+        /// <returns><c>true</c> if <paramref name="value"/> was found in the dictionary; otherwise <c>false</c>.
+        /// </returns>
+        public bool ContainsValue(T value)
+        {
+            return ContainsValue((IResData)value);
+        }
+
+        /// <summary>
+        /// Returns an <see cref="IEnumerator{KeyValuePair{String, T}}"/> which can be used to iterate over the items in
+        /// the dictionary.
+        /// </summary>
+        /// <returns>An enumerator to iterate over the items in the dictionary.</returns>
         public IEnumerator<KeyValuePair<string, T>> GetEnumerator()
         {
-            foreach (Node node in GetPublicNodes())
+            foreach (Node node in Nodes)
             {
                 yield return new KeyValuePair<string, T>(node.Key, (T)node.Value);
             }
         }
 
+        /// <summary>
+        /// Searches for the specified <paramref name="value"/> and returns the zero-based index of the first occurrence
+        /// within the entire dictionary.
+        /// </summary>
+        /// <param name="value">The <see cref="IResData"/> instance to locate in the dictionary. The value can be
+        /// <c>null</c>.</param>
+        /// <returns>The zero-based index of the first occurence of <paramref name="value"/> within the entire
+        /// dictionary if found; otherwise <c>-1</c>.</returns>
+        public int IndexOf(T value)
+        {
+            return IndexOf((IResData)value);
+        }
+
+        /// <summary>
+        /// Removes the first occurrence of a specific <paramref name="value"/> from the dictionary.
+        /// </summary>
+        /// <param name="value">The <see cref="IResData"/> instance to remove from the dictionary. The value can be
+        /// <c>null</c>.</param>
+        /// <returns><c>true</c> if <paramref name="value"/> was successfully removed; otherwise <c>false</c>. This
+        /// method also returns <c>false</c> if <paramref name="value"/> was not found in the dictionary.</returns>
+        public bool Remove(T value)
+        {
+            return Remove((IResData)value);
+        }
+
+        /// <summary>
+        /// Copies the elements of the dictionary as <see cref="KeyValuePair{String, IResDat}"/> instances to a new
+        /// array and returns it.
+        /// </summary>
+        /// <returns>An array containing copies of the elements.</returns>
+        public new KeyValuePair<string, T>[] ToArray()
+        {
+            KeyValuePair<string, T>[] resData = new KeyValuePair<string, T>[Count];
+            int i = 0;
+            foreach (Node node in Nodes)
+            {
+                resData[i] = new KeyValuePair<string, T>(node.Key, (T)node.Value);
+                i++;
+            }
+            return resData;
+        }
+
+        /// <summary>
+        /// Returns <c>true</c> if a key was found for the given <paramref name="value"/> and has been assigned to
+        /// <paramref name="key"/>, or <c>false</c> if no key was found for the value and <c>null</c> was assigned to
+        /// <paramref name="key"/>.
+        /// </summary>
+        /// <param name="value">The <see cref="IResData"/> to look up a key for.</param>
+        /// <param name="key">The variable receiving the found key or <c>null</c>.</param>
+        /// <returns><c>true</c> if a key was found and assigned; otherwise <c>false</c>.</returns>
+        public bool TryGetKey(T value, out string key)
+        {
+            return TryGetKey((IResData)value, out key);
+        }
+        
         /// <summary>
         /// Returns <c>true</c> if an instance was stored under the given <paramref name="key"/> and has been assigned
         /// to <paramref name="value"/>, or <c>false</c> if no instance is stored under the given <paramref name="key"/>
@@ -450,13 +790,16 @@ namespace Syroot.NintenTools.Bfres
         /// <returns><c>true</c> if an instance was found and assigned; otherwise <c>false</c>.</returns>
         public bool TryGetValue(string key, out T value)
         {
-            if (TryGetNode(key, out Node node))
+            if (TryGetValue(key, out IResData resData))
             {
-                value = (T)node.Value;
+                value = (T)resData;
                 return true;
             }
-            value = default(T);
-            return false;
+            else
+            {
+                value = default(T);
+                return false;
+            }
         }
 
         // ---- METHODS (INTERNAL) -------------------------------------------------------------------------------------
