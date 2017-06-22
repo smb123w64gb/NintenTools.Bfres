@@ -56,12 +56,12 @@ namespace Syroot.NintenTools.Bfres
         public uint AnimDataOffset { get; set; }
         
         /// <summary>
-        /// Gets or sets the first frame number of the animation.
+        /// Gets or sets the first frame at which a key is placed.
         /// </summary>
         public float StartFrame { get; set; }
 
         /// <summary>
-        /// Gets or sets the last frame number of the animation.
+        /// Gets or sets the last frame at which a key is placed.
         /// </summary>
         public float EndFrame { get; set; }
 
@@ -76,7 +76,7 @@ namespace Syroot.NintenTools.Bfres
         public DWord Offset { get; set; }
 
         /// <summary>
-        /// Unknown purpose. Only existent in BFRES files of version 3.4.0.0 or newer.
+        /// Gets or sets the difference between the lowest and highest key value.
         /// </summary>
         public float Delta { get; set; }
 
@@ -156,20 +156,20 @@ namespace Syroot.NintenTools.Bfres
                 {
                     case AnimCurveKeyType.Single:
                         return loader.ReadSingles(keyElementCount);
-                    case AnimCurveKeyType.Decimal10x5:
-                        float[] dec10x5Keys = new float[keyElementCount];
+                    case AnimCurveKeyType.Int16:
+                        float[] int16Keys = new float[keyElementCount];
                         for (int i = 0; i < keyElementCount; i++)
                         {
-                            dec10x5Keys[i] = (float)loader.ReadDecimal10x5();
+                            int16Keys[i] = loader.ReadUInt16();
                         }
-                        return dec10x5Keys;
-                    case AnimCurveKeyType.Byte:
-                        float[] byteKeys = new float[keyElementCount];
+                        return int16Keys;
+                    case AnimCurveKeyType.SByte:
+                        float[] sbyteKeys = new float[keyElementCount];
                         for (int i = 0; i < keyElementCount; i++)
                         {
-                            byteKeys[i] = loader.ReadByte();
+                            sbyteKeys[i] = loader.ReadSByte();
                         }
-                        return byteKeys;
+                        return sbyteKeys;
                     default:
                         throw new ResException($"Invalid {nameof(KeyType)}.");
                 }
@@ -217,16 +217,16 @@ namespace Syroot.NintenTools.Bfres
                     case AnimCurveKeyType.Single:
                         saver.Write(Keys);
                         break;
-                    case AnimCurveKeyType.Decimal10x5:
+                    case AnimCurveKeyType.Int16:
                         foreach (float key in Keys)
                         {
-                            saver.Write((Decimal10x5)key);
+                            saver.Write((short)key);
                         }
                         break;
-                    case AnimCurveKeyType.Byte:
+                    case AnimCurveKeyType.SByte:
                         foreach (float key in Keys)
                         {
-                            saver.Write((byte)key);
+                            saver.Write((sbyte)key);
                         }
                         break;
                 }
@@ -270,12 +270,12 @@ namespace Syroot.NintenTools.Bfres
         /// <summary>
         /// The keys are stored as <see cref="Bfres.Decimal10x5"/> instances.
         /// </summary>
-        Decimal10x5 = 1 << 2,
+        Int16 = 1 << 2,
 
         /// <summary>
-        /// The keys are stored as <see cref="System.Byte"/> instances.
+        /// The keys are stored as <see cref="System.SByte"/> instances.
         /// </summary>
-        Byte = 2 << 2
+        SByte = 2 << 2
     }
 
     /// <summary>

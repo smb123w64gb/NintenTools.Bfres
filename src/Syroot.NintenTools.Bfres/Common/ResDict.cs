@@ -133,6 +133,8 @@ namespace Syroot.NintenTools.Bfres
             }
         }
 
+        // ---- METHODS ------------------------------------------------------------------------------------------------
+
         void IResData.Load(ResFileLoader loader)
         {
             // Read the header.
@@ -150,7 +152,8 @@ namespace Syroot.NintenTools.Bfres
 
         void IResData.Save(ResFileSaver saver)
         {
-            // TODO: Update the radix tree values in the nodes.
+            // Update the Patricia trie values in the nodes.
+            UpdateNodes();
 
             // Write header.
             saver.Write(sizeof(uint) * 2 + (_nodes.Count) * Node.SizeInBytes);
@@ -160,7 +163,7 @@ namespace Syroot.NintenTools.Bfres
             int index = -1; // Start at -1 due to root node.
             foreach (Node node in _nodes)
             {
-                saver.Write(node.Ref);
+                saver.Write(node.Reference);
                 saver.Write(node.IdxLeft);
                 saver.Write(node.IdxRight);
                 saver.SaveString(node.Key);
@@ -174,6 +177,33 @@ namespace Syroot.NintenTools.Bfres
                         break;
                 }
             }
+        }
+
+        // ---- METHODS (INTERNAL) -------------------------------------------------------------------------------------
+
+        /// <summary>
+        /// Returns the <see cref="IResData"/> instance of the node with the given <paramref name="name"/> using the
+        /// Patricia trie logic.
+        /// </summary>
+        /// <remarks>Internally, nodes are looked up linearly by iterating over the node list, this method is
+        /// implemented for test and validation purposes.</remarks>
+        /// <param name="name">The name of the node to look up.</param>
+        internal IResData Lookup(string name)
+        {
+            Node parent = _nodes[0];
+            Node child = _nodes[parent.IdxLeft];
+            while (parent.Reference > child.Reference)
+            {
+                parent = child;
+                // Follow the right leaf if the bit is 1, otherwise traverse left.
+                child = GetDirection(name, child.Reference) == 1 ? _nodes[child.IdxRight] : _nodes[child.IdxLeft];
+            }
+            // Check that the resulting name is the expected one.
+            if (name != child.Key)
+            {
+                throw new ResException($"{nameof(ResDict)} lookup failed; expected \"{name}\", got \"{child.Key}\".");
+            }
+            return child.Value;
         }
 
         // ---- METHODS (PROTECTED) ------------------------------------------------------------------------------------
@@ -223,11 +253,81 @@ namespace Syroot.NintenTools.Bfres
 
         // ---- METHODS (PRIVATE) --------------------------------------------------------------------------------------
 
+        public void UpdateNodes()
+        {
+            // Create a new root node with empty key so the length can be retrieved throughout the process.
+            _nodes[0] = new Node() { Reference = UInt32.MaxValue, Key = String.Empty };
+
+            // Update the data-referencing nodes.
+            for (ushort i = 1; i < _nodes.Count; i++)
+            {
+                Node current = _nodes[i];
+                string curKey = current.Key;
+
+                // Iterate through the tree to get the string for bit comparison.
+                Node parent = _nodes[0];
+                Node child = _nodes[parent.IdxLeft];
+                while (parent.Reference > child.Reference)
+                {
+                    parent = child;
+                    child = GetDirection(curKey, child.Reference) == 1 ? _nodes[child.IdxRight] : _nodes[child.IdxLeft];
+                }
+                uint reference = (uint)Math.Max(curKey.Length, child.Key.Length) * 8;
+                // Check for duplicate keys.
+                while (GetDirection(child.Key, reference) == GetDirection(curKey, reference))
+                {
+                    if (reference == 0) throw new ResException($"Duplicate key \"{curKey}\" in {this}.");
+                    reference--;
+                }
+                current.Reference = reference;
+
+                // Form the tree structure of the nodes.
+                parent = _nodes[0];
+                child = _nodes[parent.IdxLeft];
+                // Find the node where to insert the current one.
+                while (parent.Reference > child.Reference && child.Reference > reference)
+                {
+                    parent = child;
+                    child = GetDirection(curKey, child.Reference) == 1 ? _nodes[child.IdxRight] : _nodes[child.IdxLeft];
+                }
+                // Attach left or right depending on the resulting direction bit.
+                if (GetDirection(curKey, current.Reference) == 1)
+                {
+                    current.IdxLeft = (ushort)_nodes.IndexOf(child);
+                    current.IdxRight = i;
+                }
+                else
+                {
+                    current.IdxLeft = i;
+                    current.IdxRight = (ushort)_nodes.IndexOf(child);
+                }
+                // Attach left or right to the parent depending on the resulting parent direction bit.
+                if (GetDirection(curKey, parent.Reference) == 1)
+                {
+                    parent.IdxRight = i;
+                }
+                else
+                {
+                    parent.IdxLeft = i;
+                }
+            }
+
+            // Remove the dummy empty key in the root again.
+            _nodes[0].Key = null;
+        }
+
+        private int GetDirection(string name, uint reference)
+        {
+            int walkDirection = (int)(reference >> 3);
+            int bitPosition = (int)(reference & 0b00000111);
+            return walkDirection < name.Length ? (name[walkDirection] >> bitPosition) & 1 : 0;
+        }
+
         private Node ReadNode(ResFileLoader loader)
         {
             return new Node()
             {
-                Ref = loader.ReadUInt32(),
+                Reference = loader.ReadUInt32(),
                 IdxLeft = loader.ReadUInt16(),
                 IdxRight = loader.ReadUInt16(),
                 Key = loader.LoadString(),
@@ -237,11 +337,12 @@ namespace Syroot.NintenTools.Bfres
 
         // ---- CLASSES ------------------------------------------------------------------------------------------------
 
+        [DebuggerDisplay(nameof(Node) + " {" + nameof(Key) + "}")]
         protected class Node
         {
             internal const int SizeInBytes = 16;
 
-            internal uint Ref;
+            internal uint Reference;
             internal ushort IdxLeft;
             internal ushort IdxRight;
             internal string Key;

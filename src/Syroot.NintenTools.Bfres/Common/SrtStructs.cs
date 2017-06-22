@@ -35,7 +35,7 @@ namespace Syroot.NintenTools.Bfres
     }
 
     /// <summary>
-    /// Represents a texture 3D transformation.
+    /// Represents a 2D texture transformation.
     /// </summary>
     public struct TexSrt
     {
@@ -52,7 +52,7 @@ namespace Syroot.NintenTools.Bfres
     }
 
     /// <summary>
-    /// Represents a texture 3D transformation which is multiplied by a 3x4 matrix referenced at runtime by the
+    /// Represents a 2D texture transformation which is multiplied by a 3x4 matrix referenced at runtime by the
     /// <see cref="MatrixPointer"/>.
     /// </summary>
     public struct TexSrtEx

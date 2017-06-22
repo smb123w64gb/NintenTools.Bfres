@@ -30,7 +30,7 @@ namespace Syroot.NintenTools.Bfres
         public static readonly Decimal10x5 MinValue = new Decimal10x5(Int16.MinValue);
         
         private const int _m = 10; // Number of integral part bits.
-        private const int _n = 5; // Number for fractional part bits.
+        private const int _n = 5; // Number of fractional part bits.
         
         // ---- CONSTRUCTORS & DESTRUCTOR ------------------------------------------------------------------------------
 
@@ -50,7 +50,7 @@ namespace Syroot.NintenTools.Bfres
         /// Gets the internally stored value to represent the instance.
         /// </summary>
         /// <remarks>Signed to get arithmetic rather than logical shifts.</remarks>
-        public short Raw
+        internal short Raw
         {
             get;
             private set;

@@ -19,8 +19,8 @@ namespace Syroot.NintenTools.Bfres.Test
 
         private static void Main(string[] args)
         {
-            ResFile resFile = new ResFile(@"D:\Archive\Wii U\_Roms\MK8\content\mapobj\Bird\Bird.orig.bfres");
-            resFile.Save(@"D:\Archive\Wii U\_Roms\MK8\content\mapobj\Bird\Bird.bfres");
+            ResFile resFile = new ResFile(@"D:\Archive\Wii U\_Roms\MK8\content\race_common\Coin\Coin.orig.bfres");
+            resFile.Save(@"D:\Archive\Wii U\_Roms\MK8\content\race_common\Coin\Coin.bfres");
 
             //LoadResFiles();
             //Console.WriteLine("Done.");
