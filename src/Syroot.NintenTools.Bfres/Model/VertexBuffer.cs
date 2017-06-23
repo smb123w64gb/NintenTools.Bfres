@@ -14,12 +14,26 @@ namespace Syroot.NintenTools.Bfres
 
         // ---- PROPERTIES ---------------------------------------------------------------------------------------------
 
+        /// <summary>
+        /// Gets or sets the number of bones influencing the vertices stored in this buffer. 0 influences equal
+        /// rigidbodies (no skinning), 1 equal rigid skinning and 2 smooth skinning.
+        /// </summary>
         public byte VertexSkinCount { get; set; }
 
+        /// <summary>
+        /// Gets or sets the total number of vertices resulting from the <see cref="Buffers"/>.
+        /// </summary>
         public uint VertexCount { get; private set; } // TODO: Compute vertex count.
 
+        /// <summary>
+        /// Gets the dictionary of <see cref="VertexAttrib"/> instances describing how to interprete data in the
+        /// <see cref="Buffers"/>.
+        /// </summary>
         public ResDict<VertexAttrib> Attributes { get; private set; }
 
+        /// <summary>
+        /// Gets the list of <see cref="Buffer"/> instances storing raw unformatted vertex data.
+        /// </summary>
         public IList<Buffer> Buffers { get; private set; }
 
         // TODO: Add methods to aid in retrieving strongly typed vertex data via attributes.

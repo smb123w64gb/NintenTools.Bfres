@@ -1,5 +1,4 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using Syroot.NintenTools.Bfres.Core;
 using Syroot.NintenTools.Bfres.GX2;
 
@@ -20,10 +19,19 @@ namespace Syroot.NintenTools.Bfres
         /// </summary>
         public string Name { get; set; }
 
+        /// <summary>
+        /// Gets or sets the index of the buffer storing the data in the <see cref="VertexBuffer.Buffers"/> list.
+        /// </summary>
         public byte BufferIndex { get; set; }
 
+        /// <summary>
+        /// Gets or sets the offset in bytes to the attribute in each vertex.
+        /// </summary>
         public ushort Offset { get; set; }
 
+        /// <summary>
+        /// Gets or sets the <see cref="GX2AttribFormat"/> determining the type in which attribute data is available.
+        /// </summary>
         public GX2AttribFormat Format { get; set; }
 
         // ---- METHODS ------------------------------------------------------------------------------------------------

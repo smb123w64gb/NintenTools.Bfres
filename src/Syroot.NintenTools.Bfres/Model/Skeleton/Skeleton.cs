@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using Syroot.Maths;
 using Syroot.NintenTools.Bfres.Core;
 
@@ -21,7 +19,7 @@ namespace Syroot.NintenTools.Bfres
         // ---- FIELDS -------------------------------------------------------------------------------------------------
 
         private uint _flags;
-        
+
         // ---- PROPERTIES ---------------------------------------------------------------------------------------------
 
         public SkeletonFlagsScaling FlagsScaling
@@ -30,12 +28,18 @@ namespace Syroot.NintenTools.Bfres
             set { _flags &= ~_flagsScalingMask | (uint)value; }
         }
 
+        /// <summary>
+        /// Gets or sets the rotation method used to store bone rotations.
+        /// </summary>
         public SkeletonFlagsRotation FlagsRotation
         {
             get { return (SkeletonFlagsRotation)(_flags & _flagsRotationMask); }
             set { _flags &= ~_flagsRotationMask | (uint)value; }
         }
-        
+
+        /// <summary>
+        /// Gets the list of <see cref="Bone"/> instances forming the skeleton.
+        /// </summary>
         public ResDict<Bone> Bones { get; private set; }
 
         public IList<ushort> MatrixToBoneList { get; private set; }
@@ -58,7 +62,7 @@ namespace Syroot.NintenTools.Bfres
             InverseModelMatrices = loader.LoadCustom(() => loader.ReadMatrix3x4s(numSmoothMatrix));
             uint userPointer = loader.ReadUInt32();
         }
-        
+
         void IResData.Save(ResFileSaver saver)
         {
             saver.WriteSignature(_signature);
@@ -74,7 +78,7 @@ namespace Syroot.NintenTools.Bfres
             saver.Write(0); // UserPointer
         }
     }
-    
+
     public enum SkeletonFlagsScaling : uint
     {
         None,
@@ -83,9 +87,19 @@ namespace Syroot.NintenTools.Bfres
         Softimage = 3 << 8
     }
 
+    /// <summary>
+    /// Represents the rotation method used to store bone rotations.
+    /// </summary>
     public enum SkeletonFlagsRotation : uint
     {
+        /// <summary>
+        /// A quaternion represents the rotation.
+        /// </summary>
         Quaternion,
+
+        /// <summary>
+        /// A <see cref="Vector3F"/> represents the Euler rotation in XYZ order.
+        /// </summary>
         EulerXYZ = 1 << 12
     }
 }

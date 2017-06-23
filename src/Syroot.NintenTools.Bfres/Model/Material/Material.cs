@@ -24,6 +24,9 @@ namespace Syroot.NintenTools.Bfres
         /// </summary>
         public string Name { get; set; }
 
+        /// <summary>
+        /// Gets or sets flags specifying how a <see cref="Material"/> is rendered.
+        /// </summary>
         public MaterialFlags Flags { get; set; }
 
         public ResDict<RenderInfo> RenderInfos { get; private set; }
@@ -32,8 +35,16 @@ namespace Syroot.NintenTools.Bfres
 
         public ShaderAssign ShaderAssign { get; private set; }
 
+        /// <summary>
+        /// Gets the list of <see cref="TextureRef"/> instances referencing the <see cref="Texture"/> instances required
+        /// to draw the material.
+        /// </summary>
         public IList<TextureRef> TextureRefs { get; private set; }
 
+        /// <summary>
+        /// Gets or sets a dictionary of <see cref="Sampler"/> instances which configure how to draw
+        /// <see cref="Texture"/> instances referenced by the <see cref="TextureRefs"/> list.
+        /// </summary>
         public ResDict<Sampler> Samplers { get; private set; }
 
         public ResDict<ShaderParam> ShaderParams { get; private set; }
@@ -115,9 +126,19 @@ namespace Syroot.NintenTools.Bfres
         }
     }
 
+    /// <summary>
+    /// Represents general flags specifying how a <see cref="Material"/> is rendered.
+    /// </summary>
     public enum MaterialFlags
     {
+        /// <summary>
+        /// The material is not rendered at all.
+        /// </summary>
         None,
+
+        /// <summary>
+        /// The material is rendered.
+        /// </summary>
         Visible
     }
 }

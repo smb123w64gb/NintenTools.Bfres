@@ -96,17 +96,17 @@ namespace Syroot.NintenTools.Bfres
         public GX2CompSel CompSelR { get; set; }
 
         /// <summary>
-        /// Gets or sets the source channel to map to the R (red) channel.
+        /// Gets or sets the source channel to map to the G (green) channel.
         /// </summary>
         public GX2CompSel CompSelG { get; set; }
 
         /// <summary>
-        /// Gets or sets the source channel to map to the R (red) channel.
+        /// Gets or sets the source channel to map to the B (blue) channel.
         /// </summary>
         public GX2CompSel CompSelB { get; set; }
 
         /// <summary>
-        /// Gets or sets the source channel to map to the R (red) channel.
+        /// Gets or sets the source channel to map to the A (alpha) channel.
         /// </summary>
         public GX2CompSel CompSelA { get; set; }
 

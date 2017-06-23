@@ -1,5 +1,4 @@
-﻿using System;
-using Syroot.NintenTools.Bfres.Core;
+﻿using Syroot.NintenTools.Bfres.Core;
 
 namespace Syroot.NintenTools.Bfres
 {
@@ -19,10 +18,10 @@ namespace Syroot.NintenTools.Bfres
         private ushort _flags;
 
         // ---- PROPERTIES ---------------------------------------------------------------------------------------------
-        
+
         /// <summary>
         /// Gets or sets the data type in which <see cref="Frames"/> are loaded and saved. For simplicity, the class
-        /// always stores frames as converted <see cref="Single"/> instances.
+        /// always stores frames as converted <see cref="System.Single"/> instances.
         /// </summary>
         public AnimCurveFrameType FrameType
         {
@@ -32,7 +31,7 @@ namespace Syroot.NintenTools.Bfres
 
         /// <summary>
         /// Gets or sets the data type in which <see cref="Keys"/> are loaded and saved. For simplicity, the class
-        /// always stores frames as converted <see cref="Single"/> instances.
+        /// always stores frames as converted <see cref="System.Single"/> instances.
         /// </summary>
         public AnimCurveKeyType KeyType
         {
@@ -55,7 +54,7 @@ namespace Syroot.NintenTools.Bfres
         /// to names.
         /// </summary>
         public uint AnimDataOffset { get; set; }
-        
+
         /// <summary>
         /// Gets or sets the first frame at which a key is placed.
         /// </summary>
@@ -150,7 +149,7 @@ namespace Syroot.NintenTools.Bfres
             Keys = loader.LoadCustom(() =>
             {
                 int elementsPerKey = ElementsPerKey;
-                float[,] keys = new float[numKey,elementsPerKey];
+                float[,] keys = new float[numKey, elementsPerKey];
                 switch (KeyType)
                 {
                     case AnimCurveKeyType.Single:
@@ -183,7 +182,7 @@ namespace Syroot.NintenTools.Bfres
                 return keys;
             });
         }
-        
+
         void IResData.Save(ResFileSaver saver)
         {
             saver.Write(_flags);
@@ -331,7 +330,7 @@ namespace Syroot.NintenTools.Bfres
         /// </summary>
         BakedBool = 7 << 4
     }
-    
+
     public struct AnimConstant
     {
         // ---- FIELDS -------------------------------------------------------------------------------------------------

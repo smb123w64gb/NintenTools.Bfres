@@ -1,6 +1,4 @@
-﻿using System;
-using System.Diagnostics;
-using Syroot.Maths;
+﻿using System.Diagnostics;
 using Syroot.NintenTools.Bfres.Core;
 
 namespace Syroot.NintenTools.Bfres
@@ -14,7 +12,7 @@ namespace Syroot.NintenTools.Bfres
         // ---- PROPERTIES ---------------------------------------------------------------------------------------------
 
         /// <summary>
-        /// Gets the type of the value.
+        /// Gets or sets the type of the value.
         /// </summary>
         public ShaderParamType Type { get; set; }
 
@@ -109,15 +107,169 @@ namespace Syroot.NintenTools.Bfres
         }
     }
 
+    /// <summary>
+    /// Represents the data types in which <see cref="ShaderParam"/> instances can store their value.
+    /// </summary>
     public enum ShaderParamType : byte
     {
-        Bool, Bool2, Bool3, Bool4,
-        Int, Int2, Int3, Int4,
-        UInt, UInt2, UInt3, UInt4,
-        Float, Float2, Float3, Float4,
-        Reserved2, Float2x2, Float2x3, Float2x4,
-        Reserved3, Float3x2, Float3x3, Float3x4,
-        Reserved4, Float4x2, Float4x3, Float4x4,
-        Srt2D, Srt3D, TexSrt, TexSrtEx
+        /// <summary>
+        /// The value is a single <see cref="System.Boolean"/>.
+        /// </summary>
+        Bool,
+
+        /// <summary>
+        /// The value is a <see cref="System.Boolean"/> vector with 2 components.
+        /// </summary>
+        Bool2,
+
+        /// <summary>
+        /// The value is a <see cref="System.Boolean"/> vector with 3 components.
+        /// </summary>
+        Bool3,
+
+        /// <summary>
+        /// The value is a <see cref="System.Boolean"/> vector with 4 components.
+        /// </summary>
+        Bool4,
+
+        /// <summary>
+        /// The value is a single <see cref="System.Int32"/>.
+        /// </summary>
+        Int,
+
+        /// <summary>
+        /// The value is a <see cref="Maths.Vector2"/>.
+        /// </summary>
+        Int2,
+
+        /// <summary>
+        /// The value is a <see cref="Maths.Vector3"/>.
+        /// </summary>
+        Int3,
+
+        /// <summary>
+        /// The value is a <see cref="Maths.Vector4"/>.
+        /// </summary>
+        Int4,
+
+        /// <summary>
+        /// The value is a single <see cref="System.UInt32"/>.
+        /// </summary>
+        UInt,
+
+        /// <summary>
+        /// The value is a <see cref="System.UInt32"/> vector with 2 components.
+        /// </summary>
+        UInt2,
+
+        /// <summary>
+        /// The value is a <see cref="System.UInt32"/> vector with 3 components.
+        /// </summary>
+        UInt3,
+
+        /// <summary>
+        /// The value is a <see cref="System.UInt32"/> vector with 4 components.
+        /// </summary>
+        UInt4,
+
+        /// <summary>
+        /// The value is a single <see cref="System.Single"/>.
+        /// </summary>
+        Float,
+
+        /// <summary>
+        /// The value is a <see cref="Maths.Vector2F"/>.
+        /// </summary>
+        Float2,
+
+        /// <summary>
+        /// The value is a <see cref="Maths.Vector3F"/>.
+        /// </summary>
+        Float3,
+
+        /// <summary>
+        /// The value is a <see cref="Maths.Vector4F"/>.
+        /// </summary>
+        Float4,
+
+        /// <summary>
+        /// An invalid type for <see cref="ShaderParam"/> values, only used for internal computations.
+        /// </summary>
+        Reserved2,
+
+        /// <summary>
+        /// The value is a <see cref="System.Single"/> matrix with 2 rows and 2 columns.
+        /// </summary>
+        Float2x2,
+
+        /// <summary>
+        /// The value is a <see cref="Maths.Matrix2x3"/>.
+        /// </summary>
+        Float2x3,
+
+        /// <summary>
+        /// The value is a <see cref="System.Single"/> matrix with 2 rows and 4 columns.
+        /// </summary>
+        Float2x4,
+
+        /// <summary>
+        /// An invalid type for <see cref="ShaderParam"/> values, only used for internal computations.
+        /// </summary>
+        Reserved3,
+
+        /// <summary>
+        /// The value is a <see cref="System.Single"/> matrix with 3 rows and 2 columns.
+        /// </summary>
+        Float3x2,
+
+        /// <summary>
+        /// The value is a <see cref="Maths.Matrix3"/>.
+        /// </summary>
+        Float3x3,
+
+        /// <summary>
+        /// The value is a <see cref="Maths.Matrix3x4"/>.
+        /// </summary>
+        Float3x4,
+
+        /// <summary>
+        /// An invalid type for <see cref="ShaderParam"/> values, only used for internal computations.
+        /// </summary>
+        Reserved4,
+
+        /// <summary>
+        /// The value is a <see cref="System.Single"/> matrix with 4 rows and 2 columns.
+        /// </summary>
+        Float4x2,
+
+        /// <summary>
+        /// The value is a <see cref="Maths.Matrix4x3"/>.
+        /// </summary>
+        Float4x3,
+
+        /// <summary>
+        /// The value is a <see cref="Maths.Matrix4"/>.
+        /// </summary>
+        Float4x4,
+
+        /// <summary>
+        /// The value is a <see cref="Srt2D"/>.
+        /// </summary>
+        Srt2D,
+
+        /// <summary>
+        /// The value is a <see cref="Srt3D"/>.
+        /// </summary>
+        Srt3D,
+
+        /// <summary>
+        /// The value is a <see cref="TexSrt"/>.
+        /// </summary>
+        TexSrt,
+
+        /// <summary>
+        /// The value is a <see cref="TexSrtEx"/>.
+        /// </summary>
+        TexSrtEx
     }
 }

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
 using Syroot.NintenTools.Bfres.Core;
 
@@ -23,18 +22,43 @@ namespace Syroot.NintenTools.Bfres
         /// </summary>
         public string Name { get; set; }
 
+        /// <summary>
+        /// Gets or sets flags determining which data is available for this instance.
+        /// </summary>
         public ShapeFlags Flags { get; set; }
 
+        /// <summary>
+        /// Gets or sets the index of the material to apply to the shapes surface in the owning
+        /// <see cref="Model.Materials"/> list.
+        /// </summary>
         public ushort MaterialIndex { get; set; }
 
+        /// <summary>
+        /// Gets or sets the index of the <see cref="Bone"/> to which this instance is directly attached to. The bone
+        /// must be part of the skeleton referenced by the owning <see cref="Model.Skeleton"/> instance.
+        /// </summary>
         public ushort BoneIndex { get; set; }
 
+        /// <summary>
+        /// Gets or sets the index of the <see cref="VertexBuffer"/> in the owning <see cref="Model.VertexBuffers"/>
+        /// list.
+        /// </summary>
         public ushort VertexBufferIndex { get; set; }
 
+        /// <summary>
+        /// Gets or sets the bounding radius spanning the shape.
+        /// </summary>
         public float Radius { get; set; }
 
+        /// <summary>
+        /// Gets the <see cref="VertexBuffer"/> instance storing the data which forms the shape's surface.
+        /// </summary>
         public VertexBuffer VertexBuffer { get; private set; }
 
+        /// <summary>
+        /// Gets or sets the number of bones influencing the vertices stored in this buffer. 0 influences equal
+        /// rigidbodies (no skinning), 1 equal rigid skinning and 2 smooth skinning.
+        /// </summary>
         public byte VertexSkinCount { get; set; }
 
         /// <summary>
@@ -42,14 +66,21 @@ namespace Syroot.NintenTools.Bfres
         /// </summary>
         public byte TargetAttribCount { get; set; }
 
+        /// <summary>
+        /// Gets the list of <see cref="Meshes"/> which are used to represent different level of details of the shape.
+        /// </summary>
         public IList<Mesh> Meshes { get; private set; }
-
+        
         public IList<ushort> SkinBoneIndices { get; private set; }
-
+        
         public ResDict<KeyShape> KeyShapes { get; private set; }
-
+        
         public IList<Bounding> SubMeshBoundings { get; private set; }
 
+        /// <summary>
+        /// Represents the <see cref="BoundingNode"/> instances forming the bounding tree with which parts of a mesh
+        /// are culled when not visible.
+        /// </summary>
         public IList<BoundingNode> SubMeshBoundingNodes { get; private set; }
 
         public IList<ushort> SubMeshBoundingIndices { get; private set; }
@@ -124,8 +155,14 @@ namespace Syroot.NintenTools.Bfres
         }
     }
     
+    /// <summary>
+    /// Represents flags determining which data is available for <see cref="Shape"/> instances.
+    /// </summary>
     public enum ShapeFlags : uint
     {
+        /// <summary>
+        /// The <see cref="Shape"/> instance references a <see cref="VertexBuffer"/>.
+        /// </summary>
         HasVertexBuffer = 1 << 1
     }
 }

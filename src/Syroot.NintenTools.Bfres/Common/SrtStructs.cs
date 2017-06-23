@@ -9,12 +9,26 @@ namespace Syroot.NintenTools.Bfres
     {
         // ---- CONSTANTS ----------------------------------------------------------------------------------------------
 
+        /// <summary>
+        /// The size of this structure.
+        /// </summary>
         public const int SizeInBytes = Vector2F.SizeInBytes + sizeof(float) + Vector2F.SizeInBytes;
 
         // ---- FIELDS -------------------------------------------------------------------------------------------------
 
+        /// <summary>
+        /// The scaling amount of the transformation.
+        /// </summary>
         public Vector2F Scaling;
+
+        /// <summary>
+        /// The rotation angle of the transformation.
+        /// </summary>
         public float Rotation;
+
+        /// <summary>
+        /// The translation amount of the transformation.
+        /// </summary>
         public Vector2F Translation;
     }
 
@@ -25,12 +39,26 @@ namespace Syroot.NintenTools.Bfres
     {
         // ---- CONSTANTS ----------------------------------------------------------------------------------------------
 
+        /// <summary>
+        /// The size of this structure.
+        /// </summary>
         public const int SizeInBytes = Vector3F.SizeInBytes + Vector3F.SizeInBytes + Vector3F.SizeInBytes;
 
         // ---- FIELDS -------------------------------------------------------------------------------------------------
 
+        /// <summary>
+        /// The scaling amount of the transformation.
+        /// </summary>
         public Vector3F Scaling;
+
+        /// <summary>
+        /// The rotation amount of the transformation.
+        /// </summary>
         public Vector3F Rotation;
+
+        /// <summary>
+        /// The translation amount of the transformation.
+        /// </summary>
         public Vector3F Translation;
     }
 
@@ -41,13 +69,31 @@ namespace Syroot.NintenTools.Bfres
     {
         // ---- CONSTANTS ----------------------------------------------------------------------------------------------
 
+        /// <summary>
+        /// The size of this structure.
+        /// </summary>
         public const int SizeInBytes = sizeof(TexSrtMode) + Vector2F.SizeInBytes + sizeof(float) + Vector2F.SizeInBytes;
 
         // ---- FIELDS -------------------------------------------------------------------------------------------------
 
-        public TexSrtMode mode;
+        /// <summary>
+        /// The <see cref="TexSrtMode"/> with which the transformation is applied.
+        /// </summary>
+        public TexSrtMode Mode;
+
+        /// <summary>
+        /// The scaling amount of the transformation.
+        /// </summary>
         public Vector2F Scaling;
+
+        /// <summary>
+        /// The rotation angle of the transformation.
+        /// </summary>
         public float Rotation;
+
+        /// <summary>
+        /// The translation amount of the transformation.
+        /// </summary>
         public Vector2F Translation;
     }
 
@@ -59,14 +105,36 @@ namespace Syroot.NintenTools.Bfres
     {
         // ---- CONSTANTS ----------------------------------------------------------------------------------------------
 
+        /// <summary>
+        /// The size of this structure.
+        /// </summary>
         public const int SizeInBytes = TexSrt.SizeInBytes + sizeof(uint);
 
         // ---- FIELDS -------------------------------------------------------------------------------------------------
 
-        public TexSrtMode mode;
+        /// <summary>
+        /// The <see cref="TexSrtMode"/> with which the transformation is applied.
+        /// </summary>
+        public TexSrtMode Mode;
+
+        /// <summary>
+        /// The scaling amount of the transformation.
+        /// </summary>
         public Vector2F Scaling;
+
+        /// <summary>
+        /// The rotation angle of the transformation.
+        /// </summary>
         public float Rotation;
+
+        /// <summary>
+        /// The translation amount of the transformation.
+        /// </summary>
         public Vector2F Translation;
+
+        /// <summary>
+        /// A pointer to a 3x4 matrix to multiply the transformation with. Set at runtime.
+        /// </summary>
         public uint MatrixPointer;
     }
 
