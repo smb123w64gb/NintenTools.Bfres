@@ -19,8 +19,12 @@ namespace Syroot.NintenTools.Bfres.Test
 
         private static void Main(string[] args)
         {
-            ResFile resFile = new ResFile(@"D:\Pictures\zBFRES\Koopa.bfres");
-            resFile.Save(@"D:\Pictures\Koopa.bfres");
+            ResFile resFile = new ResFile(@"D:\Pictures\zBFRES\Roy.bfres");
+            Shape firstShape = resFile.Models[0].Shapes[0];
+            resFile.Models[0].Shapes.Clear();
+            resFile.Models[0].Shapes.Add("ACoolMesh", firstShape);
+            firstShape.Name = "ACoolMesh";
+            resFile.Save(@"D:\Pictures\Roy.bfres");
 
             //LoadResFiles();
             //Console.WriteLine("Done.");

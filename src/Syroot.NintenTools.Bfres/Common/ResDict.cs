@@ -261,7 +261,10 @@ namespace Syroot.NintenTools.Bfres
         internal void Add(string key, IResData value)
         {
             // Throw if key already exists.
-            Lookup(key, out Node node, out int index);
+            if (Lookup(key, out Node node, out int index, false))
+            {
+                throw new ArgumentException($"Key \"{key}\" already exists.");
+            }
             _nodes.Add(new Node(key, value));
         }
 

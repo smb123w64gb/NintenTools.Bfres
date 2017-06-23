@@ -6,11 +6,11 @@
 		<AssemblyName>Syroot.NintenTools.Bfres</AssemblyName>
 		<AssemblyTitle>NintenTools.Bfres</AssemblyTitle>
 		<Authors>Syroot</Authors>
-		<VersionPrefix>1.0.0</VersionPrefix>
+		<VersionPrefix>1.0.0-alpha1</VersionPrefix>
 
 		<PackageId>Syroot.NintenTools.Bfres</PackageId>
 		<PackageTags>bfres;cafe;nintendo;nw4f;wiiu</PackageTags>
-		<PackageReleaseNotes>Support for saving new BFRES files, structure fixing.</PackageReleaseNotes>
+		<PackageReleaseNotes>Fix ResDict.Add() method.</PackageReleaseNotes>
 		<PackageIconUrl>https://raw.githubusercontent.com/Syroot/NintenTools.Bfres/master/res/Logo.png</PackageIconUrl>
 		<PackageProjectUrl>https://github.com/Syroot/NintenTools.Bfres</PackageProjectUrl>
 		<PackageLicenseUrl>https://raw.githubusercontent.com/Syroot/NintenTools.Bfres/master/LICENSE</PackageLicenseUrl>
