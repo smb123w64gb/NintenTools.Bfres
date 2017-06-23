@@ -17,7 +17,7 @@ namespace Syroot.NintenTools.Bfres
         public ushort Unknown { get; set; }
 
         public ushort NextSibling { get; set; }
-
+        
         public ushort SubMeshIndex { get; set; }
 
         public ushort SubMeshCount { get; set; }

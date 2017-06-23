@@ -145,7 +145,7 @@ namespace Syroot.NintenTools.Bfres
         void IResData.Save(ResFileSaver saver)
         {
             saver.SaveString(Name);
-            saver.Write((ushort)((Array)_value).Length); // TODO: Unsafe cast, but _value should always be Array.
+            saver.Write((ushort)((Array)_value).Length); // Unsafe cast, but _value should always be Array.
             saver.Write(Type, true);
             saver.Seek(1);
             switch (Type)

@@ -22,7 +22,7 @@ namespace Syroot.NintenTools.Bfres.GX2
         private const int _depthCompareFuncBit = 26, _depthCompareFuncBits = 3;
 
         private const int _minLodBit = 0, _minLodBits = 10;
-        private const int _maxLodBit = 0, _maxLodBits = 10;
+        private const int _maxLodBit = 10, _maxLodBits = 10;
         private const int _lodBiasBit = 20, _lodBiasBits = 12;
 
         private const int _depthCompareBit = 30;
@@ -140,8 +140,8 @@ namespace Syroot.NintenTools.Bfres.GX2
         /// </summary>
         public float MinLod
         {
-            get { return UInt10ToSingle(Values[1].Decode(_minLodBit, _minLodBits)); }
-            set { Values[1].Encode(SingleToUInt10(value), _minLodBit, _minLodBits); }
+            get { return USingle4x6ToSingle((ushort)Values[1].Decode(_minLodBit, _minLodBits)); }
+            set { Values[1] = Values[1].Encode(SingleToUSingle4x6(value), _minLodBit, _minLodBits); }
         }
 
         /// <summary>
@@ -149,8 +149,8 @@ namespace Syroot.NintenTools.Bfres.GX2
         /// </summary>
         public float MaxLod
         {
-            get { return UInt10ToSingle(Values[1].Decode(_maxLodBit, _maxLodBits)); }
-            set { Values[1].Encode(SingleToUInt10(value), _maxLodBit, _maxLodBits); }
+            get { return USingle4x6ToSingle((ushort)Values[1].Decode(_maxLodBit, _maxLodBits)); }
+            set { Values[1] = Values[1].Encode(SingleToUSingle4x6(value), _maxLodBit, _maxLodBits); }
         }
         
         /// <summary>
@@ -158,8 +158,8 @@ namespace Syroot.NintenTools.Bfres.GX2
         /// </summary>
         public float LodBias
         {
-            get { return UInt12ToSingle(Values[1].Decode(_lodBiasBit, _lodBiasBits)); }
-            set { Values[1].Encode(SingleToUInt12(value), _lodBiasBit, _lodBiasBits); }
+            get { return Single5x6ToSingle(Values[1].Decode(_lodBiasBit, _lodBiasBits)); }
+            set { Values[1] = Values[1].Encode(SingleToSingle5x6(value), _lodBiasBit, _lodBiasBits); }
         }
 
         /// <summary>
@@ -174,27 +174,27 @@ namespace Syroot.NintenTools.Bfres.GX2
         internal uint[] Values { get; set; }
 
         // ---- METHODS (PRIVATE) --------------------------------------------------------------------------------------
-        
-        // TODO: Validate correctness of conversions.
 
-        private float UInt10ToSingle(uint value)
+        private float Single5x6ToSingle(uint value)
+        {
+            // Use a signed value to get arithmetic right shifts to receive correct negative numbers.
+            int signed = (int)(value << 20);
+            return (float)(signed >> 20) / 64;
+        }
+
+        private float USingle4x6ToSingle(ushort value)
         {
             return value / 64f;
         }
 
-        private float UInt12ToSingle(uint value)
-        {
-            return value / 64f;
-        }
-
-        private uint SingleToUInt10(float value)
-        {
-            return (uint)(Algebra.Clamp(value, 0, 13) * 64f);
-        }
-
-        private uint SingleToUInt12(float value)
+        private uint SingleToSingle5x6(float value)
         {
             return (uint)(Algebra.Clamp(value, -32, 31.984375f) * 64);
+        }
+
+        private uint SingleToUSingle4x6(float value)
+        {
+            return (uint)(Algebra.Clamp(value, 0, 13) * 64);
         }
     }
 }

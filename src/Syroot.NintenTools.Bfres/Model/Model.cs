@@ -56,7 +56,7 @@ namespace Syroot.NintenTools.Bfres
         /// <summary>
         /// Gets or sets the total number of vertices to process when drawing this model.
         /// </summary>
-        // TODO: Compute total vertices.
+        // TODO: Compute total vertex count.
         public uint TotalVertexCount
         {
             get;

@@ -25,6 +25,12 @@ namespace Syroot.NintenTools.Bfres
         [FieldOffset(0)]
         public Single Single;
 
+        /// <summary>
+        /// The data as an <see cref="UInt32"/>.
+        /// </summary>
+        [FieldOffset(0)]
+        public UInt32 UInt32;
+
         // ---- OPERATORS ----------------------------------------------------------------------------------------------
 
         /// <summary>
@@ -48,6 +54,16 @@ namespace Syroot.NintenTools.Bfres
         }
 
         /// <summary>
+        /// Converts the given <paramref name="value"/> value to a <see cref="DWord"/> instance.
+        /// </summary>
+        /// <param name="value">The <see cref="UInt32"/> value to represent in the new <see cref="DWord"/> instance.
+        /// </param>
+        public static implicit operator DWord(uint value)
+        {
+            return new DWord() { UInt32 = value };
+        }
+
+        /// <summary>
         /// Converts the given <paramref name="value"/> value to an <see cref="Int32"/> instance.
         /// </summary>
         /// <param name="value">The <see cref="DWord"/> value to represent in the new <see cref="Int32"/> instance.
@@ -65,6 +81,16 @@ namespace Syroot.NintenTools.Bfres
         public static implicit operator float(DWord value)
         {
             return value.Single;
+        }
+
+        /// <summary>
+        /// Converts the given <paramref name="value"/> value to an <see cref="UInt32"/> instance.
+        /// </summary>
+        /// <param name="value">The <see cref="DWord"/> value to represent in the new <see cref="UInt32"/> instance.
+        /// </param>
+        public static implicit operator uint(DWord value)
+        {
+            return value.UInt32;
         }
 
         // ---- METHODS (PUBLIC) ---------------------------------------------------------------------------------------
@@ -231,7 +257,7 @@ namespace Syroot.NintenTools.Bfres
         /// </summary>
         public uint ToUInt32(IFormatProvider provider)
         {
-            throw new InvalidOperationException($"Cannot convert {nameof(DWord)} to type {nameof(UInt32)}.");
+            return UInt32;
         }
 
         /// <summary>
