@@ -27,6 +27,9 @@ namespace Syroot.NintenTools.Bfres
         /// </summary>
         public int FrameCount { get; set; }
 
+        /// <summary>
+        /// Gets or sets the index of the distance attenuation function to use.
+        /// </summary>
         public sbyte DistanceAttnFuncIndex { get; set; }
 
         /// <summary>
@@ -40,6 +43,9 @@ namespace Syroot.NintenTools.Bfres
         /// </summary>
         public string Name { get; set; }
 
+        /// <summary>
+        /// Gets or sets the name of the distance attenuation function to use.
+        /// </summary>
         public string DistanceAttnFuncName { get; set; }
 
         /// <summary>

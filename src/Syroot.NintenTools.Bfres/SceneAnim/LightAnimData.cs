@@ -49,26 +49,26 @@ namespace Syroot.NintenTools.Bfres
 
         // ---- CONSTRUCTORS & DESTRUCTOR ------------------------------------------------------------------------------
 
-        internal LightAnimData(ResFileLoader loader, LightAnimFlags flags)
+        internal LightAnimData(ResFileLoader loader, LightAnimField flags)
         {
-            Enable = flags.HasFlag(LightAnimFlags.ResultEnable) ? loader.ReadInt32() : 0;
-            Position = flags.HasFlag(LightAnimFlags.ResultPosition) ? loader.ReadVector3F() : Vector3F.Zero;
-            Rotation = flags.HasFlag(LightAnimFlags.ResultRotation) ? loader.ReadVector3F() : Vector3F.Zero;
-            DistanceAttn = flags.HasFlag(LightAnimFlags.ResultDistanceAttn) ? loader.ReadVector2F() : Vector2F.Zero;
-            AngleAttn = flags.HasFlag(LightAnimFlags.ResultAngleAttn) ? loader.ReadVector2F() : Vector2F.Zero;
-            Color0 = flags.HasFlag(LightAnimFlags.ResultColor0) ? loader.ReadVector3F() : Vector3F.Zero;
-            Color1 = flags.HasFlag(LightAnimFlags.ResultColor1) ? loader.ReadVector3F() : Vector3F.Zero;
+            Enable = flags.HasFlag(LightAnimField.Enable) ? loader.ReadInt32() : 0;
+            Position = flags.HasFlag(LightAnimField.Position) ? loader.ReadVector3F() : Vector3F.Zero;
+            Rotation = flags.HasFlag(LightAnimField.Rotation) ? loader.ReadVector3F() : Vector3F.Zero;
+            DistanceAttn = flags.HasFlag(LightAnimField.DistanceAttn) ? loader.ReadVector2F() : Vector2F.Zero;
+            AngleAttn = flags.HasFlag(LightAnimField.AngleAttn) ? loader.ReadVector2F() : Vector2F.Zero;
+            Color0 = flags.HasFlag(LightAnimField.Color0) ? loader.ReadVector3F() : Vector3F.Zero;
+            Color1 = flags.HasFlag(LightAnimField.Color1) ? loader.ReadVector3F() : Vector3F.Zero;
         }
 
-        internal void Save(ResFileSaver saver, LightAnimFlags flags)
+        internal void Save(ResFileSaver saver, LightAnimField flags)
         {
-            if (flags.HasFlag(LightAnimFlags.ResultEnable)) saver.Write(Enable);
-            if (flags.HasFlag(LightAnimFlags.ResultPosition)) saver.Write(Position);
-            if (flags.HasFlag(LightAnimFlags.ResultRotation)) saver.Write(Rotation);
-            if (flags.HasFlag(LightAnimFlags.ResultDistanceAttn)) saver.Write(DistanceAttn);
-            if (flags.HasFlag(LightAnimFlags.ResultAngleAttn)) saver.Write(AngleAttn);
-            if (flags.HasFlag(LightAnimFlags.ResultColor0)) saver.Write(Color0);
-            if (flags.HasFlag(LightAnimFlags.ResultColor1)) saver.Write(Color1);
+            if (flags.HasFlag(LightAnimField.Enable)) saver.Write(Enable);
+            if (flags.HasFlag(LightAnimField.Position)) saver.Write(Position);
+            if (flags.HasFlag(LightAnimField.Rotation)) saver.Write(Rotation);
+            if (flags.HasFlag(LightAnimField.DistanceAttn)) saver.Write(DistanceAttn);
+            if (flags.HasFlag(LightAnimField.AngleAttn)) saver.Write(AngleAttn);
+            if (flags.HasFlag(LightAnimField.Color0)) saver.Write(Color0);
+            if (flags.HasFlag(LightAnimField.Color1)) saver.Write(Color1);
         }
     }
 

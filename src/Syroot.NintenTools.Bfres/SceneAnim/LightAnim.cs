@@ -14,23 +14,52 @@ namespace Syroot.NintenTools.Bfres
         // ---- CONSTANTS ----------------------------------------------------------------------------------------------
 
         private const string _signature = "FLIT";
-        
+
+        private const ushort _flagsMask = 0b00000001_00000101;
+        private const ushort _flagsMaskFields = 0b11111110_00000000;
+
+        // ---- FIELDS -------------------------------------------------------------------------------------------------
+
+        private ushort _flags;
+
         // ---- PROPERTIES ---------------------------------------------------------------------------------------------
+
+        /// <summary>
+        /// Gets or sets flags controlling how the animation should be played.
+        /// </summary>
+        public LightAnimFlags Flags
+        {
+            get { return (LightAnimFlags)(_flags & _flagsMask); }
+            set { _flags &= (ushort)(~_flagsMask | (ushort)value); }
+        }
 
         /// <summary>
         /// Gets or sets flags controlling how animation data is stored or how the animation should be played.
         /// </summary>
-        public LightAnimFlags Flags { get; set; }
+        public LightAnimField AnimatedFields
+        {
+            get { return (LightAnimField)(_flags & _flagsMaskFields); }
+            set { _flags &= (ushort)(~_flagsMaskFields | (ushort)value); }
+        }
 
         /// <summary>
         /// Gets or sets the total number of frames this animation plays.
         /// </summary>
         public int FrameCount { get; set; }
 
+        /// <summary>
+        /// Gets or sets the index of the light type.
+        /// </summary>
         public sbyte LightTypeIndex { get; set; }
 
+        /// <summary>
+        /// Gets or sets the index of the distance attenuation function to use.
+        /// </summary>
         public sbyte DistanceAttnFuncIndex { get; set; }
 
+        /// <summary>
+        /// Gets or sets the index of the angle attenuation function to use.
+        /// </summary>
         public sbyte AngleAttnFuncIndex { get; set; }
 
         /// <summary>
@@ -49,8 +78,14 @@ namespace Syroot.NintenTools.Bfres
         /// </summary>
         public string LightTypeName { get; set; }
 
+        /// <summary>
+        /// Gets or sets the name of the distance attenuation function to use.
+        /// </summary>
         public string DistanceAttnFuncName { get; set; }
 
+        /// <summary>
+        /// Gets or sets the name of the angle attenuation function to use.
+        /// </summary>
         public string AngleAttnFuncName { get; set; }
 
         /// <summary>
@@ -86,7 +121,7 @@ namespace Syroot.NintenTools.Bfres
             DistanceAttnFuncName = loader.LoadString();
             AngleAttnFuncName = loader.LoadString();
             Curves = loader.LoadList<AnimCurve>(numCurve);
-            BaseData = loader.LoadCustom(() => new LightAnimData(loader, Flags));
+            BaseData = loader.LoadCustom(() => new LightAnimData(loader, AnimatedFields));
             UserData = loader.LoadDict<UserData>();
         }
         
@@ -106,13 +141,13 @@ namespace Syroot.NintenTools.Bfres
             saver.SaveString(DistanceAttnFuncName);
             saver.SaveString(AngleAttnFuncName);
             saver.SaveList(Curves);
-            saver.SaveCustom(BaseData, () => BaseData.Save(saver, Flags));
+            saver.SaveCustom(BaseData, () => BaseData.Save(saver, AnimatedFields));
             saver.SaveDict(UserData);
         }
     }
     
     /// <summary>
-    /// Represents flags specifying how animation data is stored or should be played.
+    /// Represents flags specifying how animation data is stored.
     /// </summary>
     [Flags]
     public enum LightAnimFlags : ushort
@@ -127,13 +162,48 @@ namespace Syroot.NintenTools.Bfres
         /// </summary>
         Looping = 1 << 2,
 
-        EnableCurve = 1 << 8,
-        ResultEnable = 1 << 9,
-        ResultPosition = 1 << 10,
-        ResultRotation = 1 << 11,
-        ResultDistanceAttn = 1 << 12,
-        ResultAngleAttn =  1 << 13,
-        ResultColor0 = 1 << 14,
-        ResultColor1 = 1 << 15
+        EnableCurve = 1 << 8
+    }
+
+    /// <summary>
+    /// Represents flags specifying which fields are animated.
+    /// </summary>
+    [Flags]
+    public enum LightAnimField : ushort
+    {
+        /// <summary>
+        /// Enabled state is animated.
+        /// </summary>
+        Enable = 1 << 9,
+
+        /// <summary>
+        /// Position is animated.
+        /// </summary>
+        Position = 1 << 10,
+
+        /// <summary>
+        /// Rotation is animated.
+        /// </summary>
+        Rotation = 1 << 11,
+
+        /// <summary>
+        /// Distance attenuation is animated.
+        /// </summary>
+        DistanceAttn = 1 << 12,
+
+        /// <summary>
+        /// Angle attenuation is animated in degrees.
+        /// </summary>
+        AngleAttn = 1 << 13,
+
+        /// <summary>
+        /// Color 0 is animated.
+        /// </summary>
+        Color0 = 1 << 14,
+
+        /// <summary>
+        /// Color 1 is animated.
+        /// </summary>
+        Color1 = 1 << 15
     }
 }

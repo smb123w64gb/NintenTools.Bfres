@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using Syroot.Maths;
 using Syroot.NintenTools.Bfres.Core;
@@ -34,32 +33,50 @@ namespace Syroot.NintenTools.Bfres
         /// </summary>
         public string Name { get; set; }
 
+        /// <summary>
+        /// Gets or sets the index of the parent <see cref="Bone"/> this instance is a child of.
+        /// </summary>
         public ushort ParentIndex { get; set; }
 
+        /// <summary>
+        /// Gets or sets the index of a matrix used for smooth skinning.
+        /// </summary>
         public short SmoothMatrixIndex { get; set; }
 
+        /// <summary>
+        /// Gets or sets the index of a matrix used for rigid skinning.
+        /// </summary>
         public short RigidMatrixIndex { get; set; }
 
         public ushort BillboardIndex { get; set; }
 
+        /// <summary>
+        /// Gets or sets flags controlling bone behavior.
+        /// </summary>
         public BoneFlags Flags
         {
             get { return (BoneFlags)(_flags & _flagsMask); }
             set { _flags &= ~_flagsMask | (uint)value; }
         }
 
+        /// <summary>
+        /// Gets or sets the rotation method used to store bone rotations in <see cref="Rotation"/>.
+        /// </summary>
         public BoneFlagsRotation FlagsRotation
         {
             get { return (BoneFlagsRotation)(_flags & _flagsMaskRotate); }
             set { _flags &= ~_flagsMaskRotate | (uint)value; }
         }
 
+        /// <summary>
+        /// Gets or sets the billboard transformation applied to the bone.
+        /// </summary>
         public BoneFlagsBillboard FlagsBillboard
         {
             get { return (BoneFlagsBillboard)(_flags & _flagsMaskBillboard); }
             set { _flags &= ~_flagsMaskBillboard | (uint)value; }
         }
-
+        
         public BoneFlagsTransform FlagsTransform
         {
             get { return (BoneFlagsTransform)(_flags & _flagsMaskTransform); }
@@ -72,10 +89,20 @@ namespace Syroot.NintenTools.Bfres
             set { _flags &= ~_flagsMaskTransformCumulative | (uint)value; }
         }
 
+        /// <summary>
+        /// Gets or sets the spatial scale of the bone.
+        /// </summary>
         public Vector3F Scale { get; set; }
 
+        /// <summary>
+        /// Gets or sets the spatial rotation of the bone. If <see cref="BoneFlagsRotation.EulerXYZ"/> is used, the
+        /// fourth component is always <c>1.0f</c>.
+        /// </summary>
         public Vector4F Rotation { get; set; }
 
+        /// <summary>
+        /// Gets or sets the spatial position of the bone.
+        /// </summary>
         public Vector3F Position { get; set; }
 
         /// <summary>
@@ -118,26 +145,77 @@ namespace Syroot.NintenTools.Bfres
         }
     }
 
+    /// <summary>
+    /// Represents flags controlling bone behavior.
+    /// </summary>
     public enum BoneFlags : uint
     {
+        /// <summary>
+        /// Set when the bone is visible.
+        /// </summary>
         Visible = 1 << 0
     }
 
+    /// <summary>
+    /// Represents the rotation method used to store bone rotations.
+    /// </summary>
     public enum BoneFlagsRotation : uint
     {
+        /// <summary>
+        /// A quaternion represents the rotation.
+        /// </summary>
         Quaternion,
+
+        /// <summary>
+        /// A <see cref="Vector3F"/> represents the Euler rotation in XYZ order.
+        /// </summary>
         EulerXYZ = 1 << 12
     }
 
+    /// <summary>
+    /// Represents the possible transformations for bones to handle them as billboards.
+    /// </summary>
     public enum BoneFlagsBillboard : uint
     {
+        /// <summary>
+        /// No transformation is applied.
+        /// </summary>
         None,
+
+        /// <summary>
+        /// Transforms of the child are applied.
+        /// </summary>
         Child = 1 << 16,
+
+        /// <summary>
+        /// Transforms the Z axis parallel to the camera.
+        /// </summary>
         WorldViewVector = 2 << 16,
+
+        /// <summary>
+        /// Transforms the Z axis parallel to the direction of the camera.
+        /// </summary>
         WorldViewPoint = 3 << 16,
+
+        /// <summary>
+        /// Transforms the Y axis parallel to the camera up vector, and the Z parallel to the camera up-vector.
+        /// </summary>
         ScreenViewVector = 4 << 16,
+
+        /// <summary>
+        /// Transforms the Y axis parallel to the camera up vector, and the Z axis parallel to the direction of the
+        /// camera.
+        /// </summary>
         ScreenViewPoint = 5 << 16,
+
+        /// <summary>
+        /// Transforms the Z axis parallel to the camera by rotating only the Y axis.
+        /// </summary>
         YAxisViewVector = 6 << 16,
+
+        /// <summary>
+        /// Transforms the Z axis parallel to the direction of the camera by rotating only the Y axis.
+        /// </summary>
         YAxisViewPoint = 7 << 16
     }
 

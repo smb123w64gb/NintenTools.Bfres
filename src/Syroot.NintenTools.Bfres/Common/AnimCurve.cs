@@ -87,27 +87,24 @@ namespace Syroot.NintenTools.Bfres
         public float[] Frames { get; private set; }
 
         /// <summary>
-        /// Gets an array of elements forming the keys placed at the frames of the same index in the
+        /// Gets an array of elements forming the elements of keys placed at the frames of the same index in the
         /// <see cref="Frames"/> array.
         /// </summary>
-        public float[] Keys { get; private set; }
+        public float[,] Keys { get; private set; }
 
-        // ---- METHODS (PUBLIC) ---------------------------------------------------------------------------------------
-
-        /// <summary>
-        /// Gets the number of elements stored for each key in <see cref="Keys"/>.
-        /// </summary>
-        /// <returns>The number of elements for each key in <see cref="Keys"/>.</returns>
-        public int GetElementsPerKey()
+        private int ElementsPerKey
         {
-            switch (CurveType)
+            get
             {
-                case AnimCurveType.Cubic:
-                    return 4;
-                case AnimCurveType.Linear:
-                    return 2;
-                default:
-                    return 1;
+                switch (CurveType)
+                {
+                    case AnimCurveType.Cubic:
+                        return 4;
+                    case AnimCurveType.Linear:
+                        return 2;
+                    default:
+                        return 1;
+                }
             }
         }
 
@@ -152,28 +149,38 @@ namespace Syroot.NintenTools.Bfres
             });
             Keys = loader.LoadCustom(() =>
             {
-                int keyElementCount = numKey * GetElementsPerKey();
+                int elementsPerKey = ElementsPerKey;
+                float[,] keys = new float[numKey,elementsPerKey];
                 switch (KeyType)
                 {
                     case AnimCurveKeyType.Single:
-                        return loader.ReadSingles(keyElementCount);
+                        for (int i = 0; i < numKey; i++)
+                        {
+                            keys[i, 0] = loader.ReadSingle();
+                        }
+                        break;
                     case AnimCurveKeyType.Int16:
-                        float[] int16Keys = new float[keyElementCount];
-                        for (int i = 0; i < keyElementCount; i++)
+                        for (int i = 0; i < numKey; i++)
                         {
-                            int16Keys[i] = loader.ReadUInt16();
+                            for (int j = 0; j < elementsPerKey; j++)
+                            {
+                                keys[i, j] = loader.ReadUInt16();
+                            }
                         }
-                        return int16Keys;
+                        break;
                     case AnimCurveKeyType.SByte:
-                        float[] sbyteKeys = new float[keyElementCount];
-                        for (int i = 0; i < keyElementCount; i++)
+                        for (int i = 0; i < numKey; i++)
                         {
-                            sbyteKeys[i] = loader.ReadSByte();
+                            for (int j = 0; j < elementsPerKey; j++)
+                            {
+                                keys[i, j] = loader.ReadSByte();
+                            }
                         }
-                        return sbyteKeys;
+                        break;
                     default:
                         throw new ResException($"Invalid {nameof(KeyType)}.");
                 }
+                return keys;
             });
         }
         
@@ -216,7 +223,10 @@ namespace Syroot.NintenTools.Bfres
                 switch (KeyType)
                 {
                     case AnimCurveKeyType.Single:
-                        saver.Write(Keys);
+                        foreach (float key in Keys)
+                        {
+                            saver.Write(key);
+                        }
                         break;
                     case AnimCurveKeyType.Int16:
                         foreach (float key in Keys)
@@ -234,7 +244,7 @@ namespace Syroot.NintenTools.Bfres
             });
         }
     }
-    
+
     /// <summary>
     /// Represents the possible data types in which <see cref="AnimCurve.Frames"/> are stored. For simple library use,
     /// they are always converted them to and from <see cref="Single"/> instances.
@@ -281,7 +291,7 @@ namespace Syroot.NintenTools.Bfres
 
     /// <summary>
     /// Represents the type of key values stored by this curve. This also determines the number of required elements to
-    /// define a key in the <see cref="AnimCurve.Keys"/> array. Use the <see cref="AnimCurve.GetElementsPerKey()"/>
+    /// define a key in the <see cref="AnimCurve.Keys"/> array. Use the <see cref="AnimCurve.ElementsPerKey()"/>
     /// method to retrieve the number of elements required for the <see cref="AnimCurve.CurveType"/> of that curve.
     /// </summary>
     public enum AnimCurveType : ushort

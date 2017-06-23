@@ -452,6 +452,11 @@ namespace Syroot.NintenTools.Bfres
 
         // ---- METHODS (PROTECTED) ------------------------------------------------------------------------------------
         
+        /// <summary>
+        /// Loads an <see cref="IResData"/> instance from the given <paramref name="loader"/>.
+        /// </summary>
+        /// <param name="loader">The <see cref="ResFileLoader"/> to load the instance with.</param>
+        /// <returns>The loaded <see cref="IResData"/> instance.</returns>
         protected abstract IResData LoadNodeValue(ResFileLoader loader);
 
         // ---- METHODS (PRIVATE) --------------------------------------------------------------------------------------
@@ -590,6 +595,9 @@ namespace Syroot.NintenTools.Bfres
 
         // ---- CLASSES ------------------------------------------------------------------------------------------------
 
+        /// <summary>
+        /// Represents a node forming the Patricia trie of the dictionary.
+        /// </summary>
         [DebuggerDisplay(nameof(Node) + " {" + nameof(Key) + "}")]
         protected class Node
         {
@@ -810,6 +818,11 @@ namespace Syroot.NintenTools.Bfres
 
         // ---- METHODS (INTERNAL) -------------------------------------------------------------------------------------
 
+        /// <summary>
+        /// Loads an <see cref="IResData"/> instance from the given <paramref name="loader"/>.
+        /// </summary>
+        /// <param name="loader">The <see cref="ResFileLoader"/> to load the instance with.</param>
+        /// <returns>The loaded <see cref="IResData"/> instance.</returns>
         protected override IResData LoadNodeValue(ResFileLoader loader)
         {
             return loader.Load<T>();

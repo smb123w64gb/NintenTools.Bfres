@@ -145,6 +145,7 @@ namespace Syroot.NintenTools.Bfres.Core
         /// <param name="resData">The <see cref="IResData"/> to save.</param>
         /// <param name="index">The index of the element, used for instances referenced by a <see cref="ResDict"/>.
         /// </param>
+        [DebuggerStepThrough]
         internal void Save(IResData resData, int index = -1)
         {
             if (resData == null)
@@ -167,6 +168,7 @@ namespace Syroot.NintenTools.Bfres.Core
         /// <summary>
         /// Reserves space for the <see cref="ResFile"/> file size field which is automatically filled later.
         /// </summary>
+        [DebuggerStepThrough]
         internal void SaveFieldFileSize()
         {
             _ofsFileSize = (uint)Position;
@@ -177,6 +179,7 @@ namespace Syroot.NintenTools.Bfres.Core
         /// Reserves space for the <see cref="ResFile"/> string pool size and offset fields which are automatically
         /// filled later.
         /// </summary>
+        [DebuggerStepThrough]
         internal void SaveFieldStringPool()
         {
             _ofsStringPool = (uint)Position;
@@ -188,6 +191,7 @@ namespace Syroot.NintenTools.Bfres.Core
         /// </summary>
         /// <typeparam name="T">The type of the <see cref="IResData"/> elements.</typeparam>
         /// <param name="list">The <see cref="IList{T}"/> to save.</param>
+        [DebuggerStepThrough]
         internal void SaveList<T>(IEnumerable<T> list)
             where T : IResData, new()
         {
@@ -223,12 +227,13 @@ namespace Syroot.NintenTools.Bfres.Core
             }
             Write(UInt32.MaxValue);
         }
-        
+
         /// <summary>
         /// Reserves space for an offset to the <paramref name="dict"/> written later.
         /// </summary>
         /// <typeparam name="T">The type of the <see cref="IResData"/> element values.</typeparam>
         /// <param name="dict">The <see cref="ResDict{T}"/> to save.</param>
+        [DebuggerStepThrough]
         internal void SaveDict<T>(ResDict<T> dict)
             where T : IResData, new()
         {
@@ -247,13 +252,14 @@ namespace Syroot.NintenTools.Bfres.Core
             }
             Write(UInt32.MaxValue);
         }
-        
+
         /// <summary>
         /// Reserves space for an offset to the <paramref name="data"/> written later with the
         /// <paramref name="callback"/>.
         /// </summary>
         /// <param name="data">The data to save.</param>
         /// <param name="callback">The <see cref="Action"/> to invoke to write the data.</param>
+        [DebuggerStepThrough]
         internal void SaveCustom(object data, Action callback)
         {
             if (data == null)
@@ -278,6 +284,7 @@ namespace Syroot.NintenTools.Bfres.Core
         /// </summary>
         /// <param name="str">The name to save.</param>
         /// <param name="encoding">The <see cref="Encoding"/> in which the name will be stored.</param>
+        [DebuggerStepThrough]
         internal void SaveString(string str, Encoding encoding = null)
         {
             if (str == null)
@@ -302,6 +309,7 @@ namespace Syroot.NintenTools.Bfres.Core
         /// </summary>
         /// <param name="strings">The names to save.</param>
         /// <param name="encoding">The <see cref="Encoding"/> in which the names will be stored.</param>
+        [DebuggerStepThrough]
         internal void SaveStrings(IEnumerable<string> strings, Encoding encoding = null)
         {
             foreach (string str in strings)
@@ -316,6 +324,7 @@ namespace Syroot.NintenTools.Bfres.Core
         /// <param name="data">The data to save.</param>
         /// <param name="alignment">The alignment to seek to before invoking the callback.</param>
         /// <param name="callback">The <see cref="Action"/> to invoke to write the data.</param>
+        [DebuggerStepThrough]
         internal void SaveBlock(object data, uint alignment, Action callback)
         {
             if (data == null)
@@ -334,7 +343,7 @@ namespace Syroot.NintenTools.Bfres.Core
             Write(UInt32.MaxValue);
         }
 
-        #region // ---- Specialized Write Methods ----
+        // ---- Specialized Write Methods ----
 
         /// <summary>
         /// Writes a BFRES signature consisting of 4 ASCII characters encoded as an <see cref="UInt32"/>.
@@ -524,9 +533,7 @@ namespace Syroot.NintenTools.Bfres.Core
                 Write(value);
             }
         }
-
-        #endregion
-
+        
         // ---- METHODS (PRIVATE) --------------------------------------------------------------------------------------
 
         private bool TryGetItemEntry(object data, ItemEntryType type, out ItemEntry entry)

@@ -13,11 +13,17 @@ namespace Syroot.NintenTools.Bfres
     {
         // ---- PROPERTIES ---------------------------------------------------------------------------------------------
 
+        /// <summary>
+        /// The textual <see cref="String"/> represented by this instance.
+        /// </summary>
         public string String
         {
             get; set;
         }
 
+        /// <summary>
+        /// The <see cref="Encoding"/> with which this string was read or will be written.
+        /// </summary>
         public Encoding Encoding
         {
             get; set;
@@ -47,6 +53,10 @@ namespace Syroot.NintenTools.Bfres
 
         // ---- METHODS (PUBLIC) ---------------------------------------------------------------------------------------
 
+        /// <summary>
+        /// Returns the value of the <see cref="String"/> property.
+        /// </summary>
+        /// <returns>The value of the <see cref="String"/> property.</returns>
         public override string ToString()
         {
             return String;

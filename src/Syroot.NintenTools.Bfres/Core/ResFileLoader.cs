@@ -274,11 +274,20 @@ namespace Syroot.NintenTools.Bfres.Core
             return values;
         }
 
+        /// <summary>
+        /// Reads a <see cref="Decimal10x5"/> instance from the current stream and returns it.
+        /// </summary>
+        /// <returns>The <see cref="Decimal10x5"/> instance.</returns>
         internal Decimal10x5 ReadDecimal10x5()
         {
             return new Decimal10x5(ReadUInt16());
         }
 
+        /// <summary>
+        /// Reads <see cref="Decimal10x5"/> instances from the current stream and returns them.
+        /// </summary>
+        /// <param name="count">The number of instances to read.</param>
+        /// <returns>The <see cref="Decimal10x5"/> instances.</returns>
         internal IList<Decimal10x5> ReadDecimal10x5s(int count)
         {
             Decimal10x5[] values = new Decimal10x5[count];

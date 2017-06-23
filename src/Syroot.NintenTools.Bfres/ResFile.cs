@@ -136,6 +136,11 @@ namespace Syroot.NintenTools.Bfres
 
         // ---- METHODS (PUBLIC) ---------------------------------------------------------------------------------------
 
+        /// <summary>
+        /// Saves the contents in the given <paramref name="stream"/> and optionally leaves it open
+        /// </summary>
+        /// <param name="stream">The <see cref="Stream"/> to save the contents into.</param>
+        /// <param name="leaveOpen"><c>true</c> to leave the stream open after writing, otherwise <c>false</c>.</param>
         public void Save(Stream stream, bool leaveOpen = false)
         {
             using (ResFileSaver saver = new ResFileSaver(this, stream, leaveOpen))
@@ -144,6 +149,10 @@ namespace Syroot.NintenTools.Bfres
             }
         }
 
+        /// <summary>
+        /// Saves the contents in the file with the given <paramref name="fileName"/>.
+        /// </summary>
+        /// <param name="fileName">The name of the file to save the contents into.</param>
         public void Save(string fileName)
         {
             using (ResFileSaver saver = new ResFileSaver(this, fileName))
