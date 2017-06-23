@@ -6,7 +6,7 @@
 		<AssemblyName>Syroot.NintenTools.Bfres</AssemblyName>
 		<AssemblyTitle>NintenTools.Bfres</AssemblyTitle>
 		<Authors>Syroot</Authors>
-		<VersionPrefix>1.0.0-alpha1</VersionPrefix>
+		<VersionPrefix>1.0.1-alpha1</VersionPrefix>
 
 		<PackageId>Syroot.NintenTools.Bfres</PackageId>
 		<PackageTags>bfres;cafe;nintendo;nw4f;wiiu</PackageTags>
