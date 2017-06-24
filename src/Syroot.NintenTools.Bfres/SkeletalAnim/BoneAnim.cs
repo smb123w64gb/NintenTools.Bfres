@@ -70,11 +70,11 @@ namespace Syroot.NintenTools.Bfres
         /// Gets or sets the element offset in the <see cref="BaseData"/> to an initial translation.
         /// </summary>
         public byte BeginBaseTranslate { get; set; }
-        
+
         /// <summary>
-        /// Gets <see cref="AnimCurve"/> instances animating properties of objects stored in this section.
+        /// Gets or sets <see cref="AnimCurve"/> instances animating properties of objects stored in this section.
         /// </summary>
-        public IList<AnimCurve> Curves { get; private set; }
+        public IList<AnimCurve> Curves { get; set; }
 
         /// <summary>
         /// Gets or sets initial transformation values. Only stores specific transformations according to

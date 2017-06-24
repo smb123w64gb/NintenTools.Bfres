@@ -30,10 +30,10 @@ namespace Syroot.NintenTools.Bfres
         public uint ElementCount { get; set; }
 
         /// <summary>
-        /// Gets the list of <see cref="SubMesh"/> instances which split up a mesh into parts which can be hidden if
-        /// they are not visible to optimize rendering performance.
+        /// Gets or sets the list of <see cref="SubMesh"/> instances which split up a mesh into parts which can be
+        /// hidden if they are not visible to optimize rendering performance.
         /// </summary>
-        public IList<SubMesh> SubMeshes { get; private set; }
+        public IList<SubMesh> SubMeshes { get; set; }
 
         /// <summary>
         /// Gets or sets the <see cref="Buffer"/> storing the index data.

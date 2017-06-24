@@ -70,31 +70,32 @@ namespace Syroot.NintenTools.Bfres
         public Model BindModel { get; set; }
 
         /// <summary>
-        /// Gets the indices of entries in the <see cref="Skeleton.Bones"/> or <see cref="Model.Materials"/>
+        /// Gets or sets the indices of entries in the <see cref="Skeleton.Bones"/> or <see cref="Model.Materials"/>
         /// dictionaries to bind to for each animation. <see cref="UInt16.MaxValue"/> specifies no binding.
         /// </summary>
-        public ushort[] BindIndices { get; private set; }
+        public ushort[] BindIndices { get; set; }
 
         /// <summary>
-        /// Gets the names of entries in the <see cref="Skeleton.Bones"/> or <see cref="Model.Materials"/> dictionaries
-        /// to bind to for each animation.
+        /// Gets or sets the names of entries in the <see cref="Skeleton.Bones"/> or <see cref="Model.Materials"/>
+        /// dictionaries to bind to for each animation.
         /// </summary>
-        public IList<string> Names { get; private set; }
+        public IList<string> Names { get; set; }
 
         /// <summary>
-        /// Gets <see cref="AnimCurve"/> instances animating properties of objects stored in this section.
+        /// Gets or sets <see cref="AnimCurve"/> instances animating properties of objects stored in this section.
         /// </summary>
-        public IList<AnimCurve> Curves { get; private set; }
-        
-        /// <summary>
-        /// Gets boolean values storing the initial visibility for each <see cref="Bone"/> or <see cref="Material"/>.
-        /// </summary>
-        public bool[] BaseDataList { get; private set; } 
+        public IList<AnimCurve> Curves { get; set; }
 
         /// <summary>
-        /// Gets customly attached <see cref="UserData"/> instances.
+        /// Gets or sets boolean values storing the initial visibility for each <see cref="Bone"/> or
+        /// <see cref="Material"/>.
         /// </summary>
-        public ResDict<UserData> UserData { get; private set; }
+        public bool[] BaseDataList { get; set; }
+
+        /// <summary>
+        /// Gets or sets customly attached <see cref="UserData"/> instances.
+        /// </summary>
+        public ResDict<UserData> UserData { get; set; }
 
         // ---- METHODS ------------------------------------------------------------------------------------------------
 

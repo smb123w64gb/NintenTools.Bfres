@@ -23,18 +23,18 @@ namespace Syroot.NintenTools.Bfres
         /// <summary>
         /// Gets or sets the total number of vertices resulting from the <see cref="Buffers"/>.
         /// </summary>
-        public uint VertexCount { get; private set; } // TODO: Compute vertex count.
+        public uint VertexCount { get; set; } // TODO: Compute vertex count.
 
         /// <summary>
-        /// Gets the dictionary of <see cref="VertexAttrib"/> instances describing how to interprete data in the
+        /// Gets or sets the dictionary of <see cref="VertexAttrib"/> instances describing how to interprete data in the
         /// <see cref="Buffers"/>.
         /// </summary>
-        public ResDict<VertexAttrib> Attributes { get; private set; }
+        public ResDict<VertexAttrib> Attributes { get; set; }
 
         /// <summary>
-        /// Gets the list of <see cref="Buffer"/> instances storing raw unformatted vertex data.
+        /// Gets or sets the list of <see cref="Buffer"/> instances storing raw unformatted vertex data.
         /// </summary>
-        public IList<Buffer> Buffers { get; private set; }
+        public IList<Buffer> Buffers { get; set; }
 
         // TODO: Add methods to aid in retrieving strongly typed vertex data via attributes.
 

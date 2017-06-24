@@ -34,34 +34,31 @@ namespace Syroot.NintenTools.Bfres
         public Skeleton Skeleton { get; set; }
 
         /// <summary>
-        /// Gets the <see cref="VertexBuffer"/> instances storing the vertex data used by the <see cref="Shapes"/>.
+        /// Gets or sets the <see cref="VertexBuffer"/> instances storing the vertex data used by the
+        /// <see cref="Shapes"/>.
         /// </summary>
-        public IList<VertexBuffer> VertexBuffers { get; private set; }
+        public IList<VertexBuffer> VertexBuffers { get; set; }
 
         /// <summary>
-        /// Gets the <see cref="Shape"/> instances forming the surface of the model.
+        /// Gets or sets the <see cref="Shape"/> instances forming the surface of the model.
         /// </summary>
-        public ResDict<Shape> Shapes { get; private set; }
+        public ResDict<Shape> Shapes { get; set; }
 
         /// <summary>
-        /// Gets the <see cref="Material"/> instance applied on the <see cref="Shapes"/> to color their surface.
+        /// Gets or sets the <see cref="Material"/> instance applied on the <see cref="Shapes"/> to color their surface.
         /// </summary>
-        public ResDict<Material> Materials { get; private set; }
+        public ResDict<Material> Materials { get; set; }
 
         /// <summary>
-        /// Gets customly attached <see cref="UserData"/> instances.
+        /// Gets or sets customly attached <see cref="UserData"/> instances.
         /// </summary>
-        public ResDict<UserData> UserData { get; private set; }
+        public ResDict<UserData> UserData { get; set; }
 
         /// <summary>
         /// Gets or sets the total number of vertices to process when drawing this model.
         /// </summary>
         // TODO: Compute total vertex count.
-        public uint TotalVertexCount
-        {
-            get;
-            private set;
-        }
+        public uint TotalVertexCount { get; set; }
 
         // ---- METHODS ------------------------------------------------------------------------------------------------
 

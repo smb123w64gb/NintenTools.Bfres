@@ -58,14 +58,14 @@ namespace Syroot.NintenTools.Bfres
         public ushort[] BindIndices { get; set; }
 
         /// <summary>
-        /// Gets the <see cref="ShaderParamMatAnim"/> instances creating the animation.
+        /// Gets or sets the <see cref="ShaderParamMatAnim"/> instances creating the animation.
         /// </summary>
-        public IList<ShaderParamMatAnim> ShaderParamMatAnims { get; private set; }
+        public IList<ShaderParamMatAnim> ShaderParamMatAnims { get; set; }
 
         /// <summary>
-        /// Gets customly attached <see cref="UserData"/> instances.
+        /// Gets or sets customly attached <see cref="UserData"/> instances.
         /// </summary>
-        public ResDict<UserData> UserData { get; private set; }
+        public ResDict<UserData> UserData { get; set; }
 
         // ---- METHODS ------------------------------------------------------------------------------------------------
 

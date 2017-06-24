@@ -106,9 +106,9 @@ namespace Syroot.NintenTools.Bfres
         public Vector3F Position { get; set; }
 
         /// <summary>
-        /// Gets customly attached <see cref="UserData"/> instances.
+        /// Gets or sets customly attached <see cref="UserData"/> instances.
         /// </summary>
-        public ResDict<UserData> UserData { get; private set; }
+        public ResDict<UserData> UserData { get; set; }
 
         // ---- METHODS ------------------------------------------------------------------------------------------------
 

@@ -38,13 +38,13 @@ namespace Syroot.NintenTools.Bfres
         }
 
         /// <summary>
-        /// Gets the list of <see cref="Bone"/> instances forming the skeleton.
+        /// Gets or sets the list of <see cref="Bone"/> instances forming the skeleton.
         /// </summary>
-        public ResDict<Bone> Bones { get; private set; }
+        public ResDict<Bone> Bones { get; set; }
 
-        public IList<ushort> MatrixToBoneList { get; private set; }
+        public IList<ushort> MatrixToBoneList { get; set; }
 
-        public IList<Matrix3x4> InverseModelMatrices { get; private set; }
+        public IList<Matrix3x4> InverseModelMatrices { get; set; }
 
         // ---- METHODS ------------------------------------------------------------------------------------------------
 

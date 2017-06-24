@@ -50,11 +50,7 @@ namespace Syroot.NintenTools.Bfres
         /// Gets the internally stored value to represent the instance.
         /// </summary>
         /// <remarks>Signed to get arithmetic rather than logical shifts.</remarks>
-        internal short Raw
-        {
-            get;
-            private set;
-        }
+        internal short Raw { get; private set; }
 
         // ---- OPERATORS ----------------------------------------------------------------------------------------------
 

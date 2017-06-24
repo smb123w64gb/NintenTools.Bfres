@@ -65,27 +65,27 @@ namespace Syroot.NintenTools.Bfres
         /// <see cref="BoneAnims"/>.
         /// </summary>
         public uint BakedSize { get; set; }
-        
+
         /// <summary>
-        /// Gets the <see cref="BoneAnim"/> instances creating the animation.
+        /// Gets or sets the <see cref="BoneAnim"/> instances creating the animation.
         /// </summary>
-        public IList<BoneAnim> BoneAnims { get; private set; }
+        public IList<BoneAnim> BoneAnims { get; set; }
 
         /// <summary>
         /// Gets or sets the <see cref="Skeleton"/> instance affected by this animation.
         /// </summary>
         public Skeleton BindSkeleton { get; set; }
-        
-        /// <summary>
-        /// Gets the indices of the <see cref="Bone"/> instances in the <see cref="Skeleton.Bones"/> dictionary to bind
-        /// for each animation. <see cref="UInt16.MaxValue"/> specifies no binding.
-        /// </summary>
-        public ushort[] BindIndices { get; private set; }
 
         /// <summary>
-        /// Gets customly attached <see cref="UserData"/> instances.
+        /// Gets or sets the indices of the <see cref="Bone"/> instances in the <see cref="Skeleton.Bones"/> dictionary
+        /// to bind for each animation. <see cref="UInt16.MaxValue"/> specifies no binding.
         /// </summary>
-        public ResDict<UserData> UserData { get; private set; }
+        public ushort[] BindIndices { get; set; }
+
+        /// <summary>
+        /// Gets or sets customly attached <see cref="UserData"/> instances.
+        /// </summary>
+        public ResDict<UserData> UserData { get; set; }
 
         // ---- METHODS ------------------------------------------------------------------------------------------------
 

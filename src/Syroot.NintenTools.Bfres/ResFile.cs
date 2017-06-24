@@ -74,65 +74,65 @@ namespace Syroot.NintenTools.Bfres
         public string Name { get; set; }
 
         /// <summary>
-        /// Gets the stored <see cref="Model"/> (FMDL) instances.
+        /// Gets or sets the stored <see cref="Model"/> (FMDL) instances.
         /// </summary>
-        public ResDict<Model> Models { get; private set; }
+        public ResDict<Model> Models { get; set; }
 
         /// <summary>
-        /// Gets the stored <see cref="Texture"/> (FTEX) instances.
+        /// Gets or sets the stored <see cref="Texture"/> (FTEX) instances.
         /// </summary>
-        public ResDict<Texture> Textures { get; private set; }
+        public ResDict<Texture> Textures { get; set; }
 
         /// <summary>
-        /// Gets the stored <see cref="SkeletalAnim"/> (FSKA) instances.
+        /// Gets or sets the stored <see cref="SkeletalAnim"/> (FSKA) instances.
         /// </summary>
-        public ResDict<SkeletalAnim> SkeletalAnims { get; private set; }
+        public ResDict<SkeletalAnim> SkeletalAnims { get; set; }
 
         /// <summary>
-        /// Gets the stored <see cref="ShaderParamAnim"/> (FSHU) instances.
+        /// Gets or sets the stored <see cref="ShaderParamAnim"/> (FSHU) instances.
         /// </summary>
-        public ResDict<ShaderParamAnim> ShaderParamAnims { get; private set; }
+        public ResDict<ShaderParamAnim> ShaderParamAnims { get; set; }
 
         /// <summary>
-        /// Gets the stored <see cref="ShaderParamAnim"/> (FSHU) instances for color animations.
+        /// Gets or sets the stored <see cref="ShaderParamAnim"/> (FSHU) instances for color animations.
         /// </summary>
-        public ResDict<ShaderParamAnim> ColorAnims { get; private set; }
+        public ResDict<ShaderParamAnim> ColorAnims { get; set; }
 
         /// <summary>
-        /// Gets the stored <see cref="ShaderParamAnim"/> (FSHU) instances for texture SRT animations.
+        /// Gets or sets the stored <see cref="ShaderParamAnim"/> (FSHU) instances for texture SRT animations.
         /// </summary>
-        public ResDict<ShaderParamAnim> TexSrtAnims { get; private set; }
+        public ResDict<ShaderParamAnim> TexSrtAnims { get; set; }
 
         /// <summary>
-        /// Gets the stored <see cref="TexPatternAnim"/> (FTXP) instances.
+        /// Gets or sets the stored <see cref="TexPatternAnim"/> (FTXP) instances.
         /// </summary>
-        public ResDict<TexPatternAnim> TexPatternAnims { get; private set; }
+        public ResDict<TexPatternAnim> TexPatternAnims { get; set; }
 
         /// <summary>
-        /// Gets the stored <see cref="VisibilityAnim"/> (FVIS) instances for bone visibility animations.
+        /// Gets or sets the stored <see cref="VisibilityAnim"/> (FVIS) instances for bone visibility animations.
         /// </summary>
-        public ResDict<VisibilityAnim> BoneVisibilityAnims { get; private set; }
+        public ResDict<VisibilityAnim> BoneVisibilityAnims { get; set; }
 
         /// <summary>
-        /// Gets the stored <see cref="VisibilityAnim"/> (FVIS) instances for material visibility animations.
+        /// Gets or sets the stored <see cref="VisibilityAnim"/> (FVIS) instances for material visibility animations.
         /// </summary>
-        public ResDict<VisibilityAnim> MatVisibilityAnims { get; private set; }
+        public ResDict<VisibilityAnim> MatVisibilityAnims { get; set; }
 
         /// <summary>
-        /// Gets the stored <see cref="ShapeAnim"/> (FSHA) instances.
+        /// Gets or sets the stored <see cref="ShapeAnim"/> (FSHA) instances.
         /// </summary>
-        public ResDict<ShapeAnim> ShapeAnims { get; private set; }
+        public ResDict<ShapeAnim> ShapeAnims { get; set; }
 
         /// <summary>
-        /// Gets the stored <see cref="SceneAnim"/> (FSCN) instances.
+        /// Gets or sets the stored <see cref="SceneAnim"/> (FSCN) instances.
         /// </summary>
-        public ResDict<SceneAnim> SceneAnims { get; private set; }
+        public ResDict<SceneAnim> SceneAnims { get; set; }
 
         /// <summary>
-        /// Gets attached <see cref="ExternalFile"/> instances. The key of the dictionary typically represents the name
-        /// of the file they were originally created from.
+        /// Gets or sets attached <see cref="ExternalFile"/> instances. The key of the dictionary typically represents
+        /// the name of the file they were originally created from.
         /// </summary>
-        public ResDict<ExternalFile> ExternalFiles { get; private set; }
+        public ResDict<ExternalFile> ExternalFiles { get; set; }
 
         // ---- METHODS (PUBLIC) ---------------------------------------------------------------------------------------
 

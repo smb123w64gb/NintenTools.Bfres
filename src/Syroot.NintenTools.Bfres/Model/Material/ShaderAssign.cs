@@ -12,11 +12,11 @@ namespace Syroot.NintenTools.Bfres
 
         public uint Revision { get; set; }
 
-        public ResDict<ResString> AttribAssigns { get; private set; }
+        public ResDict<ResString> AttribAssigns { get; set; }
 
-        public ResDict<ResString> SamplerAssigns { get; private set; }
+        public ResDict<ResString> SamplerAssigns { get; set; }
 
-        public ResDict<ResString> ShaderOptions { get; private set; }
+        public ResDict<ResString> ShaderOptions { get; set; }
 
         // ---- METHODS ------------------------------------------------------------------------------------------------
 

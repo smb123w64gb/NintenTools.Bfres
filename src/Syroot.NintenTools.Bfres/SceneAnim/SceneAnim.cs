@@ -29,24 +29,24 @@ namespace Syroot.NintenTools.Bfres
         public string Path { get; set; }
 
         /// <summary>
-        /// Gets the <see cref="CameraAnim"/> instances.
+        /// Gets or sets the <see cref="CameraAnim"/> instances.
         /// </summary>
-        public ResDict<CameraAnim> CameraAnims { get; private set; }
-        
-        /// <summary>
-        /// Gets the <see cref="LightAnim"/> instances.
-        /// </summary>
-        public ResDict<LightAnim> LightAnims { get; private set; }
+        public ResDict<CameraAnim> CameraAnims { get; set; }
 
         /// <summary>
-        /// Gets the <see cref="FogAnim"/> instances.
+        /// Gets or sets the <see cref="LightAnim"/> instances.
         /// </summary>
-        public ResDict<FogAnim> FogAnims { get; private set; }
+        public ResDict<LightAnim> LightAnims { get; set; }
 
         /// <summary>
-        /// Gets customly attached <see cref="UserData"/> instances.
+        /// Gets or sets the <see cref="FogAnim"/> instances.
         /// </summary>
-        public ResDict<UserData> UserData { get; private set; }
+        public ResDict<FogAnim> FogAnims { get; set; }
+
+        /// <summary>
+        /// Gets or sets customly attached <see cref="UserData"/> instances.
+        /// </summary>
+        public ResDict<UserData> UserData { get; set; }
 
         // ---- METHODS ------------------------------------------------------------------------------------------------
 

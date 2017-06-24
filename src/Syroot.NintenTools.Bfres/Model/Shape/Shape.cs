@@ -51,9 +51,9 @@ namespace Syroot.NintenTools.Bfres
         public float Radius { get; set; }
 
         /// <summary>
-        /// Gets the <see cref="VertexBuffer"/> instance storing the data which forms the shape's surface.
+        /// Gets or sets the <see cref="VertexBuffer"/> instance storing the data which forms the shape's surface.
         /// </summary>
-        public VertexBuffer VertexBuffer { get; private set; }
+        public VertexBuffer VertexBuffer { get; set; }
 
         /// <summary>
         /// Gets or sets the number of bones influencing the vertices stored in this buffer. 0 influences equal
@@ -67,23 +67,24 @@ namespace Syroot.NintenTools.Bfres
         public byte TargetAttribCount { get; set; }
 
         /// <summary>
-        /// Gets the list of <see cref="Meshes"/> which are used to represent different level of details of the shape.
+        /// Gets or sets the list of <see cref="Meshes"/> which are used to represent different level of details of the
+        /// shape.
         /// </summary>
-        public IList<Mesh> Meshes { get; private set; }
+        public IList<Mesh> Meshes { get; set; }
         
-        public IList<ushort> SkinBoneIndices { get; private set; }
+        public IList<ushort> SkinBoneIndices { get; set; }
         
-        public ResDict<KeyShape> KeyShapes { get; private set; }
+        public ResDict<KeyShape> KeyShapes { get; set; }
         
-        public IList<Bounding> SubMeshBoundings { get; private set; }
+        public IList<Bounding> SubMeshBoundings { get; set; }
 
         /// <summary>
-        /// Represents the <see cref="BoundingNode"/> instances forming the bounding tree with which parts of a mesh
+        /// Gets or sets the <see cref="BoundingNode"/> instances forming the bounding tree with which parts of a mesh
         /// are culled when not visible.
         /// </summary>
-        public IList<BoundingNode> SubMeshBoundingNodes { get; private set; }
+        public IList<BoundingNode> SubMeshBoundingNodes { get; set; }
 
-        public IList<ushort> SubMeshBoundingIndices { get; private set; }
+        public IList<ushort> SubMeshBoundingIndices { get; set; }
         
         // ---- METHODS ------------------------------------------------------------------------------------------------
 

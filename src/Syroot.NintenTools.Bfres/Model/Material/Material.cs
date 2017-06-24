@@ -29,41 +29,41 @@ namespace Syroot.NintenTools.Bfres
         /// </summary>
         public MaterialFlags Flags { get; set; }
 
-        public ResDict<RenderInfo> RenderInfos { get; private set; }
+        public ResDict<RenderInfo> RenderInfos { get; set; }
 
-        public RenderState RenderState { get; private set; }
+        public RenderState RenderState { get; set; }
 
-        public ShaderAssign ShaderAssign { get; private set; }
+        public ShaderAssign ShaderAssign { get; set; }
 
         /// <summary>
-        /// Gets the list of <see cref="TextureRef"/> instances referencing the <see cref="Texture"/> instances required
-        /// to draw the material.
+        /// Gets or sets the list of <see cref="TextureRef"/> instances referencing the <see cref="Texture"/> instances
+        /// required to draw the material.
         /// </summary>
-        public IList<TextureRef> TextureRefs { get; private set; }
+        public IList<TextureRef> TextureRefs { get; set; }
 
         /// <summary>
         /// Gets or sets a dictionary of <see cref="Sampler"/> instances which configure how to draw
         /// <see cref="Texture"/> instances referenced by the <see cref="TextureRefs"/> list.
         /// </summary>
-        public ResDict<Sampler> Samplers { get; private set; }
+        public ResDict<Sampler> Samplers { get; set; }
 
-        public ResDict<ShaderParam> ShaderParams { get; private set; }
+        public ResDict<ShaderParam> ShaderParams { get; set; }
 
         /// <summary>
-        /// Gets the raw data block which stores <see cref="ShaderParam"/> values.
+        /// Gets or sets the raw data block which stores <see cref="ShaderParam"/> values.
         /// </summary>
-        public byte[] ParamData { get; private set; }
+        public byte[] ParamData { get; set; }
 
         /// <summary>
-        /// Gets customly attached <see cref="UserData"/> instances.
+        /// Gets or sets customly attached <see cref="UserData"/> instances.
         /// </summary>
-        public ResDict<UserData> UserData { get; private set; }
+        public ResDict<UserData> UserData { get; set; }
 
         /// <summary>
-        /// Represents a set of bits determining whether <see cref="ShaderParam"/> instances are volatile.
+        /// Gets or sets a set of bits determining whether <see cref="ShaderParam"/> instances are volatile.
         /// </summary>
         // TODO: Wrap into a bool array.
-        public byte[] VolatileFlags { get; private set; }
+        public byte[] VolatileFlags { get; set; }
 
         // TODO: Methods to access ShaderParam variable values.
 

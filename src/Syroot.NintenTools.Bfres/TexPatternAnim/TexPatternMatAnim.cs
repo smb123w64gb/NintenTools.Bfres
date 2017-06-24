@@ -18,29 +18,29 @@ namespace Syroot.NintenTools.Bfres
         public string Name { get; set; }
 
         /// <summary>
-        /// Gets the list of <see cref="PatternAnimInfo"/> instances.
+        /// Gets or sets the list of <see cref="PatternAnimInfo"/> instances.
         /// </summary>
-        public IList<PatternAnimInfo> PatternAnimInfos { get; private set; }
+        public IList<PatternAnimInfo> PatternAnimInfos { get; set; }
 
         /// <summary>
-        /// Gets <see cref="AnimCurve"/> instances animating properties of objects stored in this section.
+        /// Gets or sets <see cref="AnimCurve"/> instances animating properties of objects stored in this section.
         /// </summary>
-        public IList<AnimCurve> Curves { get; private set; }
+        public IList<AnimCurve> Curves { get; set; }
 
         /// <summary>
-        /// Gets the initial <see cref="PatternAnimInfo"/> indices.
+        /// Gets or sets the initial <see cref="PatternAnimInfo"/> indices.
         /// </summary>
-        public IList<ushort> BaseDataList { get; private set; }
+        public IList<ushort> BaseDataList { get; set; }
 
         /// <summary>
-        /// Gets the index of the first <see cref="AnimCurve"/> relative to all curves of the parent
+        /// Gets or sets the index of the first <see cref="AnimCurve"/> relative to all curves of the parent
         /// <see cref="TexPatternAnim.TexPatternMatAnims"/> instances.
         /// </summary>
         internal int BeginCurve { get; set; }
 
         /// <summary>
-        /// Gets the index of the first <see cref="PatternAnimInfo"/> relative to all param anim infos of the parent
-        /// <see cref="TexPatternAnim.TexPatternMatAnims"/> instances.
+        /// Gets or sets the index of the first <see cref="PatternAnimInfo"/> relative to all param anim infos of the
+        /// parent <see cref="TexPatternAnim.TexPatternMatAnims"/> instances.
         /// </summary>
         internal int BeginPatAnim { get; set; }
 

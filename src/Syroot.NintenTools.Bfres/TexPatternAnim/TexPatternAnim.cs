@@ -51,26 +51,26 @@ namespace Syroot.NintenTools.Bfres
         public Model BindModel { get; set; }
 
         /// <summary>
-        /// Gets the indices of the <see cref="Material"/> instances in the <see cref="Model.Materials"/> dictionary to
-        /// bind for each animation. <see cref="UInt16.MaxValue"/> specifies no binding.
+        /// Gets or sets the indices of the <see cref="Material"/> instances in the <see cref="Model.Materials"/>
+        /// dictionary to bind for each animation. <see cref="UInt16.MaxValue"/> specifies no binding.
         /// </summary>
-        public ushort[] BindIndices { get; private set; }
+        public ushort[] BindIndices { get; set; }
 
         /// <summary>
-        /// Gets the <see cref="TexPatternAnim"/> instances creating the animation.
+        /// Gets or sets the <see cref="TexPatternAnim"/> instances creating the animation.
         /// </summary>
-        public IList<TexPatternMatAnim> TexPatternMatAnims { get; private set; }
+        public IList<TexPatternMatAnim> TexPatternMatAnims { get; set; }
 
         /// <summary>
-        /// Gets the <see cref="TextureRef"/> instances pointing to <see cref="Texture"/> instances participating in the
-        /// animation.
+        /// Gets or sets the <see cref="TextureRef"/> instances pointing to <see cref="Texture"/> instances
+        /// participating in the animation.
         /// </summary>
-        public ResDict<TextureRef> TextureRefs { get; private set; }
+        public ResDict<TextureRef> TextureRefs { get; set; }
 
         /// <summary>
-        /// Gets customly attached <see cref="UserData"/> instances.
+        /// Gets or sets customly attached <see cref="UserData"/> instances.
         /// </summary>
-        public ResDict<UserData> UserData { get; private set; }
+        public ResDict<UserData> UserData { get; set; }
 
         // ---- METHODS ------------------------------------------------------------------------------------------------
 

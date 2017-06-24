@@ -35,7 +35,7 @@ namespace Syroot.NintenTools.Bfres
         /// <summary>
         /// Gets or sets the number of bytes required to bake all <see cref="Curves"/>.
         /// </summary>
-        public uint BakedSize { get; private set; }
+        public uint BakedSize { get; set; }
 
         /// <summary>
         /// Gets or sets the name with which the instance can be referenced uniquely in <see cref="ResDict{FogAnim}"/>
@@ -49,19 +49,19 @@ namespace Syroot.NintenTools.Bfres
         public string DistanceAttnFuncName { get; set; }
 
         /// <summary>
-        /// Gets <see cref="AnimCurve"/> instances animating properties of objects stored in this section.
+        /// Gets or sets <see cref="AnimCurve"/> instances animating properties of objects stored in this section.
         /// </summary>
-        public IList<AnimCurve> Curves { get; private set; }
+        public IList<AnimCurve> Curves { get; set; }
 
         /// <summary>
-        /// Gets the <see cref="FogAnimData"/> instance storing initial fog parameters.
+        /// Gets or sets the <see cref="FogAnimData"/> instance storing initial fog parameters.
         /// </summary>
         public FogAnimData BaseData { get; set; }
 
         /// <summary>
-        /// Gets customly attached <see cref="UserData"/> instances.
+        /// Gets or sets customly attached <see cref="UserData"/> instances.
         /// </summary>
-        public ResDict<UserData> UserData { get; private set; }
+        public ResDict<UserData> UserData { get; set; }
         
         // ---- METHODS ------------------------------------------------------------------------------------------------
 

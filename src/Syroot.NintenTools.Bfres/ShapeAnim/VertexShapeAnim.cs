@@ -18,29 +18,29 @@ namespace Syroot.NintenTools.Bfres
         public string Name { get; set; }
 
         /// <summary>
-        /// Gets the list of <see cref="KeyShapeAnimInfo"/> instances.
+        /// Gets or sets the list of <see cref="KeyShapeAnimInfo"/> instances.
         /// </summary>
-        public IList<KeyShapeAnimInfo> KeyShapeAnimInfos { get; private set; }
+        public IList<KeyShapeAnimInfo> KeyShapeAnimInfos { get; set; }
 
         /// <summary>
-        /// Gets <see cref="AnimCurve"/> instances animating properties of objects stored in this section.
+        /// Gets or sets <see cref="AnimCurve"/> instances animating properties of objects stored in this section.
         /// </summary>
-        public IList<AnimCurve> Curves { get; private set; }
+        public IList<AnimCurve> Curves { get; set; }
 
         /// <summary>
-        /// Gets the list of base values, excluding the base shape (which is always being initialized with 0f).
+        /// Gets or sets the list of base values, excluding the base shape (which is always being initialized with 0f).
         /// </summary>
-        public float[] BaseDataList { get; private set; }
+        public float[] BaseDataList { get; set; }
 
         /// <summary>
-        /// Gets the index of the first <see cref="AnimCurve"/> relative to all curves of the parent
+        /// Gets or sets the index of the first <see cref="AnimCurve"/> relative to all curves of the parent
         /// <see cref="ShapeAnim.VertexShapeAnims"/> instances.
         /// </summary>
         internal int BeginCurve { get; set; }
 
         /// <summary>
-        /// Gets the index of the first <see cref="KeyShapeAnimInfo"/> relative to all key shape anim infos of the
-        /// parent <see cref="ShapeAnim.VertexShapeAnims"/> instances.
+        /// Gets or sets the index of the first <see cref="KeyShapeAnimInfo"/> relative to all key shape anim infos of
+        /// the parent <see cref="ShapeAnim.VertexShapeAnims"/> instances.
         /// </summary>
         internal int BeginKeyShapeAnim { get; set; }
 

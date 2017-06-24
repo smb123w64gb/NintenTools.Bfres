@@ -19,26 +19,26 @@ namespace Syroot.NintenTools.Bfres
         public string Name { get; set; }
 
         /// <summary>
-        /// Gets the list of <see cref="ParamAnimInfo"/> instances.
+        /// Gets or sets the list of <see cref="ParamAnimInfo"/> instances.
         /// </summary>
-        public IList<ParamAnimInfo> ParamAnimInfos { get; private set; }
+        public IList<ParamAnimInfo> ParamAnimInfos { get; set; }
 
         /// <summary>
-        /// Gets <see cref="AnimCurve"/> instances animating properties of objects stored in this section.
+        /// Gets or sets <see cref="AnimCurve"/> instances animating properties of objects stored in this section.
         /// </summary>
-        public IList<AnimCurve> Curves { get; private set; }
+        public IList<AnimCurve> Curves { get; set; }
 
-        public IList<AnimConstant> Constants { get; private set; }
+        public IList<AnimConstant> Constants { get; set; }
 
         /// <summary>
-        /// Gets the index of the first <see cref="AnimCurve"/> relative to all curves of the parent
+        /// Gets or sets the index of the first <see cref="AnimCurve"/> relative to all curves of the parent
         /// <see cref="ShaderParamAnim.ShaderParamMatAnims"/> instances.
         /// </summary>
         internal int BeginCurve { get; set; }
 
         /// <summary>
-        /// Gets the index of the first <see cref="ParamAnimInfo"/> relative to all param anim infos of the parent
-        /// <see cref="ShaderParamAnim.ShaderParamMatAnims"/> instances.
+        /// Gets or sets the index of the first <see cref="ParamAnimInfo"/> relative to all param anim infos of the
+        /// parent <see cref="ShaderParamAnim.ShaderParamMatAnims"/> instances.
         /// </summary>
         internal int BeginParamAnim { get; set; }
 

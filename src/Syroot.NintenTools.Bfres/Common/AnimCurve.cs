@@ -83,13 +83,13 @@ namespace Syroot.NintenTools.Bfres
         /// <summary>
         /// Gets the frame numbers at which keys of the same index in the <see cref="Keys"/> array are placed.
         /// </summary>
-        public float[] Frames { get; private set; }
+        public float[] Frames { get; set; }
 
         /// <summary>
         /// Gets an array of elements forming the elements of keys placed at the frames of the same index in the
         /// <see cref="Frames"/> array.
         /// </summary>
-        public float[,] Keys { get; private set; }
+        public float[,] Keys { get; set; }
 
         private int ElementsPerKey
         {
