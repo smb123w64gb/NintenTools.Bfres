@@ -136,9 +136,7 @@ namespace Syroot.NintenTools.Bfres.Core
             Write((uint)BaseStream.Length);
             Flush();
         }
-
-        // ---- Data Save Methods ----
-
+        
         /// <summary>
         /// Reserves space for an offset to the <paramref name="resData"/> written later.
         /// </summary>
@@ -342,9 +340,7 @@ namespace Syroot.NintenTools.Bfres.Core
             }
             Write(UInt32.MaxValue);
         }
-
-        // ---- Specialized Write Methods ----
-
+        
         /// <summary>
         /// Writes a BFRES signature consisting of 4 ASCII characters encoded as an <see cref="UInt32"/>.
         /// </summary>
@@ -354,186 +350,6 @@ namespace Syroot.NintenTools.Bfres.Core
             Write(Encoding.ASCII.GetBytes(value));
         }
 
-        /// <summary>
-        /// Writes a <see cref="AnimConstant"/> instance into the current stream.
-        /// </summary>
-        /// <param name="value">The <see cref="AnimConstant"/> instance.</param>
-        internal void Write(AnimConstant value)
-        {
-            Write(value.AnimDataOffset);
-            Write(value.Value);
-        }
-
-        /// <summary>
-        /// Writes <see cref="AnimConstant"/> instances into the current stream.
-        /// </summary>
-        /// <param name="values">The <see cref="AnimConstant"/> instances.</param>
-        internal void Write(IEnumerable<AnimConstant> values)
-        {
-            foreach (AnimConstant value in values)
-            {
-                Write(value);
-            }
-        }
-
-        /// <summary>
-        /// Writes a <see cref="Bounding"/> instance into the current stream.
-        /// </summary>
-        /// <param name="value">The <see cref="Bounding"/> instance.</param>
-        internal void Write(Bounding value)
-        {
-            Write(value.Center);
-            Write(value.Extent);
-        }
-
-        /// <summary>
-        /// Writes <see cref="Bounding"/> instances into the current stream.
-        /// </summary>
-        /// <param name="values">The <see cref="Bounding"/> instances.</param>
-        internal void Write(IEnumerable<Bounding> values)
-        {
-            foreach (Bounding value in values)
-            {
-                Write(value);
-            }
-        }
-
-        /// <summary>
-        /// Writes a <see cref="Decimal10x5"/> instance into the current stream.
-        /// </summary>
-        /// <param name="value">The <see cref="Decimal10x5"/> instance.</param>
-        internal void Write(Decimal10x5 value)
-        {
-            Write(value.Raw);
-        }
-
-        /// <summary>
-        /// Writes <see cref="Decimal10x5"/> instances into the current stream.
-        /// </summary>
-        /// <param name="values">The <see cref="Decimal10x5"/> instances.</param>
-        internal void Write(IEnumerable<Decimal10x5> values)
-        {
-            foreach (Decimal10x5 value in values)
-            {
-                Write(value);
-            }
-        }
-
-        /// <summary>
-        /// Writes a <see cref="Matrix3x4"/> instance into the current stream.
-        /// </summary>
-        /// <param name="value">The <see cref="Matrix3x4"/> instance.</param>
-        internal void Write(Matrix3x4 value)
-        {
-            Write(value.M11); Write(value.M12); Write(value.M13); Write(value.M14);
-            Write(value.M21); Write(value.M22); Write(value.M23); Write(value.M24);
-            Write(value.M31); Write(value.M32); Write(value.M33); Write(value.M34);
-        }
-
-        /// <summary>
-        /// Writes <see cref="Matrix3x4"/> instances into the current stream.
-        /// </summary>
-        /// <param name="values">The <see cref="Matrix3x4"/> instances.</param>
-        internal void Write(IEnumerable<Matrix3x4> values)
-        {
-            foreach (Matrix3x4 value in values)
-            {
-                Write(value);
-            }
-        }
-
-        /// <summary>
-        /// Writes a <see cref="Vector2F"/> instance into the current stream.
-        /// </summary>
-        /// <param name="value">The <see cref="Vector2F"/> instance.</param>
-        internal void Write(Vector2F value)
-        {
-            Write(value.X);
-            Write(value.Y);
-        }
-
-        /// <summary>
-        /// Writes <see cref="Vector2F"/> instances into the current stream.
-        /// </summary>
-        /// <param name="values">The <see cref="Vector2F"/> instances.</param>
-        internal void Write(IEnumerable<Vector2F> values)
-        {
-            foreach (Vector2F value in values)
-            {
-                Write(value);
-            }
-        }
-
-        /// <summary>
-        /// Writes a <see cref="Vector3"/> instance into the current stream.
-        /// </summary>
-        /// <param name="value">The <see cref="Vector3"/> instance.</param>
-        internal void Write(Vector3 value)
-        {
-            Write(value.X);
-            Write(value.Y);
-            Write(value.Z);
-        }
-
-        /// <summary>
-        /// Writes <see cref="Vector3"/> instances into the current stream.
-        /// </summary>
-        /// <param name="values">The <see cref="Vector3"/> instances.</param>
-        internal void Write(IEnumerable<Vector3> values)
-        {
-            foreach (Vector3 value in values)
-            {
-                Write(value);
-            }
-        }
-
-        /// <summary>
-        /// Writes a <see cref="Vector3F"/> instance into the current stream.
-        /// </summary>
-        /// <param name="value">The <see cref="Vector3F"/> instance.</param>
-        internal void Write(Vector3F value)
-        {
-            Write(value.X);
-            Write(value.Y);
-            Write(value.Z);
-        }
-
-        /// <summary>
-        /// Writes <see cref="Vector3F"/> instances into the current stream.
-        /// </summary>
-        /// <param name="values">The <see cref="Vector3F"/> instances.</param>
-        internal void Write(IEnumerable<Vector3F> values)
-        {
-            foreach (Vector3F value in values)
-            {
-                Write(value);
-            }
-        }
-
-        /// <summary>
-        /// Writes a <see cref="Vector4F"/> instance into the current stream.
-        /// </summary>
-        /// <param name="value">The <see cref="Vector4F"/> instance.</param>
-        internal void Write(Vector4F value)
-        {
-            Write(value.X);
-            Write(value.Y);
-            Write(value.Z);
-            Write(value.W);
-        }
-
-        /// <summary>
-        /// Writes <see cref="Vector4F"/> instances into the current stream.
-        /// </summary>
-        /// <param name="values">The <see cref="Vector4F"/> instances.</param>
-        internal void Write(IEnumerable<Vector4F> values)
-        {
-            foreach (Vector4F value in values)
-            {
-                Write(value);
-            }
-        }
-        
         // ---- METHODS (PRIVATE) --------------------------------------------------------------------------------------
 
         private bool TryGetItemEntry(object data, ItemEntryType type, out ItemEntry entry)

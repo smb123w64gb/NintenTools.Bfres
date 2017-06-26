@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using Syroot.NintenTools.Bfres.Core;
 using Syroot.NintenTools.Bfres.GX2;
 
@@ -33,7 +34,7 @@ namespace Syroot.NintenTools.Bfres
         /// Gets or sets the <see cref="GX2AttribFormat"/> determining the type in which attribute data is available.
         /// </summary>
         public GX2AttribFormat Format { get; set; }
-
+        
         // ---- METHODS ------------------------------------------------------------------------------------------------
 
         void IResData.Load(ResFileLoader loader)

@@ -58,7 +58,7 @@ typedef struct // ResFile
 	}
 	if (ofsShaderParamAnimDict.value)
 	{
-		FSeek(shaderParamAnimDictOffset.target);
+		FSeek(ofsShaderParamAnimDict.target);
 		Dict shaderParamAnims(DT_SHADER_PARAM_ANIM) <bgcolor=0xBDEBEB>;
 	}
 	if (ofsColorAnimDict.value)

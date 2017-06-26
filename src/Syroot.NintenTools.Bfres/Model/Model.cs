@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
 using Syroot.NintenTools.Bfres.Core;
 
@@ -55,10 +54,22 @@ namespace Syroot.NintenTools.Bfres
         public ResDict<UserData> UserData { get; set; }
 
         /// <summary>
-        /// Gets or sets the total number of vertices to process when drawing this model.
+        /// Gets the total number of vertices to process when drawing this model.
         /// </summary>
-        // TODO: Compute total vertex count.
-        public uint TotalVertexCount { get; set; }
+        /// <remarks>This excludes vertices which are not processed by any shader. However, the exact value does not
+        /// seem to matter, so the total count of all vertices is taken to keep things trivial for now.</remarks>
+        public uint TotalVertexCount
+        {
+            get
+            {
+                uint count = 0;
+                foreach (VertexBuffer vertexBuffer in VertexBuffers)
+                {
+                    count += vertexBuffer.VertexCount;
+                }
+                return count;
+            }
+        }
 
         // ---- METHODS ------------------------------------------------------------------------------------------------
 
@@ -76,7 +87,7 @@ namespace Syroot.NintenTools.Bfres
             ushort numShape = loader.ReadUInt16();
             ushort numMaterial = loader.ReadUInt16();
             ushort numUserData = loader.ReadUInt16();
-            TotalVertexCount = loader.ReadUInt32();
+            uint totalVertexCount = loader.ReadUInt32();
             uint userPointer = loader.ReadUInt32();
 
             VertexBuffers = loader.LoadList<VertexBuffer>(numVertexBuffer, ofsVertexBufferList);

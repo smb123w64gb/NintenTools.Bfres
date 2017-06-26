@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using Syroot.NintenTools.Bfres.Core;
 
 namespace Syroot.NintenTools.Bfres
@@ -11,19 +12,35 @@ namespace Syroot.NintenTools.Bfres
         // ---- CONSTANTS ----------------------------------------------------------------------------------------------
 
         private const string _signature = "FVTX";
-
+        
         // ---- PROPERTIES ---------------------------------------------------------------------------------------------
 
         /// <summary>
         /// Gets or sets the number of bones influencing the vertices stored in this buffer. 0 influences equal
-        /// rigidbodies (no skinning), 1 equal rigid skinning and 2 smooth skinning.
+        /// rigidbodies (no skinning), 1 equal rigid skinning and 2 or more smooth skinning.
         /// </summary>
         public byte VertexSkinCount { get; set; }
 
         /// <summary>
-        /// Gets or sets the total number of vertices resulting from the <see cref="Buffers"/>.
+        /// Gets the number of vertices stored by the <see cref="Buffers"/>. It is calculated from the size of the first
+        /// <see cref="Buffer"/> in bytes divided by the <see cref="Buffer.Stride"/>.
         /// </summary>
-        public uint VertexCount { get; set; } // TODO: Compute vertex count.
+        public uint VertexCount
+        {
+            get
+            {
+                Buffer firstBuffer = Buffers[0];
+                int dataSize = firstBuffer.Data[0].Length;
+                
+                // Throw an exception if the stride does not yield complete elements.
+                if (dataSize % firstBuffer.Stride != 0)
+                {
+                    throw new InvalidDataException($"Stride of {firstBuffer} does not yield complete elements."); 
+                }
+
+                return (uint)(dataSize / firstBuffer.Stride);
+            }
+        }
 
         /// <summary>
         /// Gets or sets the dictionary of <see cref="VertexAttrib"/> instances describing how to interprete data in the
@@ -36,8 +53,6 @@ namespace Syroot.NintenTools.Bfres
         /// </summary>
         public IList<Buffer> Buffers { get; set; }
 
-        // TODO: Add methods to aid in retrieving strongly typed vertex data via attributes.
-
         // ---- METHODS ------------------------------------------------------------------------------------------------
 
         void IResData.Load(ResFileLoader loader)
@@ -46,7 +61,7 @@ namespace Syroot.NintenTools.Bfres
             byte numVertexAttrib = loader.ReadByte();
             byte numBuffer = loader.ReadByte();
             ushort idx = loader.ReadUInt16();
-            VertexCount = loader.ReadUInt32();
+            uint vertexCount = loader.ReadUInt32();
             VertexSkinCount = loader.ReadByte();
             loader.Seek(3);
             uint ofsVertexAttribList = loader.ReadOffset(); // Only load dict.
@@ -54,7 +69,7 @@ namespace Syroot.NintenTools.Bfres
             Buffers = loader.LoadList<Buffer>(numBuffer);
             uint userPointer = loader.ReadUInt32();
         }
-        
+
         void IResData.Save(ResFileSaver saver)
         {
             saver.WriteSignature(_signature);

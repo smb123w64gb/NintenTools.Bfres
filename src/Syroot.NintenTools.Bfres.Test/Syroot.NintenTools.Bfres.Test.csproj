@@ -6,6 +6,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Syroot.NintenTools.Yaz0" Version="0.5.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Syroot.NintenTools.Bfres\Syroot.NintenTools.Bfres.csproj" />
   </ItemGroup>
 

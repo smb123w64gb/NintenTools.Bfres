@@ -244,6 +244,15 @@ namespace Syroot.NintenTools.Bfres
         
         private void PreSave()
         {
+            // Update Shape instances.
+            foreach (Model model in Models.Values)
+            {
+                foreach (Shape shape in model.Shapes.Values)
+                {
+                    shape.VertexBuffer = model.VertexBuffers[shape.VertexBufferIndex];
+                }
+            }
+
             // Update SkeletalAnim instances.
             foreach (SkeletalAnim anim in SkeletalAnims.Values)
             {

@@ -52,7 +52,7 @@ namespace Syroot.NintenTools.Bfres
         /// <summary>
         /// Gets or sets the raw data block which stores <see cref="ShaderParam"/> values.
         /// </summary>
-        public byte[] ParamData { get; set; }
+        public byte[] ShaderParamData { get; set; }
 
         /// <summary>
         /// Gets or sets customly attached <see cref="UserData"/> instances.
@@ -91,7 +91,7 @@ namespace Syroot.NintenTools.Bfres
             Samplers = loader.LoadDict<Sampler>();
             uint ofsShaderParamList = loader.ReadOffset(); // Only use dict.
             ShaderParams = loader.LoadDict<ShaderParam>();
-            ParamData = loader.LoadCustom(() => loader.ReadBytes(sizParamSource));
+            ShaderParamData = loader.LoadCustom(() => loader.ReadBytes(sizParamSource));
             UserData = loader.LoadDict<UserData>();
             VolatileFlags = loader.LoadCustom(() => loader.ReadBytes((int)Math.Ceiling(numShaderParam / 8f)));
             uint userPointer = loader.ReadUInt32();
@@ -108,7 +108,7 @@ namespace Syroot.NintenTools.Bfres
             saver.Write((byte)TextureRefs.Count);
             saver.Write((ushort)ShaderParams.Count);
             saver.Write((ushort)VolatileFlags.Length);
-            saver.Write((ushort)ParamData.Length);
+            saver.Write((ushort)ShaderParamData.Length);
             saver.Write((ushort)0); // SizParamRaw
             saver.Write((ushort)UserData.Count);
             saver.SaveDict(RenderInfos);
@@ -119,7 +119,7 @@ namespace Syroot.NintenTools.Bfres
             saver.SaveDict(Samplers);
             saver.SaveList(ShaderParams.Values);
             saver.SaveDict(ShaderParams);
-            saver.SaveCustom(ParamData, () => saver.Write(ParamData));
+            saver.SaveCustom(ShaderParamData, () => saver.Write(ShaderParamData));
             saver.SaveDict(UserData);
             saver.SaveCustom(VolatileFlags, () => saver.Write(VolatileFlags));
             saver.Write(0); // UserPointer

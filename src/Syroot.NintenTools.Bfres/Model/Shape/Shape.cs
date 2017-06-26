@@ -51,13 +51,8 @@ namespace Syroot.NintenTools.Bfres
         public float Radius { get; set; }
 
         /// <summary>
-        /// Gets or sets the <see cref="VertexBuffer"/> instance storing the data which forms the shape's surface.
-        /// </summary>
-        public VertexBuffer VertexBuffer { get; set; }
-
-        /// <summary>
         /// Gets or sets the number of bones influencing the vertices stored in this buffer. 0 influences equal
-        /// rigidbodies (no skinning), 1 equal rigid skinning and 2 smooth skinning.
+        /// rigidbodies (no skinning), 1 equal rigid skinning and 2 or more smooth skinning.
         /// </summary>
         public byte VertexSkinCount { get; set; }
 
@@ -85,7 +80,13 @@ namespace Syroot.NintenTools.Bfres
         public IList<BoundingNode> SubMeshBoundingNodes { get; set; }
 
         public IList<ushort> SubMeshBoundingIndices { get; set; }
-        
+
+        /// <summary>
+        /// Gets or sets the <see cref="VertexBuffer"/> instance storing the data which forms the shape's surface. Saved
+        /// depending on <see cref="VertexBufferIndex"/>.
+        /// </summary>
+        internal VertexBuffer VertexBuffer { get; set; }
+
         // ---- METHODS ------------------------------------------------------------------------------------------------
 
         void IResData.Load(ResFileLoader loader)

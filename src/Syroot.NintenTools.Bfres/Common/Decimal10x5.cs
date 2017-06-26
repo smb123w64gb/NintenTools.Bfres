@@ -206,9 +206,9 @@ namespace Syroot.NintenTools.Bfres
         }
 
         /// <summary>
-        /// Converts the given <paramref name="value"/> value to a <see cref="Single"/> instance.
+        /// Converts the given <paramref name="value"/> value to a <see cref="Int32"/> instance.
         /// </summary>
-        /// <param name="value">The <see cref="Decimal10x5"/> value to represent in the new <see cref="Single"/>
+        /// <param name="value">The <see cref="Decimal10x5"/> value to represent in the new <see cref="Int32"/>
         /// instance.</param>
         public static explicit operator Int32(Decimal10x5 value)
         {

@@ -18,7 +18,7 @@ namespace Syroot.NintenTools.Bfres
         /// The raw bytes stored for each buffering.
         /// </summary>
         public byte[][] Data { get; set; }
-
+        
         // ---- METHODS ------------------------------------------------------------------------------------------------
 
         void IResData.Load(ResFileLoader loader)

@@ -17,7 +17,7 @@ namespace Syroot.NintenTools.Bfres
         public ShaderParamType Type { get; set; }
 
         /// <summary>
-        /// Gets the offset in the <see cref="Material.ParamData"/> byte array in bytes.
+        /// Gets the offset in the <see cref="Material.ShaderParamData"/> byte array in bytes.
         /// </summary>
         public ushort DataOffset { get; set; }
 
@@ -118,17 +118,17 @@ namespace Syroot.NintenTools.Bfres
         Bool,
 
         /// <summary>
-        /// The value is a <see cref="System.Boolean"/> vector with 2 components.
+        /// The value is a <see cref="Maths.Vector2Bool"/>.
         /// </summary>
         Bool2,
 
         /// <summary>
-        /// The value is a <see cref="System.Boolean"/> vector with 3 components.
+        /// The value is a <see cref="Maths.Vector3Bool"/>.
         /// </summary>
         Bool3,
 
         /// <summary>
-        /// The value is a <see cref="System.Boolean"/> vector with 4 components.
+        /// The value is a <see cref="Maths.Vector4Bool"/>.
         /// </summary>
         Bool4,
 
@@ -158,17 +158,17 @@ namespace Syroot.NintenTools.Bfres
         UInt,
 
         /// <summary>
-        /// The value is a <see cref="System.UInt32"/> vector with 2 components.
+        /// The value is a <see cref="Maths.Vector2U"/>.
         /// </summary>
         UInt2,
 
         /// <summary>
-        /// The value is a <see cref="System.UInt32"/> vector with 3 components.
+        /// The value is a <see cref="Maths.Vector3U"/>.
         /// </summary>
         UInt3,
 
         /// <summary>
-        /// The value is a <see cref="System.UInt32"/> vector with 4 components.
+        /// The value is a <see cref="Maths.Vector4U"/>.
         /// </summary>
         UInt4,
 
@@ -198,7 +198,7 @@ namespace Syroot.NintenTools.Bfres
         Reserved2,
 
         /// <summary>
-        /// The value is a <see cref="System.Single"/> matrix with 2 rows and 2 columns.
+        /// The value is a <see cref="Maths.Matrix2"/>.
         /// </summary>
         Float2x2,
 
@@ -208,7 +208,7 @@ namespace Syroot.NintenTools.Bfres
         Float2x3,
 
         /// <summary>
-        /// The value is a <see cref="System.Single"/> matrix with 2 rows and 4 columns.
+        /// The value is a <see cref="Maths.Matrix2x4"/>.
         /// </summary>
         Float2x4,
 
@@ -218,7 +218,7 @@ namespace Syroot.NintenTools.Bfres
         Reserved3,
 
         /// <summary>
-        /// The value is a <see cref="System.Single"/> matrix with 3 rows and 2 columns.
+        /// The value is a <see cref="Maths.Matrix3x2"/>.
         /// </summary>
         Float3x2,
 
@@ -238,7 +238,7 @@ namespace Syroot.NintenTools.Bfres
         Reserved4,
 
         /// <summary>
-        /// The value is a <see cref="System.Single"/> matrix with 4 rows and 2 columns.
+        /// The value is a <see cref="System.Single"/>.
         /// </summary>
         Float4x2,
 

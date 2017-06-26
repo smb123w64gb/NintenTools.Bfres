@@ -62,9 +62,7 @@ namespace Syroot.NintenTools.Bfres.Core
             // Load the raw data into structures recursively.
             ((IResData)ResFile).Load(this);
         }
-
-        // ---- Data Load Methods ----
-
+        
         /// <summary>
         /// Reads and returns an <see cref="IResData"/> instance of type <typeparamref name="T"/> from the following
         /// offset or returns <c>null</c> if the read offset is 0.
@@ -200,9 +198,7 @@ namespace Syroot.NintenTools.Bfres.Core
                 return names;
             }
         }
-
-        // ---- Specialized Write Methods ----
-
+        
         /// <summary>
         /// Reads a BFRES signature consisting of 4 ASCII characters encoded as an <see cref="UInt32"/> and checks for
         /// validity.
@@ -217,85 +213,6 @@ namespace Syroot.NintenTools.Bfres.Core
             {
                 throw new ResException($"Invalid signature, expected '{validSignature}' but got '{signature}'.");
             }
-        }
-
-        /// <summary>
-        /// Reads a <see cref="AnimConstant"/> instance from the current stream and returns it.
-        /// </summary>
-        /// <returns>The <see cref="AnimConstant"/> instance.</returns>
-        internal AnimConstant ReadAnimConstant()
-        {
-            return new AnimConstant()
-            {
-                AnimDataOffset = ReadUInt32(),
-                Value = ReadInt32()
-            };
-        }
-
-        /// <summary>
-        /// Reads a <see cref="AnimConstant"/> instance from the current stream and returns it.
-        /// </summary>
-        /// <returns>The <see cref="AnimConstant"/> instance.</returns>
-        internal AnimConstant[] ReadAnimConstants(int count)
-        {
-            AnimConstant[] values = new AnimConstant[count];
-            for (int i = 0; i < count; i++)
-            {
-                values[i] = ReadAnimConstant();
-            }
-            return values;
-        }
-
-        /// <summary>
-        /// Reads a <see cref="Bounding"/> instance from the current stream and returns it.
-        /// </summary>
-        /// <returns>The <see cref="Bounding"/> instance.</returns>
-        internal Bounding ReadBounding()
-        {
-            return new Bounding()
-            {
-                Center = ReadVector3F(),
-                Extent = ReadVector3F()
-            };
-        }
-
-        /// <summary>
-        /// Reads <see cref="Bounding"/> instances from the current stream and returns them.
-        /// </summary>
-        /// <param name="count">The number of instances to read.</param>
-        /// <returns>The <see cref="Bounding"/> instances.</returns>
-        internal IList<Bounding> ReadBoundings(int count)
-        {
-            Bounding[] values = new Bounding[count];
-            for (int i = 0; i < count; i++)
-            {
-                values[i] = ReadBounding();
-            }
-            return values;
-        }
-
-        /// <summary>
-        /// Reads a <see cref="Decimal10x5"/> instance from the current stream and returns it.
-        /// </summary>
-        /// <returns>The <see cref="Decimal10x5"/> instance.</returns>
-        internal Decimal10x5 ReadDecimal10x5()
-        {
-            return new Decimal10x5(ReadUInt16());
-        }
-
-        /// <summary>
-        /// Reads <see cref="Decimal10x5"/> instances from the current stream and returns them.
-        /// </summary>
-        /// <param name="count">The number of instances to read.</param>
-        /// <returns>The <see cref="Decimal10x5"/> instances.</returns>
-        internal IList<Decimal10x5> ReadDecimal10x5s(int count)
-        {
-            Decimal10x5[] values = new Decimal10x5[count];
-            for (int i = 0; i < count; i++)
-            {
-                values[i] = ReadDecimal10x5();
-            }
-            return values;
         }
 
         /// <summary>
@@ -319,177 +236,6 @@ namespace Syroot.NintenTools.Bfres.Core
             for (int i = 0; i < count; i++)
             {
                 values[i] = ReadOffset();
-            }
-            return values;
-        }
-
-        /// <summary>
-        /// Reads a <see cref="Matrix3x4"/> instance from the current stream and returns it.
-        /// </summary>
-        /// <returns>The <see cref="Matrix3x4"/> instance.</returns>
-        internal Matrix3x4 ReadMatrix3x4()
-        {
-            return new Matrix3x4(
-                ReadSingle(), ReadSingle(), ReadSingle(), ReadSingle(),
-                ReadSingle(), ReadSingle(), ReadSingle(), ReadSingle(),
-                ReadSingle(), ReadSingle(), ReadSingle(), ReadSingle());
-        }
-
-        /// <summary>
-        /// Reads <see cref="Matrix3x4"/> instances from the current stream and returns them.
-        /// </summary>
-        /// <param name="count">The number of instances to read.</param>
-        /// <returns>The <see cref="Matrix3x4"/> instances.</returns>
-        internal IList<Matrix3x4> ReadMatrix3x4s(int count)
-        {
-            Matrix3x4[] values = new Matrix3x4[count];
-            for (int i = 0; i < count; i++)
-            {
-                values[i] = ReadMatrix3x4();
-            }
-            return values;
-        }
-
-        /// <summary>
-        /// Reads a <see cref="Vector2"/> instance from the current stream and returns it.
-        /// </summary>
-        /// <returns>The <see cref="Vector2"/> instance.</returns>
-        internal Vector2 ReadVector2()
-        {
-            return new Vector2(ReadInt32(), ReadInt32());
-        }
-
-        /// <summary>
-        /// Reads <see cref="Vector2"/> instances from the current stream and returns them.
-        /// </summary>
-        /// <param name="count">The number of instances to read.</param>
-        /// <returns>The <see cref="Vector2"/> instances.</returns>
-        internal IList<Vector2> ReadVector2s(int count)
-        {
-            Vector2[] values = new Vector2[count];
-            for (int i = 0; i < count; i++)
-            {
-                values[i] = ReadVector2();
-            }
-            return values;
-        }
-
-        /// <summary>
-        /// Reads a <see cref="Vector2F"/> instance from the current stream and returns it.
-        /// </summary>
-        /// <returns>The <see cref="Vector2F"/> instance.</returns>
-        internal Vector2F ReadVector2F()
-        {
-            return new Vector2F(ReadSingle(), ReadSingle());
-        }
-
-        /// <summary>
-        /// Reads <see cref="Vector2F"/> instances from the current stream and returns them.
-        /// </summary>
-        /// <param name="count">The number of instances to read.</param>
-        /// <returns>The <see cref="Vector2F"/> instances.</returns>
-        internal IList<Vector2F> ReadVector2Fs(int count)
-        {
-            Vector2F[] values = new Vector2F[count];
-            for (int i = 0; i < count; i++)
-            {
-                values[i] = ReadVector2F();
-            }
-            return values;
-        }
-
-        /// <summary>
-        /// Reads a <see cref="Vector3"/> instance from the current stream and returns it.
-        /// </summary>
-        /// <returns>The <see cref="Vector3"/> instance.</returns>
-        internal Vector3 ReadVector3()
-        {
-            return new Vector3(ReadInt32(), ReadInt32(), ReadInt32());
-        }
-
-        /// <summary>
-        /// Reads <see cref="Vector3"/> instances from the current stream and returns them.
-        /// </summary>
-        /// <param name="count">The number of instances to read.</param>
-        /// <returns>The <see cref="Vector3"/> instances.</returns>
-        internal IList<Vector3> ReadVector3s(int count)
-        {
-            Vector3[] values = new Vector3[count];
-            for (int i = 0; i < count; i++)
-            {
-                values[i] = ReadVector3();
-            }
-            return values;
-        }
-
-        /// <summary>
-        /// Reads a <see cref="Vector3F"/> instance from the current stream and returns it.
-        /// </summary>
-        /// <returns>The <see cref="Vector3F"/> instance.</returns>
-        internal Vector3F ReadVector3F()
-        {
-            return new Vector3F(ReadSingle(), ReadSingle(), ReadSingle());
-        }
-
-        /// <summary>
-        /// Reads <see cref="Vector3F"/> instances from the current stream and returns them.
-        /// </summary>
-        /// <param name="count">The number of instances to read.</param>
-        /// <returns>The <see cref="Vector3F"/> instances.</returns>
-        internal IList<Vector3F> ReadVector3Fs(int count)
-        {
-            Vector3F[] values = new Vector3F[count];
-            for (int i = 0; i < count; i++)
-            {
-                values[i] = ReadVector3F();
-            }
-            return values;
-        }
-
-        /// <summary>
-        /// Reads a <see cref="Vector4"/> instance from the current stream and returns it.
-        /// </summary>
-        /// <returns>The <see cref="Vector4"/> instance.</returns>
-        internal Vector4 ReadVector4()
-        {
-            return new Vector4(ReadInt32(), ReadInt32(), ReadInt32(), ReadInt32());
-        }
-
-        /// <summary>
-        /// Reads <see cref="Vector4"/> instances from the current stream and returns them.
-        /// </summary>
-        /// <param name="count">The number of instances to read.</param>
-        /// <returns>The <see cref="Vector4"/> instances.</returns>
-        internal IList<Vector4> ReadVector4s(int count)
-        {
-            Vector4[] values = new Vector4[count];
-            for (int i = 0; i < count; i++)
-            {
-                values[i] = ReadVector4();
-            }
-            return values;
-        }
-
-        /// <summary>
-        /// Reads a <see cref="Vector4F"/> instance from the current stream and returns it.
-        /// </summary>
-        /// <returns>The <see cref="Vector4F"/> instance.</returns>
-        internal Vector4F ReadVector4F()
-        {
-            return new Vector4F(ReadSingle(), ReadSingle(), ReadSingle(), ReadSingle());
-        }
-
-        /// <summary>
-        /// Reads <see cref="Vector4F"/> instances from the current stream and returns them.
-        /// </summary>
-        /// <param name="count">The number of instances to read.</param>
-        /// <returns>The <see cref="Vector4F"/> instances.</returns>
-        internal IList<Vector4F> ReadVector4Fs(int count)
-        {
-            Vector4F[] values = new Vector4F[count];
-            for (int i = 0; i < count; i++)
-            {
-                values[i] = ReadVector4F();
             }
             return values;
         }
