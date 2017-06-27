@@ -250,3 +250,6 @@ paket-files/
 # JetBrains Rider
 .idea/
 *.sln.iml
+
+# Sandcastle Help File Builder Output
+/src/Syroot.NintenTools.Bfres.Sandcastle/Help

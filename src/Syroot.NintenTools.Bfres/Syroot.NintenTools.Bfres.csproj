@@ -39,4 +39,8 @@
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 	</PropertyGroup>
 
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net45|AnyCPU'">
+	  <DocumentationFile>obj\Release\net45\Syroot.NintenTools.Bfres.xml</DocumentationFile>
+	</PropertyGroup>
+
 </Project>

@@ -36,7 +36,7 @@ namespace Syroot.NintenTools.Bfres.Core
         /// Initializes a new instance of the <see cref="ResFileSaver"/> class saving data from the given
         /// <paramref name="resFile"/> into the specified <paramref name="stream"/> which is optionally left open.
         /// </summary>
-        /// <param name="resFile">The <see cref="ResFile"/> instance to save data from.</param>
+        /// <param name="resFile">The <see cref="Bfres.ResFile"/> instance to save data from.</param>
         /// <param name="stream">The <see cref="Stream"/> to save data into.</param>
         /// <param name="leaveOpen"><c>true</c> to leave the stream open after writing, otherwise <c>false</c>.</param>
         internal ResFileSaver(ResFile resFile, Stream stream, bool leaveOpen)
@@ -50,7 +50,7 @@ namespace Syroot.NintenTools.Bfres.Core
         /// Initializes a new instance of the <see cref="ResFileSaver"/> class for the file with the given
         /// <paramref name="fileName"/>.
         /// </summary>
-        /// <param name="resFile">The <see cref="ResFile"/> instance to save.</param>
+        /// <param name="resFile">The <see cref="Bfres.ResFile"/> instance to save.</param>
         /// <param name="fileName">The name of the file to save the data into.</param>
         internal ResFileSaver(ResFile resFile, string fileName)
             : this(resFile, new FileStream(fileName, FileMode.Create, FileAccess.Write, FileShare.Read), false)
@@ -60,7 +60,7 @@ namespace Syroot.NintenTools.Bfres.Core
         // ---- PROPERTIES ---------------------------------------------------------------------------------------------
 
         /// <summary>
-        /// Gets the saved <see cref="ResFile"/> instance.
+        /// Gets the saved <see cref="Bfres.ResFile"/> instance.
         /// </summary>
         internal ResFile ResFile { get; }
 
@@ -164,7 +164,7 @@ namespace Syroot.NintenTools.Bfres.Core
         }
 
         /// <summary>
-        /// Reserves space for the <see cref="ResFile"/> file size field which is automatically filled later.
+        /// Reserves space for the <see cref="Bfres.ResFile"/> file size field which is automatically filled later.
         /// </summary>
         [DebuggerStepThrough]
         internal void SaveFieldFileSize()
@@ -174,7 +174,7 @@ namespace Syroot.NintenTools.Bfres.Core
         }
 
         /// <summary>
-        /// Reserves space for the <see cref="ResFile"/> string pool size and offset fields which are automatically
+        /// Reserves space for the <see cref="Bfres.ResFile"/> string pool size and offset fields which are automatically
         /// filled later.
         /// </summary>
         [DebuggerStepThrough]

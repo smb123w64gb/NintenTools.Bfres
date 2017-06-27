@@ -23,7 +23,7 @@ namespace Syroot.NintenTools.Bfres.Core
         /// Initializes a new instance of the <see cref="ResFileLoader"/> class loading data into the given
         /// <paramref name="resFile"/> from the specified <paramref name="stream"/> which is optionally left open.
         /// </summary>
-        /// <param name="resFile">The <see cref="ResFile"/> instance to load data into.</param>
+        /// <param name="resFile">The <see cref="Bfres.ResFile"/> instance to load data into.</param>
         /// <param name="stream">The <see cref="Stream"/> to read data from.</param>
         /// <param name="leaveOpen"><c>true</c> to leave the stream open after reading, otherwise <c>false</c>.</param>
         internal ResFileLoader(ResFile resFile, Stream stream, bool leaveOpen = false)
@@ -38,7 +38,7 @@ namespace Syroot.NintenTools.Bfres.Core
         /// Initializes a new instance of the <see cref="ResFileLoader"/> class from the file with the given
         /// <paramref name="fileName"/>.
         /// </summary>
-        /// <param name="resFile">The <see cref="ResFile"/> instance to load data into.</param>
+        /// <param name="resFile">The <see cref="Bfres.ResFile"/> instance to load data into.</param>
         /// <param name="fileName">The name of the file to load the data from.</param>
         internal ResFileLoader(ResFile resFile, string fileName)
             : this(resFile, new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.Read))
@@ -48,7 +48,7 @@ namespace Syroot.NintenTools.Bfres.Core
         // ---- PROPERTIES ---------------------------------------------------------------------------------------------
 
         /// <summary>
-        /// Gets the loaded <see cref="ResFile"/> instance.
+        /// Gets the loaded <see cref="Bfres.ResFile"/> instance.
         /// </summary>
         internal ResFile ResFile { get; }
 
