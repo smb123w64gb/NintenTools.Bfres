@@ -6,10 +6,11 @@ More details are found on the [wiki](https://github.com/Syroot/NintenTools.Bfres
 
 ## Supported Features
 
-- Loading all subfiles and their sections of a BFRES file (at least version 3.x or newer).
-- Helper classes to simplify modifying data sections, like `VertexBufferHelper` allowing strongly-typed access to edit `VertexBuffer` data.
+- Load all subfiles and their sections of a BFRES file (at least version 3.x or newer).
+- Helper classes simplify modifying data sections, like `VertexBufferHelper` allowing strongly-typed access to edit `VertexBuffer` data.
 - Save new or modified BFRES files written from scratch.
-- Parsing BFRES files visually in [010 Editor](https://www.sweetscape.com/010editor/) with the provided [binary templates](https://github.com/Syroot/NintenTools.Bfres/tree/master/other/010_editor).
+- Quickly run scripts on BFRES files able to access the whole API with the ResScript tool.
+- Parse BFRES files visually in [010 Editor](https://www.sweetscape.com/010editor/) with the provided [binary templates](https://github.com/Syroot/NintenTools.Bfres/tree/master/other/010_editor).
 
 The following features are **not yet implemented**, but planned:
 - Simplified modification of `AnimCurve` instances and better handling of key data.
