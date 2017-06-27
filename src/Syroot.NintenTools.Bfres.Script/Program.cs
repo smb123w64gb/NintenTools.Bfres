@@ -47,7 +47,7 @@ namespace Syroot.NintenTools.Bfres.Script
                 Console.WriteLine("        SCRIPT   	The text file to parse as a script.");
                 Console.WriteLine("        BFRES    	A BFRES file which can be accessed in the script.");
                 Console.WriteLine("        ARGS     	Optional arguments passed to the script.");
-                throw new ProgramException();
+                throw new ProgramException(String.Empty);
             }
 
             // Get the script file name.
