@@ -27,15 +27,39 @@ namespace Syroot.NintenTools.Bfres.Test
 
         private static void Main(string[] args)
         {
-            ResFile resFile = new ResFile(@"D:\Pictures\zBFRES\Decompressed\driver\Roy.bfres");
-            VertexBuffer oldBuffer = resFile.Models[0].VertexBuffers[0];
-            VertexBufferHelper help = new VertexBufferHelper(oldBuffer, resFile.ByteOrder);
-            resFile.Models[0].VertexBuffers[0] = help.ToVertexBuffer();
-            resFile.Save(@"D:\Pictures\Roy.bfres");
+            //ResFile resFile = new ResFile(@"D:\Archive\Wii U\_Roms\MK8MOD\content\race_common\Coin\Coin.bfres");
+            //VertexBuffer oldBuffer = resFile.Models[0].VertexBuffers[0];
+            //VertexBufferHelper help = new VertexBufferHelper(oldBuffer, resFile.ByteOrder);
+            //resFile.Models[0].VertexBuffers[0] = help.ToVertexBuffer();
+            //resFile.Save(@"D:\Archive\Wii U\_Roms\MK8MOD\content\race_common\Coin\Coin.bfres");
+            
+            LoadResFiles(ComputeIndices);
+            Console.WriteLine("Done.");
+            Console.ReadLine();
+        }
 
-            //LoadResFiles(TestVertexAttribFormat);
-            //Console.WriteLine("Done.");
-            //Console.ReadLine();
+        private static void ComputeIndices(ResFile resFile)
+        {
+            foreach (Model model in resFile.Models.Values)
+            {
+                foreach (Shape shape in model.Shapes.Values)
+                {
+                    foreach (Mesh mesh in shape.Meshes)
+                    {
+                        uint[] indices = mesh.GetIndices().ToArray();
+                        mesh.SetIndices(indices);
+
+                        uint[] newIndices = mesh.GetIndices().ToArray();
+                        for (int i = 0; i < indices.Length; i++)
+                        {
+                            if (indices[i] != newIndices[i])
+                            {
+                                Console.WriteLine($"Failure {mesh.IndexFormat}");
+                            }
+                        }
+                    }
+                }
+            }
         }
         
         private static void DumpAttributeBufferIndexInfo(ResFile resFile)

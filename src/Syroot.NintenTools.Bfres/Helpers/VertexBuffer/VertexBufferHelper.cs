@@ -165,7 +165,7 @@ namespace Syroot.NintenTools.Bfres.Helpers
         {
             // Create a reader on the raw bytes of the correct endianness.
             Buffer buffer = vertexBuffer.Buffers[attrib.BufferIndex];
-            using (BinaryDataReader reader = new BinaryDataReader(new MemoryStream(buffer.Data[0/*bufferingIndex*/])))
+            using (BinaryDataReader reader = new BinaryDataReader(new MemoryStream(buffer.Data[0])))
             {
                 reader.ByteOrder = ByteOrder;
 
