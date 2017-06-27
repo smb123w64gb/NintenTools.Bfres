@@ -6,11 +6,11 @@
 		<AssemblyName>Syroot.NintenTools.Bfres</AssemblyName>
 		<AssemblyTitle>NintenTools.Bfres</AssemblyTitle>
 		<Authors>Syroot</Authors>
-		<VersionPrefix>1.2.0</VersionPrefix>
+		<VersionPrefix>1.2.1-alpha1</VersionPrefix>
 
 		<PackageId>Syroot.NintenTools.Bfres</PackageId>
 		<PackageTags>bfres;cafe;nintendo;nw4f;wiiu</PackageTags>
-		<PackageReleaseNotes>Add Mesh methods to get or set strongly-typed IndexBuffer data.</PackageReleaseNotes>
+		<PackageReleaseNotes>Add ResDict.Rename method to quickly change keys.</PackageReleaseNotes>
 		<PackageIconUrl>https://raw.githubusercontent.com/Syroot/NintenTools.Bfres/master/res/Logo.png</PackageIconUrl>
 		<PackageProjectUrl>https://github.com/Syroot/NintenTools.Bfres</PackageProjectUrl>
 		<PackageLicenseUrl>https://raw.githubusercontent.com/Syroot/NintenTools.Bfres/master/LICENSE</PackageLicenseUrl>

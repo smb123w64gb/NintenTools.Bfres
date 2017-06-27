@@ -195,6 +195,29 @@ namespace Syroot.NintenTools.Bfres
         }
 
         /// <summary>
+        /// Changes the key of the instance currently saved under the given <paramref name="key"/> to the
+        /// <paramref name="newKey"/>.
+        /// </summary>
+        /// <param name="key">The current textual key to rename.</param>
+        /// <param name="newKey">The new textual key to use.</param>
+        /// <exception cref="ArgumentException">An <see cref="IResData"/> instance with the same
+        /// <paramref name="newKey"/> already exists.
+        /// </exception>
+        /// <exception cref="KeyNotFoundException">The given <paramref name="key"/> does not exist.
+        /// </exception>
+        public void Rename(string key, string newKey)
+        {
+            // Throw if key does not exist.
+            Lookup(key, out Node node, out int index);
+            // Throw if new key already exists.
+            if (Lookup(newKey, out Node existingNode, out index, false))
+            {
+                throw new ArgumentException($"Key \"{newKey}\" already exists.");
+            }
+            node.Key = newKey;
+        }
+
+        /// <summary>
         /// Removes the first occurrence of the instance with the specific <paramref name="key"/> from the dictionary.
         /// </summary>
         /// <param name="key">The textual key of the <see cref="IResData"/> instance which will be removed.</param>

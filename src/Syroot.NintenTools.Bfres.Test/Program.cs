@@ -27,15 +27,15 @@ namespace Syroot.NintenTools.Bfres.Test
 
         private static void Main(string[] args)
         {
-            //ResFile resFile = new ResFile(@"D:\Archive\Wii U\_Roms\MK8MOD\content\race_common\Coin\Coin.bfres");
-            //VertexBuffer oldBuffer = resFile.Models[0].VertexBuffers[0];
-            //VertexBufferHelper help = new VertexBufferHelper(oldBuffer, resFile.ByteOrder);
-            //resFile.Models[0].VertexBuffers[0] = help.ToVertexBuffer();
-            //resFile.Save(@"D:\Archive\Wii U\_Roms\MK8MOD\content\race_common\Coin\Coin.bfres");
-            
-            LoadResFiles(ComputeIndices);
-            Console.WriteLine("Done.");
-            Console.ReadLine();
+            ResFile resFile = new ResFile(@"D:\Archive\Wii U\_Roms\MK8\content\race_common\Coin\Coin.bfres");
+
+            resFile.Models.Rename("Coin", "asshole");
+
+            resFile.Save(@"D:\Archive\Wii U\_Roms\MK8\content\race_common\Coin\Coin.bfres");
+
+            //LoadResFiles(ComputeIndices);
+            //Console.WriteLine("Done.");
+            //Console.ReadLine();
         }
 
         private static void ComputeIndices(ResFile resFile)
