@@ -59,6 +59,8 @@ namespace Syroot.NintenTools.Bfres
             }
         }
 
+        // TODO: Methods to retrieve the strongly-typed shader param value.
+
         // ---- METHODS ------------------------------------------------------------------------------------------------
 
         void IResData.Load(ResFileLoader loader)

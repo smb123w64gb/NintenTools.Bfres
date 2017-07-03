@@ -129,7 +129,7 @@ namespace Syroot.NintenTools.Bfres
     /// <summary>
     /// Represents general flags specifying how a <see cref="Material"/> is rendered.
     /// </summary>
-    public enum MaterialFlags
+    public enum MaterialFlags : uint
     {
         /// <summary>
         /// The material is not rendered at all.

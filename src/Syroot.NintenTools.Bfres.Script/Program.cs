@@ -108,7 +108,9 @@ namespace Syroot.NintenTools.Bfres.Script
                         "System",
                         "System.Console",
                         "Syroot.Maths",
-                        "Syroot.NintenTools.Bfres"),
+                        "Syroot.NintenTools.Bfres",
+                        "Syroot.NintenTools.Bfres.GX2",
+                        "Syroot.NintenTools.Bfres.Helpers"),
                     globalsType: typeof(Globals));
                 script.Compile();
                 (script.RunAsync(globals)).Wait();

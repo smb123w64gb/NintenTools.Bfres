@@ -204,7 +204,6 @@ namespace Syroot.NintenTools.Bfres.Core
         /// validity.
         /// </summary>
         /// <param name="validSignature">A valid signature.</param>
-        /// <returns>The read signature.</returns>
         internal void CheckSignature(string validSignature)
         {
             // Read the actual signature and compare it.

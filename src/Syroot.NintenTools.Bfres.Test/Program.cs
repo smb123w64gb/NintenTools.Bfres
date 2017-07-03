@@ -27,12 +27,42 @@ namespace Syroot.NintenTools.Bfres.Test
 
         private static void Main(string[] args)
         {
-            ResFile resFile = new ResFile(@"D:\Archive\Wii U\_Roms\MK8\content\race_common\Coin\Coin.bfres");
-            resFile.Save(@"D:\Archive\Wii U\_Roms\MK8\content\race_common\Coin\Coin.bfres");
+            //ResFile resFile = new ResFile(@"D:\Archive\Wii U\_Roms\MK8\content\race_common\Coin\Coin.bfres");
+            //resFile.Models[0].Shapes[0].Meshes[0].SetIndices(new uint[] { 1, 2, 3 }, GX2IndexFormat.UInt32);
+            //resFile.Save(@"D:\Archive\Wii U\_Roms\MK8\content\race_common\Coin\Coin.bfres");
 
-            //LoadResFiles(ComputeIndices);
+            LoadResFiles(LogSurfaceFormats);
+
+            foreach (KeyValuePair<GX2SurfaceFormat, List<string>> bla in _textures)
+            {
+                _log.WriteLine(bla.Key.ToString());
+                foreach (string texture in bla.Value)
+                {
+                    _log.WriteLine("\t" + texture);
+                }
+            }
+
             //Console.WriteLine("Done.");
             //Console.ReadLine();
+        }
+        
+        private static Dictionary<GX2SurfaceFormat, List<string>> _textures = new Dictionary<GX2SurfaceFormat, List<string>>();
+
+        private static void LogSurfaceFormats(string fileName, ResFile resFile)
+        {
+            foreach (Texture texture in resFile.Textures.Values)
+            {
+                Console.WriteLine(texture.Format);
+                string textureName = fileName + " " + texture.Name;
+                if (_textures.TryGetValue(texture.Format, out List<string> list))
+                {
+                    list.Add(textureName);
+                }
+                else
+                {
+                    _textures[texture.Format] = new List<string>() { textureName };
+                }
+            }
         }
 
         private static void ComputeIndices(ResFile resFile)
@@ -166,21 +196,20 @@ namespace Syroot.NintenTools.Bfres.Test
             }
         }
 
-        private static void LoadResFiles(Action<ResFile> fileAction = null)
+        private static void LoadResFiles(Action<string, ResFile> fileAction = null)
         {
             foreach (string searchPath in _searchPaths)
             {
                 foreach (string fileName in Directory.GetFiles(searchPath, "*.bfres", SearchOption.AllDirectories))
-                {
+                {  
                     Console.Write($"Loading {fileName}...");
-                    _log.WriteLine(fileName);
 
                     _stopwatch.Restart();
                     ResFile resFile = new ResFile(fileName);
                     _stopwatch.Stop();
                     Console.WriteLine($" {_stopwatch.ElapsedMilliseconds}ms");
 
-                    fileAction?.Invoke(resFile);
+                    fileAction?.Invoke(fileName, resFile);
                 }
             }
         }

@@ -97,20 +97,20 @@ namespace Syroot.NintenTools.Bfres
 
         void IResData.Load(ResFileLoader loader)
         {
-            ushort lenArray = loader.ReadUInt16();
+            ushort count = loader.ReadUInt16();
             Type = loader.ReadEnum<RenderInfoType>(true);
             loader.Seek(1);
             Name = loader.LoadString();
             switch (Type)
             {
                 case RenderInfoType.Int32:
-                    _value = loader.ReadInt32s(lenArray);
+                    _value = loader.ReadInt32s(count);
                     break;
                 case RenderInfoType.Single:
-                    _value = loader.ReadSingles(lenArray);
+                    _value = loader.ReadSingles(count);
                     break;
                 case RenderInfoType.String:
-                    _value = loader.LoadStrings(lenArray);
+                    _value = loader.LoadStrings(count);
                     break;
             }
         }

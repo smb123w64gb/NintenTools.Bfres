@@ -15,7 +15,6 @@ namespace Syroot.NintenTools.Bfres
         // ---- CONSTANTS ----------------------------------------------------------------------------------------------
 
         private const uint _flagsMask = 0b00000000_00000000_00000000_00000001;
-        private const uint _flagsMaskScale = 0b00000000_00000000_00000011_00000000;
         private const uint _flagsMaskRotate = 0b00000000_00000000_01110000_00000000;
         private const uint _flagsMaskBillboard = 0b00000000_00000111_00000000_00000000;
         private const uint _flagsMaskTransform = 0b00001111_00000000_00000000_00000000;

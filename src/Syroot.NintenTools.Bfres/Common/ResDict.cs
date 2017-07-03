@@ -125,9 +125,15 @@ namespace Syroot.NintenTools.Bfres
             }
             set
             {
-                // Throw if key does not exist.
-                Lookup(key, out Node node, out int index);
-                node.Value = value;
+                // Change existing or add.
+                if (Lookup(key, out Node node, out int index, false))
+                {
+                    node.Value = value;
+                }
+                else
+                {
+                    _nodes.Add(new Node(key, value));
+                }
             }
         }
 
@@ -571,13 +577,13 @@ namespace Syroot.NintenTools.Bfres
             int i = 0;
             foreach (Node foundNode in Nodes)
             {
-                i++;
                 if (foundNode.Key == key)
                 {
                     node = foundNode;
                     index = i;
                     return true;
                 }
+                i++;
             }
             if (throwOnFail) throw new ArgumentException($"{key} not found in {this}.", nameof(key));
             node = null;
@@ -590,13 +596,13 @@ namespace Syroot.NintenTools.Bfres
             int i = 0;
             foreach (Node foundNode in Nodes)
             {
-                i++;
                 if (foundNode.Value == value)
                 {
                     node = foundNode;
                     index = i;
                     return true;
                 }
+                i++;
             }
             if (throwOnFail) throw new ArgumentException($"{value} not found in {this}.", nameof(value));
             node = null;
