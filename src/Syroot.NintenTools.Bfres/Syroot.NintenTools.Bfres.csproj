@@ -6,11 +6,11 @@
 		<AssemblyName>Syroot.NintenTools.Bfres</AssemblyName>
 		<AssemblyTitle>NintenTools.Bfres</AssemblyTitle>
 		<Authors>Syroot</Authors>
-		<VersionPrefix>1.2.1</VersionPrefix>
+		<VersionPrefix>1.2.2-alpha1</VersionPrefix>
 
 		<PackageId>Syroot.NintenTools.Bfres</PackageId>
 		<PackageTags>bfres;cafe;nintendo;nw4f;wiiu</PackageTags>
-		<PackageReleaseNotes>Add ResDict.Rename method to quickly change keys, smaller fixes.</PackageReleaseNotes>
+		<PackageReleaseNotes>Make RenderState classes 1-component structs.</PackageReleaseNotes>
 		<PackageIconUrl>https://raw.githubusercontent.com/Syroot/NintenTools.Bfres/master/res/Logo.png</PackageIconUrl>
 		<PackageProjectUrl>https://github.com/Syroot/NintenTools.Bfres</PackageProjectUrl>
 		<PackageLicenseUrl>https://raw.githubusercontent.com/Syroot/NintenTools.Bfres/master/LICENSE</PackageLicenseUrl>

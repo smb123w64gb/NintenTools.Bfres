@@ -5,7 +5,7 @@ namespace Syroot.NintenTools.Bfres.GX2
     /// <summary>
     /// Represents GX2 polygon drawing settings controlling if and how triangles are rendered.
     /// </summary>
-    public class PolygonControl
+    public struct PolygonControl
     {
         // ---- CONSTANTS ----------------------------------------------------------------------------------------------
 
@@ -19,22 +19,12 @@ namespace Syroot.NintenTools.Bfres.GX2
         private const int _polygonOffsetBackBit = 12;
         private const int _polygonLineOffsetBit = 13;
 
-        // ---- CONSTRUCTORS & DESTRUCTOR ------------------------------------------------------------------------------
+        // ---- FIELDS -------------------------------------------------------------------------------------------------
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="PolygonControl"/> class.
-        /// </summary>
-        public PolygonControl()
-        {
-        }
-
-        internal PolygonControl(uint value)
-        {
-            Value = value;
-        }
+        internal uint Value;
 
         // ---- PROPERTIES ---------------------------------------------------------------------------------------------
-        
+
         /// <summary>
         /// Gets or sets a value indicating whether front-facing polygons are culled.
         /// </summary>
@@ -116,7 +106,5 @@ namespace Syroot.NintenTools.Bfres.GX2
             get { return Value.GetBit(_polygonLineOffsetBit); }
             set { Value = Value.SetBit(_polygonLineOffsetBit, value); }
         }
-
-        internal uint Value { get; set; }
     }
 }

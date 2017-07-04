@@ -5,7 +5,7 @@ namespace Syroot.NintenTools.Bfres.GX2
     /// <summary>
     /// Represents GX2 settings controlling color and alpha blending.
     /// </summary>
-    public class BlendControl
+    public struct BlendControl
     {
         // ---- CONSTANTS ----------------------------------------------------------------------------------------------
 
@@ -17,20 +17,9 @@ namespace Syroot.NintenTools.Bfres.GX2
         private const int _alphaDestinationBlendBit = 24, _alphaDestinationBlendBits = 5;
         private const int _separateAlphaBlendBit = 29;
 
-        // ---- CONSTRUCTORS & DESTRUCTOR ------------------------------------------------------------------------------
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="BlendControl"/> class.
-        /// </summary>
-        public BlendControl()
-        {
-        }
-
-        internal BlendControl(uint target, uint value)
-        {
-            Target = target;
-            Value = value;
-        }
+        // ---- FIELDS -------------------------------------------------------------------------------------------------
+        
+        internal uint Value;
 
         // ---- PROPERTIES ---------------------------------------------------------------------------------------------
 
@@ -96,12 +85,5 @@ namespace Syroot.NintenTools.Bfres.GX2
             get { return Value.GetBit(_separateAlphaBlendBit); }
             set { Value = Value.SetBit(_separateAlphaBlendBit, value); }
         }
-        
-        /// <summary>
-        /// Gets or sets the blend target index.
-        /// </summary>
-        public uint Target { get; set; }
-
-        internal uint Value { get; set; }
     }
 }

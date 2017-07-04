@@ -5,27 +5,16 @@ namespace Syroot.NintenTools.Bfres.GX2
     /// <summary>
     /// Represents GX2 settings controlling additional alpha blending options.
     /// </summary>
-    public class AlphaControl
+    public struct AlphaControl
     {
         // ---- CONSTANTS ----------------------------------------------------------------------------------------------
 
         private const int _alphaFuncBit = 0, _alphaFuncBits = 3;
         private const int _alphaFuncEnabledBit = 3;
+        
+        // ---- FIELDS -------------------------------------------------------------------------------------------------
 
-        // ---- CONSTRUCTORS & DESTRUCTOR ------------------------------------------------------------------------------
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="AlphaControl"/> class.
-        /// </summary>
-        public AlphaControl()
-        {
-        }
-
-        internal AlphaControl(uint value, float refValue)
-        {
-            Value = value;
-            RefValue = refValue;
-        }
+        internal uint Value;
 
         // ---- PROPERTIES ---------------------------------------------------------------------------------------------
 
@@ -46,12 +35,5 @@ namespace Syroot.NintenTools.Bfres.GX2
             get { return (GX2CompareFunction)Value.Decode(_alphaFuncBit, _alphaFuncBits); }
             set { Value = Value.Encode((uint)value, _alphaFuncBit, _alphaFuncBits); }
         }
-
-        /// <summary>
-        /// Gets or sets the reference value used for alpha testing.
-        /// </summary>
-        public float RefValue { get; set; }
-
-        internal uint Value { get; set; }
     }
 }
