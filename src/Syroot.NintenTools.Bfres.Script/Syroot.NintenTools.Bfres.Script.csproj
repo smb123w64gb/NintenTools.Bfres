@@ -6,7 +6,7 @@
 		<AssemblyName>ResScript</AssemblyName>
 		<AssemblyTitle>NintenTools.Bfres.Scripter</AssemblyTitle>
 		<Authors>Syroot</Authors>
-		<VersionPrefix>1.2.1-alpha1</VersionPrefix>
+		<VersionPrefix>1.2.2</VersionPrefix>
 
 		<RepositoryType>git</RepositoryType>
 		<RepositoryUrl>https://github.com/Syroot/NintenTools.Bfres</RepositoryUrl>

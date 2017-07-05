@@ -8,6 +8,7 @@ using Syroot.Maths;
 using Syroot.NintenTools.Bfres.Core;
 using Syroot.NintenTools.Bfres.GX2;
 using Syroot.NintenTools.Bfres.Helpers;
+using Syroot.NintenTools.Yaz0;
 
 namespace Syroot.NintenTools.Bfres.Test
 {
@@ -27,23 +28,18 @@ namespace Syroot.NintenTools.Bfres.Test
 
         private static void Main(string[] args)
         {
+            Yaz0Compression.Decompress(@"D:\Pictures\zBFRES\BotW\Animal_Bass.sbfres",
+                @"D:\Pictures\zBFRES\BotW\Animal_Bass.bfres");
+            ResFile resFile = new ResFile(@"D:\Pictures\zBFRES\BotW\Animal_Bass.bfres");
+
             //ResFile resFile = new ResFile(@"D:\Archive\Wii U\_Roms\MK8\content\race_common\Coin\Coin.bfres");
             //resFile.Models[0].Shapes[0].Meshes[0].SetIndices(new uint[] { 1, 2, 3 }, GX2IndexFormat.UInt32);
             //resFile.Save(@"D:\Archive\Wii U\_Roms\MK8\content\race_common\Coin\Coin.bfres");
 
-            LoadResFiles(LogSurfaceFormats);
-
-            foreach (KeyValuePair<GX2SurfaceFormat, List<string>> bla in _textures)
-            {
-                _log.WriteLine(bla.Key.ToString());
-                foreach (string texture in bla.Value)
-                {
-                    _log.WriteLine("\t" + texture);
-                }
-            }
-
-            //Console.WriteLine("Done.");
-            //Console.ReadLine();
+            //LoadResFiles(LogSurfaceFormats);
+            
+            Console.WriteLine("Done.");
+            Console.ReadLine();
         }
         
         private static Dictionary<GX2SurfaceFormat, List<string>> _textures = new Dictionary<GX2SurfaceFormat, List<string>>();

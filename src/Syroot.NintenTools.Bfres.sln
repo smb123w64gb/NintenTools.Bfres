@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26430.14
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Syroot.NintenTools.Bfres", "Syroot.NintenTools.Bfres\Syroot.NintenTools.Bfres.csproj", "{8DE92C52-EE00-46EF-8254-E1398C04D659}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Syroot.NintenTools.Bfres", "Syroot.NintenTools.Bfres\Syroot.NintenTools.Bfres.csproj", "{8DE92C52-EE00-46EF-8254-E1398C04D659}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Syroot.NintenTools.Bfres.Test", "Syroot.NintenTools.Bfres.Test\Syroot.NintenTools.Bfres.Test.csproj", "{8740DEC9-4788-4CF4-9B74-364B545708E6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Syroot.NintenTools.Bfres.Test", "Syroot.NintenTools.Bfres.Test\Syroot.NintenTools.Bfres.Test.csproj", "{8740DEC9-4788-4CF4-9B74-364B545708E6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Syroot.NintenTools.Bfres.Script", "Syroot.NintenTools.Bfres.Script\Syroot.NintenTools.Bfres.Script.csproj", "{BE8DBAF0-42FE-4E49-BD63-2032F43BA34D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Syroot.NintenTools.Bfres.Script", "Syroot.NintenTools.Bfres.Script\Syroot.NintenTools.Bfres.Script.csproj", "{BE8DBAF0-42FE-4E49-BD63-2032F43BA34D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

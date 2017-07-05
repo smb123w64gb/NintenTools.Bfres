@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using Syroot.NintenTools.Bfres.Core;
 
@@ -109,6 +110,7 @@ namespace Syroot.NintenTools.Bfres
             Meshes = loader.LoadList<Mesh>(numMesh);
             SkinBoneIndices = loader.LoadCustom(() => loader.ReadUInt16s(numSkinBoneIndex));
             KeyShapes = loader.LoadDict<KeyShape>();
+            // TODO: At least BotW has more data following the Boundings, or that are no boundings at all.
             if (numSubMeshBoundingNodes == 0)
             {
                 // Compute the count differently if the node count was padding.
@@ -156,15 +158,21 @@ namespace Syroot.NintenTools.Bfres
             saver.Write(0); // UserPointer
         }
     }
-    
+
     /// <summary>
     /// Represents flags determining which data is available for <see cref="Shape"/> instances.
     /// </summary>
+    [Flags]
     public enum ShapeFlags : uint
     {
         /// <summary>
         /// The <see cref="Shape"/> instance references a <see cref="VertexBuffer"/>.
         /// </summary>
-        HasVertexBuffer = 1 << 1
+        HasVertexBuffer = 1 << 1,
+
+        /// <summary>
+        /// Set in some BotW models.
+        /// </summary>
+        Unknown2 = 1 << 2
     }
 }
